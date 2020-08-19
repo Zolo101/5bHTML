@@ -50,7 +50,7 @@ Then, install the needed dependencies:
 
 After all dependencies have been installed, then do:11
 
-`npm run build`
+`npm run build-prod`
 
 ## Credits
 
