@@ -1,0 +1,95 @@
+// VERSION ver2
+// Things to note:
+//
+//
+// - Please encode level.json files in UTF-8, otherwise you may experience some problems with characters.
+//
+// - This is subject to change... A LOT.
+// - 5bHTML will not be using an "L or H" mode as we have enough unicode characters. (UTF-8 can techinally have 1,112,064 characters!)
+//
+// - The default of width&height is 32 & 18.
+// - The default of dialogue[].happy is TRUE.
+
+{
+    "1": {
+        "name": "Time to explore",
+
+        "width": 32, 
+        "height": 18,
+
+        "background": 0,
+        
+        "data": [ 
+            // JSON does not support multiline strings, so you have to seperate them.
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "...........................4....",
+            "666......................////.:.",
+            "//6666........5...../////////>>>",
+            "/////6666.....//////////////////",
+            "////////////////////////////////",
+            "////////////////////////////////",
+            "////////////////////////////////"
+        ],
+
+        "entity": [
+            {
+                "name": "book", // Alternative to typing out entity ID
+
+                "x": 105,
+                "y": 0,
+
+                "controllable": true, // Optional if you want to force the entity role
+                "roleid": 10    // More adv
+            }
+        ],
+
+        "dialogue": [
+            {
+                "name": "book", // Alternative to typing out nth entity
+
+                "happy": false, // false = sad, true = happy
+                "text": "Whoa!  Hold on a second, this place doesn't look familiar.  What happened?    I don't remember anything!"
+            }, // In the future, you'll be able to put multiple text into one object.
+            {
+                "name": "book",
+
+                "happy": false,
+                "text": "Uh... well, um... uh.... gosh, I'm so confused."
+            },
+            {
+                "name": "book",
+
+                "happy": true,
+                "text": "Oh, I know!  I'll look through my journal entries!   After all, I am a journal.  So, let's see...   five minutes ago, I..."
+            },
+            {
+                "name": "book",
+
+                "happy": false,
+                "text": "...got eaten by Evil Leafy? WHAT?  That doesn't make any sense!"
+            },
+            {
+                "name": "book",
+
+                "happy": false,
+                "text": "Well, I guess I'll go look for my fellow FreeSmarters to get a sense of what's going on."
+            },
+            {
+                "name": "none",
+
+                "happy": false,
+                "text": "Use the arrow keys to move and press the space bar to jump.."
+            }
+        ]
+    }
+}
