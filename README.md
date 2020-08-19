@@ -24,7 +24,7 @@ v1 Alpha (next version) -- Late September 2020
 Beta -- December 2020
 - [:x:] Able to complete the game
 - [:heavy_plus_sign:] Support multiple characters
-- [:x:] Animations / Transitions
+- [:x:] Animations
 - [:x:] HPRC
 - [:x:] Dialogue
 
