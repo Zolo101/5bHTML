@@ -1,11 +1,9 @@
 # 5bHTML
 ### Current version: **ver0, Open Alpha.**
 
-Join the (5b editing discord server!) [https://discord.gg/qtePFSH]
+Join the [5b editing discord server!](https://discord.gg/qtePFSH)
 
 **This does NOT support Internet Explorer, since IE doesn't support ES6.**
-
-Click **Issues** tab for progress on the next update.
 
 Check the **Projects** tab for progress on the next update.
 
