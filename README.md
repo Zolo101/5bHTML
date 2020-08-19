@@ -48,9 +48,11 @@ Then, install the needed dependencies:
 
 `npm install`
 
-After all dependencies have been installed, then do:11
+After all dependencies have been installed, do:
 
 `npm run build-prod`
+
+You should now have a file called `main.js` in the dist folder.
 
 ## Credits
 
