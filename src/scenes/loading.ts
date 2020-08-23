@@ -33,29 +33,33 @@ class loadingScene extends Phaser.Scene {
         //        console.log(Object.keys(mod)[0]);
         //    })
         //})
-        this.loadAsset("background_0", "img/backgrounds/png/0.png");
-        this.loadAsset("background_1", "img/backgrounds/png/1.png");
-        this.loadAsset("background_2", "img/backgrounds/png/2.png");
-        this.loadAsset("background_3", "img/backgrounds/png/3.png");
-        this.loadAsset("background_4", "img/backgrounds/png/4.png");
-        this.loadAsset("background_5", "img/backgrounds/png/5.png");
-        this.loadAsset("background_6", "img/backgrounds/png/6.png");
-        this.loadAsset("background_7", "img/backgrounds/png/7.png");
-        this.loadAsset("background_8", "img/backgrounds/png/8.png");
-        this.loadAsset("background_9", "img/backgrounds/png/9.png");
-        this.loadAsset("background_10", "img/backgrounds/png/10.png");
-        this.loadAsset("background_11", "img/backgrounds/png/11.png");
 
-        this.loadAsset("missing", "img/misc/missing.svg", "svg");
-        this.loadAsset("animate_missing", "img/misc/animate_missing.svg", "svg");
-        this.loadAsset("special_missing", "img/misc/special_missing.svg", "svg");
-        this.loadAsset("deco_missing", "img/misc/deco_missing.svg", "svg");
-        this.loadAsset("special_missing", "img/misc/special_missing.svg", "svg");
-        this.loadAsset("kill_missing", "img/misc/kill_missing.svg", "svg");
-        this.loadAsset("finish_missing", "img/misc/finish_missing.svg", "svg");
+        this.loadAsset("5b_logo", "5b.svg", "svg");
+        this.loadAsset("5b_people", "5b_people.svg", "svg");
 
-        this.loadAsset("book", "img/book.png");
-        this.loadAsset("zelobook", "img/zelobook.png");
+        this.loadAsset("background_0", "backgrounds/png/0.png");
+        this.loadAsset("background_1", "backgrounds/png/1.png");
+        this.loadAsset("background_2", "backgrounds/png/2.png");
+        this.loadAsset("background_3", "backgrounds/png/3.png");
+        this.loadAsset("background_4", "backgrounds/png/4.png");
+        this.loadAsset("background_5", "backgrounds/png/5.png");
+        this.loadAsset("background_6", "backgrounds/png/6.png");
+        this.loadAsset("background_7", "backgrounds/png/7.png");
+        this.loadAsset("background_8", "backgrounds/png/8.png");
+        this.loadAsset("background_9", "backgrounds/png/9.png");
+        this.loadAsset("background_10", "backgrounds/png/10.png");
+        this.loadAsset("background_11", "backgrounds/png/11.png");
+
+        this.loadAsset("missing", "misc/missing.png");
+        this.loadAsset("animate_missing", "misc/animate_missing.png");
+        this.loadAsset("special_missing", "misc/special_missing.png");
+        this.loadAsset("deco_missing", "misc/deco_missing.png");
+        this.loadAsset("special_missing", "misc/special_missing.png");
+        this.loadAsset("kill_missing", "misc/kill_missing.png");
+        this.loadAsset("finish_missing", "misc/finish_missing.png");
+
+        this.loadAsset("book", "book.png");
+        this.loadAsset("zelobook", "zelobook.png");
         this.addLine("Completed Loading!", greenStyle);
         console.log("Loading completed, Starting...");
     }

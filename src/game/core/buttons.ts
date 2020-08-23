@@ -40,3 +40,9 @@ export const backStyle = {
         x: 4,
     },
 };
+
+export const backButton = (scene: Phaser.Scene) => {
+    new Phaser.GameObjects.Text(
+        scene, 800, 475, "BACK", backStyle,
+    ).setInteractive().on('pointerdown', () => scene.scene.start("menuScene"));
+};

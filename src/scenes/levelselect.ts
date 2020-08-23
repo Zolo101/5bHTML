@@ -1,5 +1,5 @@
 //import { Structs } from "phaser";
-import { levelbuttonStyle, backStyle } from "../game/core/style";
+import { levelbuttonStyle, backStyle } from "../game/core/buttons";
 //import gameScene from "./game";
 
 const levels = require("../game/core/json/levels.json");
@@ -41,7 +41,7 @@ class levelselectScene extends Phaser.Scene {
     CreateButton(i: number, j: number, num: string): void {
         const levelButton = this.add.text(
             // math xD
-            i*110-70, j*60+5, num.padStart(3, "0"), levelbuttonStyle,
+            i*110-70, j*60+25, num.padStart(3, "0"), levelbuttonStyle,
         ).setInteractive();
 
         if (num <= levels.length) {
