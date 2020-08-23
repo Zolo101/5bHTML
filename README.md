@@ -1,5 +1,8 @@
 # 5bHTML
-### Current version: **ver0, Open Alpha.**
+
+Hosted version: **ver0.1, Open Alpha.**
+
+Latest version: **ver0.1, Open Alpha.**
 
 Join the [5b editing discord server!](https://discord.gg/qtePFSH)
 
