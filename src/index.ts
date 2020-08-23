@@ -12,7 +12,7 @@ const config = {
     type: Phaser.AUTO,
     width: 960,
     height: 540,
-    roundPixels: true,
+    // roundPixels: true,
     physics: {
         default: 'arcade',
         arcade: {
@@ -21,7 +21,14 @@ const config = {
         },
     },
     parent: 'game',
-    scene: [loadingScene, menuScene, levelselectScene, gameScene, editorScene, exploreScene],
+    scene: [
+        loadingScene,
+        menuScene,
+        levelselectScene,
+        gameScene,
+        editorScene,
+        exploreScene,
+    ],
 };
 
 const game = new Phaser.Game(config);

@@ -4,11 +4,11 @@ const path = require('path');
 const config = {
   entry: [
     './src/index.ts',
-    './src/styles.css'
+    './src/styles.css',
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'main.js'
+    filename: 'main.js',
   },
   module: {
     rules: [
@@ -20,15 +20,15 @@ const config = {
       {
         test: /\.ts(x)?$/,
         loader: 'ts-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
         use: [
           'style-loader',
-          'css-loader'
-        ]
-      }
+          'css-loader',
+        ],
+      },
       // {
       //   test: /\.css$/,
       //   exclude: /node_modules/,
@@ -53,20 +53,20 @@ const config = {
           // 'sass-loader'
         // ]
       // }
-    ]
+    ],
   },
   resolve: {
     extensions: [
       '.tsx',
       '.ts',
-      '.js'
-    ]
+      '.js',
+    ],
   },
   devServer: {
     contentBase: path.resolve(__dirname, 'dist'),
     compress: true,
-    port: 8080
-  }
+    port: 8080,
+  },
 };
 
 module.exports = config;

@@ -5,13 +5,6 @@ function openExternalLink(url: string) {
 class menuScene extends Phaser.Scene {
     constructor() { super("menuScene"); }
 
-    preload(): void {
-        this.load.setBaseURL("./assets/core");
-
-        this.load.svg("5b_logo", "img/5b.svg");
-        this.load.svg("5b_people", "img/5b_people.svg");
-    }
-
     create(): void {
         //this.scene.start("gameScene"); // go straight into gameplay
         const textStyle = {
@@ -58,7 +51,7 @@ class menuScene extends Phaser.Scene {
         //    600, 350, "LEVEL EDITOR (old)", buttonStyle,
         //).setInteractive();
         const exploreButton = this.add.text(
-            600, 400, "EXPLORE (WIP)", buttonStyle,
+            600, 400, "EXPLORE", buttonStyle,
         ).setInteractive();
         //const settingsButton = this.add.text(
         //    600,450,"Settings",buttonStyle,
@@ -84,11 +77,8 @@ class menuScene extends Phaser.Scene {
         this.add.text(686, 55, "Music by Michael Huang", textStyle).setFontSize(24);
         this.add.text(800, 92, "Ported by Zelo101", textStyle).setFontSize(18);
 
-        // Not finished!
-        this.add.text(720, 477, "not finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", textStyle);
-
         // Alpha ver
-        this.add.text(720, 497, "Open Alpha v0", textStyle).setBackgroundColor("#ea0").setFontSize(32).setColor("#000");
+        this.add.text(700, 480, "v0.1 Alpha", textStyle).setBackgroundColor("#be0").setFontSize(42).setColor("#000");
     }
 }
 
