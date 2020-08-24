@@ -3,11 +3,11 @@ Emoji | meaning
 🟥| Latest Dev version, these versions will not be on the [github page](https://zolo101.github.io/5bHTML/dist/), and you'll have to build them yourself.
 🟦| Latest *""Stable""* version
 
-# v0.1 🟦 -- 20/08/2020
+# v0.1 🟦 -- 23/08/2020
 
 Hotfix update, fixes some major issues
 
-This version fixes [#2](https://github.com/Zolo101/5bHTML/issues/2) and [#6](https://github.com/Zolo101/5bHTML/issues/6)
+This version fixes [#6](https://github.com/Zolo101/5bHTML/issues/6) and [#4](https://github.com/Zolo101/5bHTML/issues/4).
 
 ## Minor changes
 

@@ -27,9 +27,9 @@ Then, install the needed dependencies:
 
 After all dependencies have been installed, do:
 
-`npm run build-prod`
+`npm run watch`
 
-You should now have a file called `main.js` in the dist folder.
+You should now have a web server running at http://localhost:8080/.
 
 ## Credits
 
