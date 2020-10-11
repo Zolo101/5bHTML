@@ -1,15 +1,9 @@
+import { SpecialBlock } from "../game/core/block";
 import { LevelManager } from "../game/core/classes/levelmanger";
-import { BlockInterface } from "../game/core/block";
+import Sprite, { Character } from "../game/core/classes/sprite";
 
-import { levelnameStyle, backStyle } from "../game/core/buttons";
-import { checkLevel } from "../game/core/checkLevel";
-
-import { Sprite, Character } from "../game/core/classes/sprite";
-
-const levels = require("../game/core/json/levels.json");
-const blocks = require("../game/core/json/blocks.json");
-// const entities = require("../game/core/json/entities.json");
-// Credit to shoish for the Entity/Sprite JSON File
+import { block } from "../game/core/jsonmodule";
+import { LevelData } from "../game/core/levelstructure";
 
 // System Variables (Engine)
 
@@ -18,84 +12,37 @@ let upKey: Phaser.Input.Keyboard.Key;
 let downKey: Phaser.Input.Keyboard.Key;
 let rightKey: Phaser.Input.Keyboard.Key;
 let spaceKey: Phaser.Input.Keyboard.Key;
-let zKey: Phaser.Input.Keyboard.Key;
+// let zKey: Phaser.Input.Keyboard.Key;
 let rKey: Phaser.Input.Keyboard.Key;
-
-/*
-function checkGrab(sp: Sprite) {
-    // If UP key is pressed, grab overlapped sprite
-    if (!this.levelmanager.currentcharacter.grabbing
-        && sp.grabbable
-        && Phaser.Input.Keyboard.JustDown(upKey)) {
-        this.levelmanager.currentcharacter.grabbing = true;
-        sp.grabbed = true;
-    }
-
-    // Make character hold sprite while grabbing
-    if (this.levelmanager.currentcharacter.grabbing && sp.grabbed) {
-        if (this.levelmanager.currentcharacter.direction) {
-            sp.body.position = new Phaser.Math.Vector2(
-                this.levelmanager.currentcharacter.body.position.x+30,
-                this.levelmanager.currentcharacter.body.position.y+5,
-            );
-        } else {
-            sp.body.position = new Phaser.Math.Vector2(
-                this.levelmanager.currentcharacter.body.position.x-10,
-                this.levelmanager.currentcharacter.body.position.y+5,
-            );
-        }
-    }
-
-    // If grabbing and DOWN key pressed, Drop sprite
-    if (this.levelmanager.currentcharacter.grabbing
-        && sp.grabbed
-        && Phaser.Input.Keyboard.JustDown(downKey)) {
-        this.levelmanager.currentcharacter.grabbing = false;
-        sp.grabbed = false;
-    }
-
-    // If grabbing and UP key pressed, Throw sprite
-    if (this.levelmanager.currentcharacter.grabbing
-        && sp.grabbed
-        && Phaser.Input.Keyboard.JustDown(upKey)) {
-        this.levelmanager.currentcharacter.grabbing = false;
-        sp.grabbed = false;
-
-        if (this.levelmanager.currentcharacter.direction) {
-            sp.body.velocity = new Phaser.Math.Vector2(500, -600);
-        } else {
-            sp.body.velocity = new Phaser.Math.Vector2(-500, -600);
-        }
-    }
-}*/
 
 class gameScene extends Phaser.Scene {
     // Core vars, do not touch
-    levelnumber = 1
+    levelnumber = 0
     blocksize = 30
+    levelfile!: LevelData
+    // block!: BlockInterface[]
     background!: Phaser.GameObjects.Image
 
     levelmanager!: LevelManager
 
     constructor() { super("gameScene"); }
 
-    init(lvl: any): void {
+    init(lvl: { levelnumber: number, levelfile: LevelData }): void {
         if (lvl.levelnumber === undefined) return;
         this.levelnumber = lvl.levelnumber;
+
+        if (lvl.levelfile === undefined) return;
+        this.levelfile = lvl.levelfile;
     }
 
     create(): void {
-        // ver0 only
-        this.physics.world.setBounds(0, 0, 960, 540, true, true, true, false);
-
         leftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         downKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         upKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         rightKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
         // Switch character
-        zKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        // zKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
 
         // Reset level
         rKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -103,8 +50,14 @@ class gameScene extends Phaser.Scene {
         const terrain = this.physics.add.staticGroup();
         const decorateterrain = this.physics.add.staticGroup();
 
+        if ((this.levelfile) === undefined) console.error("levels and/or blocks seem to have not been specified.");
+
+        this.physics.world.TILE_BIAS = 64;
+
         this.levelmanager = new LevelManager(
-            levels, blocks, this, terrain, decorateterrain,
+            this.levelfile,
+            block as unknown as SpecialBlock[], this,
+            terrain, decorateterrain,
         );
 
         this.levelmanager.setLevel(this.levelnumber);
@@ -112,31 +65,70 @@ class gameScene extends Phaser.Scene {
 
     update(): void {
         // console.log(aslist.map(sp => sp.grabbable));
-        this.levelmanager.UpdatePhysics();
-        if (spaceKey.isDown && this.levelmanager.currentcharacter.body.touching.down) {
-            this.levelmanager.currentcharacter.body.setVelocityY(-700);
-        }
+        const alive = this.levelmanager.currentcharacter.active;
+        const cc = this.levelmanager.currentcharacter;
+        // this.levelmanager.UpdatePhysics();
 
-        if (leftKey.isDown) {
-            this.levelmanager.currentcharacter.direction = false;
-            this.levelmanager.currentcharacter.body.setVelocityX(-250);
-        }
+        if (alive) {
+            if (spaceKey.isDown && (cc.body.blocked.down || cc.body.touching.down)) {
+                cc.body.setVelocityY(-700);
+            }
 
-        if (rightKey.isDown) {
-            this.levelmanager.currentcharacter.direction = true;
-            this.levelmanager.currentcharacter.body.setVelocityX(250);
+            if (leftKey.isDown) {
+                cc.direction = false;
+                cc.body.setVelocityX(-250);
+            }
+
+            if (rightKey.isDown) {
+                cc.direction = true;
+                cc.body.setVelocityX(250);
+            }
         }
 
         if (Phaser.Input.Keyboard.JustDown(rKey)) {
             this.levelmanager.startLevel();
         }
 
-        this.levelmanager.currentcharacter.setFlipX(!this.levelmanager.currentcharacter.direction);
+        // Flip the character based on direction
+        cc.setFlipX(!cc.direction);
 
-        this.levelmanager.characters.forEach((sp) => {
-            //checkGrab(sp);
-            sp.grabbable = false;
+        this.levelmanager.characters.children.entries.forEach((ch: any) => {
+            ch.grabbable = false;
         });
+
+        // TEMP, this shouldn't be in game.ts!
+
+        // If UP key is pressed, grab overlapped sprite
+        if (Phaser.Input.Keyboard.JustDown(upKey)) {
+            if (cc.grabbing === undefined) {
+                this.levelmanager.sprites.children.entries.forEach((ch: any) => {
+                    // This is bad!
+                    cc.attemptGrab(ch);
+                });
+            } else {
+                cc.releaseGrab(true);
+            }
+        }
+
+        // Make character hold sprite while grabbing
+        if (cc.grabbing !== undefined && alive) {
+            cc.grabbing.body.velocity.set(cc.body.velocity.x, 0);
+            if (cc.direction) {
+                cc.grabbing.body.position.set(
+                    cc.body.position.x + 30,
+                    cc.body.position.y + 5,
+                );
+            } else {
+                cc.grabbing.body.position.set(
+                    cc.body.position.x - 10,
+                    cc.body.position.y + 5,
+                );
+            }
+
+            if (Phaser.Input.Keyboard.JustDown(downKey)) {
+                cc.releaseGrab(false);
+            }
+        }
     }
 }
 

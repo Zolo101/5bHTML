@@ -1,12 +1,11 @@
-function openExternalLink(url: string) {
-    window.open(url, '_blank');
-}
+import { levels } from "../game/core/jsonmodule";
+import { openExternalLink } from "../game/core/misc";
 
 class menuScene extends Phaser.Scene {
     constructor() { super("menuScene"); }
 
     create(): void {
-        //this.scene.start("gameScene"); // go straight into gameplay
+        // this.scene.start("gameScene"); // go straight into gameplay
         const textStyle = {
             fontFamily: "Helvetica, Arial, sans-serif",
             // backgroundColor: "#fff",
@@ -36,7 +35,7 @@ class menuScene extends Phaser.Scene {
         const buttonlist = [];
 
         const watchButton = this.add.text(
-            600, 200, "WATCH BFDIA 5a", buttonStyle,
+            600, 200, "WATCH BFDIA 5A", buttonStyle,
         ).setInteractive();
 
         const newButton = this.add.text(
@@ -47,38 +46,40 @@ class menuScene extends Phaser.Scene {
             600, 300, "LEVEL SELECT", buttonStyle,
         ).setInteractive();
 
-        //const levelButton = this.add.text(
+        // const levelButton = this.add.text(
         //    600, 350, "LEVEL EDITOR (old)", buttonStyle,
-        //).setInteractive();
+        // ).setInteractive();
         const exploreButton = this.add.text(
             600, 400, "EXPLORE", buttonStyle,
         ).setInteractive();
-        //const settingsButton = this.add.text(
+        // const settingsButton = this.add.text(
         //    600,450,"Settings",buttonStyle,
-        //).setInteractive();
+        // ).setInteractive();
 
         buttonlist.push(watchButton, newButton, continueButton, exploreButton);
-        //,settingsButton);
+        // ,settingsButton);
 
         buttonlist.forEach((btn) => {
-            btn.on('pointerover', () => btn.setBackgroundColor("#d4d4d4"));
-            btn.on('pointerout', () => btn.setBackgroundColor("#fff"));
+            btn.on("pointerover", () => btn.setBackgroundColor("#d4d4d4"));
+            btn.on("pointerout", () => btn.setBackgroundColor("#fff"));
         });
-
-        watchButton.on('pointerdown', () => openExternalLink("https://www.youtube.com/watch?v=4q77g4xo9ic"));
-        newButton.on('pointerdown', () => this.scene.start("gameScene", { levelnumber: 1 }));
-        continueButton.on('pointerdown', () => this.scene.start("levelselectScene"));
-       // levelButton.on('pointerdown', () => openExternalLink("https://zolo101.github.io/5beam-edit/index.html"));
-        exploreButton.on('pointerdown', () => this.scene.start("exploreScene"));
-        //settingsButton.on('pointerdown', () => );
+        watchButton.on("pointerdown", () => openExternalLink("https://www.youtube.com/watch?v=4q77g4xo9ic"));
+        newButton.on("pointerdown", () => this.scene.start("gameScene", {
+            levelfile: levels,
+            levelnumber: 1,
+        }));
+        continueButton.on("pointerdown", () => this.scene.start("levelselectScene"));
+        // levelButton.on('pointerdown', () => openExternalLink("https://zolo101.github.io/5beam-edit/index.html"));
+        exploreButton.on("pointerdown", () => this.scene.start("exploreScene"));
+        // settingsButton.on('pointerdown', () => );
 
         // Credits
         this.add.text(612, 10, "Original By Cary Huang", textStyle).setFontSize(32);
         this.add.text(686, 55, "Music by Michael Huang", textStyle).setFontSize(24);
-        this.add.text(800, 92, "Ported by Zelo101", textStyle).setFontSize(18);
+        this.add.text(785, 92, "Remade by Zelo101", textStyle).setFontSize(18);
 
         // Alpha ver
-        this.add.text(700, 480, "v0.1 Alpha", textStyle).setBackgroundColor("#be0").setFontSize(42).setColor("#000");
+        this.add.text(735, 480, "v2 Alpha", textStyle).setBackgroundColor("#6ea").setFontSize(42).setColor("#000");
     }
 }
 
