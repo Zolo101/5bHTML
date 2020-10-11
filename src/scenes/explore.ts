@@ -4,7 +4,7 @@ import { openExternalLink } from "../game/core/misc";
 
 let epochtimetext: Phaser.GameObjects.Text;
 const levelelements: LevelTile[] = [];
-let loadingText: Phaser.GameObjects.Text;
+let infoText: Phaser.GameObjects.Text;
 
 const exploreButtonStyle = {
     fontFamily: "Helvetica, Arial, sans-serif",
@@ -128,7 +128,15 @@ class exploreScene extends Phaser.Scene {
             openExternalLink("https://5beam.zapto.org/");
         });
 
-        loadingText = this.add.text(100, 300, "Fetching data...", levelnameStyle);
+        const tutorialbutton = this.add.text(
+            460, 475, "TUTORIAL", helpButtonStyle,
+        ).setInteractive().setBackgroundColor("#b64");
+
+        tutorialbutton.on("pointerdown", () => {
+            openExternalLink("https://gist.github.com/Zolo101/36ae33e5dd15510a2cb41e942dbf7044");
+        });
+
+        infoText = this.add.text(118, 240, "", levelnameStyle);
 
         this.refresh();
     }
@@ -143,6 +151,7 @@ class exploreScene extends Phaser.Scene {
     refresh(): void {
         fetch("https://5beam.zapto.org/api/5bhtml")
             .then((response) => response.json().then((levels: APIData[]) => {
+                infoText.setText("Fetching data...")
                 levels.forEach((level, i) => {
                     const newtile = new LevelTile(
                         this, 150, (i * 40), level.name, level.author,
@@ -162,12 +171,16 @@ class exploreScene extends Phaser.Scene {
                     });
                     levelelements.push(newtile);
                 });
+                if (levels.length === 0) {
+                    infoText.setText("Nobody's uploaded any levels yet! Be the first :)")
+                } else {
+                    infoText.setText("")
+                }
             }))
             .catch((error) => {
-                loadingText.setText("Error refreshing! Maybe 5beam is offline!")
+                infoText.setText("Error refreshing! Maybe 5beam is offline!")
                 return console.error(error);
             });
-
         levelelements.length = 0; // empty array
     }
 }
