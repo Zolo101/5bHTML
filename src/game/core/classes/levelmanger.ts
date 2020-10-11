@@ -121,8 +121,8 @@ export class LevelManager {
             true, true, true, false,
         );
 
-
         this.specialblocks.clear();
+
         // Generate level
         this.generateTerrain(this.levelnumber);
 

@@ -1,8 +1,8 @@
 # 5bHTML
 
-Hosted version: **v2, Alpha.**
+Hosted version: **v2.1, Alpha.**
 
-Latest version: **v2, Alpha.**
+Latest version: **v2.1, Alpha.**
 
 Join the [5b editing discord server!](https://discord.gg/qtePFSH)
 
@@ -10,7 +10,7 @@ Join the [5b editing discord server!](https://discord.gg/qtePFSH)
 
 Check the **Projects** tab for progress on the next update.
 
-Roadmap [here](docs/ROADMAP.md), Changelog [here](docs/CHANGELOG.md)
+Long-term Roadmap [here](docs/ROADMAP.md), Changelog [here](docs/CHANGELOG.md)
 
 ## Building & Running
 
