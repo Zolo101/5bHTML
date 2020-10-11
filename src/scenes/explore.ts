@@ -1,9 +1,10 @@
-import { textStyle, backStyle } from "../game/core/buttons";
-import { Level, LevelData } from "../game/core/levelstructure";
+import { textStyle, backStyle, levelnameStyle } from "../game/core/buttons";
+import { Level } from "../game/core/levelstructure";
 import { openExternalLink } from "../game/core/misc";
 
 let epochtimetext: Phaser.GameObjects.Text;
 const levelelements: LevelTile[] = [];
+let loadingText: Phaser.GameObjects.Text;
 
 const exploreButtonStyle = {
     fontFamily: "Helvetica, Arial, sans-serif",
@@ -124,8 +125,10 @@ class exploreScene extends Phaser.Scene {
         ).setInteractive().setBackgroundColor("#476");
 
         fivebeambutton.on("pointerdown", () => {
-            openExternalLink("http://5beam.zapto.org/");
+            openExternalLink("https://5beam.zapto.org/");
         });
+
+        loadingText = this.add.text(100, 300, "Fetching data...", levelnameStyle);
 
         this.refresh();
     }
@@ -138,18 +141,14 @@ class exploreScene extends Phaser.Scene {
     }
 
     refresh(): void {
-        const levellist = fetch("http://5beam.zapto.org/api/5bhtml")
+        fetch("https://5beam.zapto.org/api/5bhtml")
             .then((response) => response.json().then((levels: APIData[]) => {
                 levels.forEach((level, i) => {
-                    // temp fix while i fix this in backend
-                    // const parsedlevels = JSON.parse(level.levels as unknown as string);
-                    // level.levels = parsedlevels;
-
                     const newtile = new LevelTile(
                         this, 150, (i * 40), level.name, level.author,
                     );
                     newtile.text.on("pointerdown", () => {
-                        const leveldata = fetch(`http://5beam.zapto.org/get/${level.id}`)
+                        fetch(`https://5beam.zapto.org/get/${level.id}`)
                             .then((response) => response.json().then((data: Level[]) => {
                                 level.levels = data;
                             }).catch((error) => {
@@ -165,7 +164,7 @@ class exploreScene extends Phaser.Scene {
                 });
             }))
             .catch((error) => {
-                this.add.text(100, 300, "Error refreshing! Maybe 5beam is offline!");
+                loadingText.setText("Error refreshing! Maybe 5beam is offline!")
                 return console.error(error);
             });
 
