@@ -6,29 +6,23 @@ class Block {
     constructor(name: string, collidable: boolean) {
         this.name = c
     }
-}*/
+} */
 
-export type StaticBlockInterface = {
-    readonly name: string
-    readonly collide: boolean
-    readonly visible: boolean
-    readonly kill: boolean
-    readonly special: boolean
-    readonly animate: boolean
-    readonly size: {
-        readonly x: number
-        readonly y: number
-    }
-    readonly offset: {
-        readonly x: number
-        readonly y: number
+export type SimpleBlock = {
+    name: string
+    collide: boolean
+    visible: boolean
+    kill: boolean
+    tile: number
+    side: {
+        left: boolean
+        right: boolean
+        up: boolean
+        down: boolean
     }
 }
 
-// TODO: fix the size property, as it's currently seen
-// as "needed", when it shouldn't be.
-
-export interface DynamicBlockInterface {
+export type SpecialBlock = {
     name: string
     collide: boolean
     visible: boolean
@@ -43,11 +37,73 @@ export interface DynamicBlockInterface {
         x: number
         y: number
     }
+    tile: number
+    side: {
+        left: boolean
+        right: boolean
+        up: boolean
+        down: boolean
+    }
 }
 
-export type BlockInterface = StaticBlockInterface | DynamicBlockInterface
-
-//interface SpecialBlockInterface extends DynamicBlockInterface {
-//    sx: number // width
-//    sy: number // height
+//export type BlockCollisions = {
+//    indexs: number | number[],
+//    callback: Function,
 //}
+
+export type SpecialBlockCollisions = {
+
+}
+
+export type Block = SpecialBlock // | SimpleBlockInterface
+
+const bcoord = (blocksize: number, x: number) => blocksize * x + (blocksize / 2);
+
+export function createBlock(
+    scene: Phaser.Scene,
+    blockinfo: SimpleBlock,
+    x: number, y: number,
+): Phaser.GameObjects.Image {
+    const block = new Phaser.GameObjects.Image(scene, x, y, "missing");
+
+    block.setDisplaySize(this.blocksize, this.blocksize);
+    block.setPosition(bcoord(this.blocksize, x), bcoord(this.blocksize, y));
+
+    return block;
+
+    // this.setTexture(block, blockinfo);
+}
+
+export function createSpecialBlock(
+    scene: Phaser.Scene,
+    blockinfo: SpecialBlock,
+    x: number, y: number,
+    sx: number = blockinfo.size.x, sy: number = blockinfo.size.x,
+    ox: number = blockinfo.offset.x, oy: number = blockinfo.offset.y,
+    collisionCallback: ArcadePhysicsCallback,
+    collisionGroup: Phaser.GameObjects.Group,
+): Phaser.GameObjects.Sprite {
+    const specialblock = scene.physics.add.sprite(
+        bcoord(30, x), bcoord(30, y - 1), "finish",
+        // FOR NOW, special_missing should be used instead
+    );
+
+    // quick maths
+    specialblock.setY(specialblock.y - (sy / 2) + (sy / 2));
+    specialblock.setDisplaySize(sx, sy);
+    specialblock.setPosition(specialblock.x + ox, specialblock.y + oy);
+
+    scene.physics.add.collider(specialblock, collisionGroup, collisionCallback);
+
+    specialblock.body.customSeparateX = true;
+
+    // specialblock.setY(specialblock.y-(sy-10));
+
+    return specialblock;
+
+    // this.setTexture(specialblock, blockinfo);
+}
+
+// export function parseBlockType(blockinfo: SimpleBlockInterface) {
+//
+// }

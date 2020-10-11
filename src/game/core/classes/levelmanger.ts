@@ -1,82 +1,69 @@
 import {
-    Sprite, Character, SpriteInterface, PhaserBlock,
+    Sprite, Character, makeSpriteFromString, makeCharacterFromString, SpriteType,
 } from "./sprite";
 import { levelnameStyle, backStyle } from "../buttons";
-import { BlockInterface } from "../block";
+import { Block, createSpecialBlock } from "../block";
 import { checkLevel } from "../checkLevel";
-
-// rushed constants pls fix
-const finishblocklist: PhaserBlock[] = [];
-let killables: Phaser.Physics.Arcade.StaticGroup;
+import { Entity, LevelData } from "../levelstructure";
+import { entities } from "../jsonmodule";
 
 // stop player from going past certain level
-const hardlimitlevel = 4;
+const hardlimitlevel = 6;
 
 let level = { // Structure of a level in 5bhtml.
-    name: "Undefined Level",
-    width: 30,
-    height: 18,
-    background: 0,
-    data: [
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
-        "................................",
+    name: "Undefined Levelpack",
+    author: "John Doe",
+    description: "Description",
+    version: 4,
+    levelversion: "1.0",
+    levels: [
+        {
+            name: "Undefined Level",
+            width: 30,
+            height: 18,
+            background: 0,
+            data: [
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+                "................................",
+            ],
+            entity: [],
+            dialogue: [],
+        },
     ],
-    entity: [],
-    dialogue: [],
-};
-
-export type EntityInterface = {
-    name: string
-    x: number
-    y: number
-
-    controllable?: boolean
-    roleid?: number
-}
-
-export type DialogueInterface = {
-    name: string,
-    happy: boolean
-    text: string
-}
-
-export type LevelInterface = {
-    name: string
-    width: number
-    height: number
-    background: number
-    data: string[]
-    entity: EntityInterface[]
-    dialogue: DialogueInterface[]
-}
+} as LevelData;
 
 export class LevelManager {
     levelnumber = 1
     blocksize = 30
     background!: Phaser.GameObjects.Image
 
-    levels: LevelInterface[]
-    blocks: BlockInterface[]
+    levels: LevelData
+    blocks: Block[]
     scene: Phaser.Scene
 
-    characters: Character[] = []
-    sprites: Sprite[] = []
+    tilelayer!: Phaser.Tilemaps.StaticTilemapLayer
+    specialblocks!: Phaser.GameObjects.Group
+    // collisons!:
+    camera!: Phaser.Cameras.Scene2D.Camera
+
+    characters!: Phaser.GameObjects.Group
+    sprites!: Phaser.GameObjects.Group
 
     currentcharacter!: Character;
 
@@ -84,8 +71,8 @@ export class LevelManager {
     decorateTerrain: Phaser.Physics.Arcade.StaticGroup
 
     constructor(
-        levels: LevelInterface[],
-        blocks: BlockInterface[],
+        levels: LevelData,
+        blocks: Block[],
         scene: Phaser.Scene,
 
         terrain: Phaser.Physics.Arcade.StaticGroup,
@@ -95,184 +82,257 @@ export class LevelManager {
         this.blocks = blocks;
         this.scene = scene;
 
+        this.characters = this.scene.add.group();
+        this.sprites = this.scene.add.group();
+        this.specialblocks = this.scene.add.group();
+
         this.terrain = terrain;
         this.decorateTerrain = decorateTerrain;
-
-        killables = scene.physics.add.staticGroup();
     }
 
     setLevel(levelnum: number): void {
         // Set levelnumber
-        this.levelnumber = levelnum;
+        this.levelnumber = levelnum - 1;
+        // inefficient
+        this.sprites.clear(true, true);
 
-        this.sprites.forEach((sp: Sprite) => { sp.destroy(); this.sprites.length = 0; });
-
+        // console.log(this.levels.levels[this.levelnumber]);
         // Parse level
-        this.parseLevel(this.levelnumber);
+        this.parseLevel();
+
+        // console.log(level);
+
+        // console.log(level.levels[this.levelnumber].data[0].length);
+        // console.log(level.levels[this.levelnumber].data.length);
+        const levelWidth = level.levels[this.levelnumber].data[0].length;
+        const levelHeight = level.levels[this.levelnumber].data.length;
+
         // Set background
-        this.setBackground(level.background);
+        this.setBackground(
+            this.levels.levels[this.levelnumber].background,
+            this.blocksize * levelWidth,
+            this.blocksize * levelHeight,
+        );
+
+        // Set World bounds
+        this.scene.physics.world.setBounds(
+            0, 0,
+            this.blocksize * levelWidth, this.blocksize * levelHeight,
+            true, true, true, false,
+        );
+
         // Generate level
-        this.generateTerrain();
-        // Generate Sprites
+        this.generateTerrain(this.levelnumber);
+
+        this.scene.physics.add.collider(this.specialblocks, this.tilelayer);
+
+        // Generate Sprites and start level
         this.startLevel();
+
         // Generate Dialogue
 
         // Set levelname
-        this.scene.add.text(20, 480, `${this.levelnumber.toString().padStart(3, "0")}. ${level.name}`, levelnameStyle);
+        this.scene.add.text(
+            20, 480,
+            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber].name}`,
+            levelnameStyle,
+        ).setScrollFactor(0, 0);
 
         const backButton = this.scene.add.text(
             800, 475, "MENU", backStyle,
-        ).setInteractive();
+        ).setInteractive().setAlpha(0.75).setScrollFactor(0, 0);
 
-        backButton.on('pointerdown', () => {
+        backButton.on("pointerdown", () => {
             this.scene.scene.start("levelselectScene");
         });
     }
 
     startLevel(): void {
         // 5b reset shake animation here
-        //this.characters.forEach((ch) => {
-        //
-        //})
-        // this is werid, this.sprites.length shouldnt really be called for each
-        this.sprites.forEach((sp) => { sp.destroy(true); this.sprites.length = 0; });
-        this.generateSprites();
 
-        // lazy way of doing things
-        // Sprite collision
-        this.characters.forEach((ch) => {
-            this.sprites.forEach((sp) => {
-                this.scene.physics.add.overlap(ch, sp, () => { // Can x grab the y?
-                    if (!ch.grabbing) {
-                        sp.grabbable = true;
-                    }
-                });
-            });
-        });
+        this.wipeSprites();
+        this.generateSprites(this.levelnumber);
 
-        // Finish block collision
-        this.sprites.forEach((sp) => {
-            finishblocklist.forEach((fbl) => {
-                this.scene.physics.add.collider(sp, fbl, () => {
-                    if (this.levelnumber < hardlimitlevel) { // temp if statement
-                        this.levelnumber+=1;
-                        this.setLevel(this.levelnumber);
-                    }
-                });
-            });
-
-            killables.getChildren().forEach((ka) => {
-                this.scene.physics.add.collider(sp, ka, () => {
-                    //console.info("deez");
-                    sp.setDisplaySize(0, 0);
-                    sp.setPosition(1000, -100);
-                    //sp.setAlpha(1);
-                    //sp.disableInteractive();
-                });
-            });
-        });
+        // Set Camera
+        this.scene.cameras.main.startFollow(this.currentcharacter);
     }
 
-    generateSprites(): void {
-        level.entity.forEach((sprite: { name: string; x: number; y: number; }) => {
-            let char: Character;
-            // switch case?
-            if (sprite.name === "book") {
-                //console.log(this.sprites);
-                    char = new Character({
-                        scene: this.scene, x: sprite.x, y: sprite.y, key: sprite.name,
-                    }, this.terrain).setScale(0.2);
-                    this.sprites.push(char);
-                //char.setPosition(500, 300);
-                // this.characters.push(char)
-                this.currentcharacter = char;
+    generateSprites(levelnum: number): void {
+        level.levels[levelnum].entity.forEach((sprite: Entity) => {
+            let spr: Sprite;
+            const spriteProperties = entities.find((spt: SpriteType) => spt.name === sprite.name)
+            if (!spriteProperties) return console.error("Couldn't find sprite!")
+
+            switch (spriteProperties.type) {
+            case "character":
+                spr = makeCharacterFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                spr.type = "Character";
+                this.characters.add(spr as Character);
+                this.currentcharacter = spr as Character;
+                break;
+
+            case "sprite":
+                spr = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                this.sprites.add(spr);
+                break;
+
+            default:
+                console.error("Unknown or unsupported sprite!");
+                break;
             }
-            if (sprite.name === "match") console.error("Unsupported character!");
-            if (sprite.name === "ice cube") console.error("Unsupported character!");
-            //currentcharacter = char;
+        });
+
+        // ahh repeated code :(
+        this.scene.physics.add.collider(this.characters, this.sprites, (sp1, sp2) => {
+            // const b1 = sp1.body as Phaser.Physics.Arcade.Body;
+            // const b2 = sp2.body as Phaser.Physics.Arcade.Body;
+
+            // if (b1.y > b2.y) {
+            // b2.y += (b1.top - b2.bottom);
+            // b2.stop();
+            // } else {
+            // b1.y += (b2.top - b1.bottom);
+            // b1.stop();
+            // }
+        });
+
+        // Collide with self
+        this.scene.physics.add.collider(this.sprites, this.sprites, (sp1, sp2) => {
+            const b1 = sp1.body as Phaser.Physics.Arcade.Body;
+            const b2 = sp2.body as Phaser.Physics.Arcade.Body;
+
+            if (b1.y > b2.y) {
+                b2.y += (b1.top - b2.bottom);
+                b2.stop();
+            } else {
+                b1.y += (b2.top - b1.bottom);
+                b1.stop();
+            }
         });
     }
 
-    generateTerrain(): void {
-        // Clear terrain
-        this.terrain.clear(true, true);
-        this.decorateTerrain.clear(true, true);
+    generateTerrain(levelnum: number): void {
+        const currentLevel = level.levels[levelnum];
+        const currentLevelData: string[][] = [];
+        currentLevel.data.forEach((row: string) => {
+            currentLevelData.push([...row]);
+        });
 
-        const terrainarray = [];
-        for (let i = 0; i < level.height; i++) {
-            terrainarray[i] = [...level.data[i]]; // Split
-            for (let j = 0; j < level.width; j++) {
-                const block = terrainarray[i][j];
-                const blocksprop: BlockInterface | undefined = this.blocks.find(
-                    ((element: BlockInterface) => element.name === block),
-                );
+        const collisionIndexes: number[] = [];
+        const killIndexes: number[] = [];
 
-                if (blocksprop !== undefined) {
-                    // This works but we should fix this to be better later
-                    if (blocksprop.size) {
-                        this.createSpecialBlock(
-                            blocksprop, j, i,
-                            blocksprop.size.x, blocksprop.size.y,
-                            blocksprop.offset?.x, blocksprop.offset?.y,
+        const tilemapData: any[][] = JSON.parse(JSON.stringify(currentLevelData));
+        // console.log(tilemapData);
+        tilemapData.forEach((row: string[], i: number) => {
+            row.forEach((block: string, j) => {
+                if (block !== ".") {
+                    const blockObject = this.blocks.find((foundblock) => foundblock.name === block);
+                    const tileNumber = blockObject?.tile;
+
+                    // do some work on this
+                    if (blockObject?.special === true) {
+                        const specialblock = createSpecialBlock(
+                            this.scene,
+                            blockObject, j, i,
+                            blockObject.size.x, blockObject.size.y,
+                            blockObject.offset.x, blockObject.offset.y,
+                            () => {
+                                if ((this.levelnumber + 1 < hardlimitlevel)
+                                    && this.currentcharacter.active
+                                ) {
+                                    this.levelnumber += 1;
+                                    this.setLevel(this.levelnumber + 1);
+                                }
+                            }, this.characters,
                         );
+                        this.specialblocks.add(specialblock);
+                    } else if (blockObject?.special === false && tileNumber !== undefined) {
+                        tilemapData[i][j] = tileNumber;
+                        switch (true) {
+                        case blockObject?.collide:
+                            collisionIndexes.push(tileNumber);
+                            break;
+
+                        case blockObject?.kill:
+                            killIndexes.push(tileNumber);
+                            break;
+
+                        case blockObject?.visible:
+                            // tilemapData[i][j]
+                            break;
+
+                        default:
+                            break;
+                        }
                     } else {
-                        this.createBlock(blocksprop, j, i);
+                        tilemapData[i][j] = 0;
                     }
                 }
+            });
+        });
+
+        const tilemap = this.scene.make.tilemap({
+            data: tilemapData,
+            tileWidth: this.blocksize,
+            tileHeight: this.blocksize,
+        });
+
+        const tileset = tilemap.addTilesetImage(
+            "core_tileset",
+            "core_tileset",
+            this.blocksize, this.blocksize,
+        );
+
+        this.tilelayer = tilemap.createStaticLayer(0, tileset, 0, 0);
+        this.tilelayer.setCollision(collisionIndexes);
+
+        // i'll put this somewhere else one day
+        this.tilelayer.setTileIndexCallback(killIndexes, (sp: Sprite) => {
+            if (sp.type === "Sprite") {
+                sp.body.setVelocityY(-100);
+                return;
             }
-        }
+
+            sp.active = false;
+            sp.destroy();
+        }, this);
+
+        // console.log(currentLevelData);
+        // console.log(tilemapData);
+
+        this.scene.cameras.main.setBounds(0, 0, tilemap.widthInPixels, tilemap.heightInPixels);
+        this.scene.cameras.main.setRoundPixels(false);
+        // const tilesetParse = currentLevel.data.map((row) => {row.})
     }
 
-    createBlock(blockinfo: BlockInterface, x: number, y: number): void {
-        const bx = this.blocksize*x+(this.blocksize/2);
-        const by = this.blocksize*y+(this.blocksize/2);
-
-        const block = new Phaser.GameObjects.Image(this.scene, x, y, "missing");
-        block.setDisplaySize(this.blocksize, this.blocksize);
-        block.setPosition(bx, by);
-
-        this.setTexture(block, blockinfo);
-    }
-
-    createSpecialBlock(
-        blockinfo: BlockInterface,
-        x: number, y: number,
-        sx: number = this.blocksize, sy: number = this.blocksize,
-        ox: number = 0, oy: number = 0,
-        ): void {
-        const bx = this.blocksize*x+(this.blocksize/2);
-        const by = this.blocksize*y+(this.blocksize/2);
-
-        const specialblock = new Phaser.GameObjects.Sprite(this.scene, bx, by, "special_missing");
-        specialblock.setY(specialblock.y-(sy/2)+(this.blocksize/2));
-        specialblock.setDisplaySize(sx, sy);
-        specialblock.setPosition(specialblock.x+ox, specialblock.y+oy);
-        //specialblock.setY(specialblock.y-(sy-10));
-
-        this.setTexture(specialblock, blockinfo);
-    }
-
-    setBackground(id: number): void {
+    setBackground(id: number, width: number, height: number): void {
         try {
             // there is most likely a better / efficent way to do this
             // this.background.destroy()
-            this.background = this.scene.add.image(0, 0, `background_${id}`).setOrigin(0, 0);
+            this.background = this.scene.add.image(0, 0, `background_${id}`)
+                .setOrigin(0, 0)
+                .setDisplaySize(Math.max(height, width), height);
         } catch (error) {
             console.error(`Background Image, with the ID '${id}', does not exist.`);
         }
     }
 
-    parseLevel(levelnum: number): void {
+    parseLevel(/* levelnum: number */): void {
         // Make sure the level will work
-        // asserting as any isn't good pratice...
-        const leveljson = this.levels[levelnum-1] as any;
-        checkLevel(levelnum);
+        const leveljson = this.levels;
+        checkLevel(/* levelnum */);
 
         level = leveljson;
-        //console.log(level);
+        // console.log(level);
+    }
+
+    wipeSprites(): void {
+        this.sprites.clear(true, true);
+        this.characters.clear(true, true);
     }
 
     // find better name
+    /*
     setTexture(
         block: PhaserBlock,
         blockinfo: BlockInterface,
@@ -301,16 +361,7 @@ export class LevelManager {
             block.setTexture("kill_missing");
             killables.add(block, true);
         }
-    }
-
-    UpdatePhysics() {
-        // This is more of momentum/easing than physics
-        if (this.sprites.length === 0) return;
-
-        this.sprites.forEach((sp) => {
-            sp.body.velocity.x /= sp.friction;
-        });
-    }
+    } */
 }
 
 export default LevelManager;

@@ -1,5 +1,3 @@
-// import assetsjson from "../game/assets";
-
 const maxlines = 30;
 const consolelines: Phaser.GameObjects.Text[] = [];
 const consoleStyle = {
@@ -20,35 +18,37 @@ class loadingScene extends Phaser.Scene {
         this.load.setBaseURL("./assets/core");
 
         this.add.text(80, 100, "Loading 5b assets...", { font: "32px Arial" });
-        //var loadingText = this.add.text(100,170,"Ported by Zelo101", {font: "32px Arial"});
+        // var loadingText = this.add.text(100,170,"Ported by Zelo101", {font: "32px Arial"});
 
-        //assetsjson.core.forEach(element => {
+        // assetsjson.core.forEach(element => {
         //
-        //});
-        //assetsjson.forEach((entry) => {
+        // });
+        // assetsjson.forEach((entry) => {
         //    console.log(entry)
-        //})
-        //aj.forEach(mod => {
+        // })
+        // aj.forEach(mod => {
         //    mod.forEach(category => {
         //        console.log(Object.keys(mod)[0]);
         //    })
-        //})
+        // })
 
         this.loadAsset("5b_logo", "5b.svg", "svg");
         this.loadAsset("5b_people", "5b_people.svg", "svg");
 
-        this.loadAsset("background_0", "backgrounds/png/0.png");
-        this.loadAsset("background_1", "backgrounds/png/1.png");
-        this.loadAsset("background_2", "backgrounds/png/2.png");
-        this.loadAsset("background_3", "backgrounds/png/3.png");
-        this.loadAsset("background_4", "backgrounds/png/4.png");
-        this.loadAsset("background_5", "backgrounds/png/5.png");
-        this.loadAsset("background_6", "backgrounds/png/6.png");
-        this.loadAsset("background_7", "backgrounds/png/7.png");
-        this.loadAsset("background_8", "backgrounds/png/8.png");
-        this.loadAsset("background_9", "backgrounds/png/9.png");
-        this.loadAsset("background_10", "backgrounds/png/10.png");
-        this.loadAsset("background_11", "backgrounds/png/11.png");
+        this.loadAsset("core_tileset", "tileset.png");
+
+        this.loadAsset("background_0", "backgrounds/0.png");
+        this.loadAsset("background_1", "backgrounds/1.png");
+        this.loadAsset("background_2", "backgrounds/2.png");
+        this.loadAsset("background_3", "backgrounds/3.png");
+        this.loadAsset("background_4", "backgrounds/4.png");
+        this.loadAsset("background_5", "backgrounds/5.png");
+        this.loadAsset("background_6", "backgrounds/6.png");
+        this.loadAsset("background_7", "backgrounds/7.png");
+        this.loadAsset("background_8", "backgrounds/8.png");
+        this.loadAsset("background_9", "backgrounds/9.png");
+        this.loadAsset("background_10", "backgrounds/10.png");
+        this.loadAsset("background_11", "backgrounds/11.png");
 
         this.loadAsset("missing", "misc/missing.png");
         this.loadAsset("animate_missing", "misc/animate_missing.png");
@@ -58,8 +58,15 @@ class loadingScene extends Phaser.Scene {
         this.loadAsset("kill_missing", "misc/kill_missing.png");
         this.loadAsset("finish_missing", "misc/finish_missing.png");
 
-        this.loadAsset("book", "book.png");
-        this.loadAsset("zelobook", "zelobook.png");
+        this.loadAsset("book", "sprites/book.png");
+        this.loadAsset("crate", "sprites/crate.png");
+        this.loadAsset("metalbox", "sprites/metalbox.png");
+        this.loadAsset("package", "sprites/package.png");
+        this.loadAsset("portal", "sprites/portal.png");
+        this.loadAsset("spike", "sprites/spike.png");
+
+        this.loadAsset("finish", "sprites/finish.png");
+
         this.addLine("Completed Loading!", greenStyle);
         console.log("Loading completed, Starting...");
     }
@@ -70,15 +77,15 @@ class loadingScene extends Phaser.Scene {
 
     loadAsset(key: string, url: string, type?: string): void {
         switch (type) {
-            case "svg":
-                this.load.svg(key, url);
-                this.addAssetLine(url);
-                break;
+        case "svg":
+            this.load.svg(key, url);
+            this.addAssetLine(url);
+            break;
 
-            default:
-            case "png":
-                this.load.image(key, url);
-                this.addAssetLine(url);
+        default:
+        case "png":
+            this.load.image(key, url);
+            this.addAssetLine(url);
         }
     }
 
@@ -91,7 +98,7 @@ class loadingScene extends Phaser.Scene {
     addLine(text: string, ts?: any): Phaser.GameObjects.Text {
         if (consolelines.length > maxlines) loadingScene.clearConsole();
         const line: Phaser.GameObjects.Text = this.add.text(
-            450, 100+(consolelines.length*15), text, ts,
+            450, 50 + (consolelines.length * 15), text, ts,
         ).setStyle(ts);
         consolelines.push(line);
         return line;

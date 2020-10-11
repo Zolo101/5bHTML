@@ -1,8 +1,8 @@
 # 5bHTML
 
-Hosted version: **ver0.1, Open Alpha.**
+Hosted version: **v2, Alpha.**
 
-Latest version: **ver0.1, Open Alpha.**
+Latest version: **v2, Alpha.**
 
 Join the [5b editing discord server!](https://discord.gg/qtePFSH)
 
@@ -12,7 +12,9 @@ Check the **Projects** tab for progress on the next update.
 
 Roadmap [here](docs/ROADMAP.md), Changelog [here](docs/CHANGELOG.md)
 
-## Building
+## Building & Running
+
+Make sure you have node & npm installed in your comupter before building.
 
 To build 5bHTML, clone / download this repo.
 
@@ -27,12 +29,12 @@ Then, install the needed dependencies:
 
 After all dependencies have been installed, do:
 
-`npm run build-prod`
+`npm run watch`
 
-You should now have a file called `main.js` in the dist folder.
+You should now have a web server running at http://localhost:8080/.
 
 ## Credits
 
 Cary & Michael Huang - Creating the orginial 5b game.
 
-Shiosh - Thank you for the entities.json file.
+Shiosh - HTwins.net-like css file.
