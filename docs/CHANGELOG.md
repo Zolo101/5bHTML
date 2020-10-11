@@ -7,11 +7,13 @@ Emoji | meaning
 
 - Fixed 5beam Explore intergration. Github was blocking the fetch requests because it was fetching a http url, which is unsecure. This has now been fixed as 5beam now uses https.
 
+- Also added a 5beam-explore tutorial button.
+
 - The bug with the ghost finish blocks has been fixed.
 
-- The levelname text has been given its correct depth (It used to be behind the sprites)
+- The levelname text has been given its correct depth (It used to be behind the sprites).
 
-# v2 Alpha 🟦 -- 11/10/2020
+# v2 Alpha -- 11/10/2020
 
 ## Major changes
 
