@@ -121,6 +121,8 @@ export class LevelManager {
             true, true, true, false,
         );
 
+
+        this.specialblocks.clear();
         // Generate level
         this.generateTerrain(this.levelnumber);
 
@@ -136,7 +138,7 @@ export class LevelManager {
             20, 480,
             `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber].name}`,
             levelnameStyle,
-        ).setScrollFactor(0, 0);
+        ).setScrollFactor(0, 0).setDepth(1);
 
         const backButton = this.scene.add.text(
             800, 475, "MENU", backStyle,

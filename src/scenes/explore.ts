@@ -1,9 +1,10 @@
-import { textStyle, backStyle } from "../game/core/buttons";
-import { Level, LevelData } from "../game/core/levelstructure";
+import { textStyle, backStyle, levelnameStyle } from "../game/core/buttons";
+import { Level } from "../game/core/levelstructure";
 import { openExternalLink } from "../game/core/misc";
 
 let epochtimetext: Phaser.GameObjects.Text;
 const levelelements: LevelTile[] = [];
+let infoText: Phaser.GameObjects.Text;
 
 const exploreButtonStyle = {
     fontFamily: "Helvetica, Arial, sans-serif",
@@ -124,8 +125,18 @@ class exploreScene extends Phaser.Scene {
         ).setInteractive().setBackgroundColor("#476");
 
         fivebeambutton.on("pointerdown", () => {
-            openExternalLink("http://5beam.zapto.org/");
+            openExternalLink("https://5beam.zapto.org/");
         });
+
+        const tutorialbutton = this.add.text(
+            460, 475, "TUTORIAL", helpButtonStyle,
+        ).setInteractive().setBackgroundColor("#b64");
+
+        tutorialbutton.on("pointerdown", () => {
+            openExternalLink("https://gist.github.com/Zolo101/36ae33e5dd15510a2cb41e942dbf7044");
+        });
+
+        infoText = this.add.text(118, 240, "", levelnameStyle);
 
         this.refresh();
     }
@@ -138,18 +149,15 @@ class exploreScene extends Phaser.Scene {
     }
 
     refresh(): void {
-        const levellist = fetch("http://5beam.zapto.org/api/5bhtml")
+        fetch("https://5beam.zapto.org/api/5bhtml")
             .then((response) => response.json().then((levels: APIData[]) => {
+                infoText.setText("Fetching data...")
                 levels.forEach((level, i) => {
-                    // temp fix while i fix this in backend
-                    // const parsedlevels = JSON.parse(level.levels as unknown as string);
-                    // level.levels = parsedlevels;
-
                     const newtile = new LevelTile(
                         this, 150, (i * 40), level.name, level.author,
                     );
                     newtile.text.on("pointerdown", () => {
-                        const leveldata = fetch(`http://5beam.zapto.org/get/${level.id}`)
+                        fetch(`https://5beam.zapto.org/get/${level.id}`)
                             .then((response) => response.json().then((data: Level[]) => {
                                 level.levels = data;
                             }).catch((error) => {
@@ -163,12 +171,16 @@ class exploreScene extends Phaser.Scene {
                     });
                     levelelements.push(newtile);
                 });
+                if (levels.length === 0) {
+                    infoText.setText("Nobody's uploaded any levels yet! Be the first :)")
+                } else {
+                    infoText.setText("")
+                }
             }))
             .catch((error) => {
-                this.add.text(100, 300, "Error refreshing! Maybe 5beam is offline!");
+                infoText.setText("Error refreshing! Maybe 5beam is offline!")
                 return console.error(error);
             });
-
         levelelements.length = 0; // empty array
     }
 }

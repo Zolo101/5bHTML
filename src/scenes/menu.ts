@@ -79,7 +79,7 @@ class menuScene extends Phaser.Scene {
         this.add.text(785, 92, "Remade by Zelo101", textStyle).setFontSize(18);
 
         // Alpha ver
-        this.add.text(735, 480, "v2 Alpha", textStyle).setBackgroundColor("#6ea").setFontSize(42).setColor("#000");
+        this.add.text(701, 450, "v2.1 Alpha", textStyle).setBackgroundColor("#2fcaff").setFontSize(42).setColor("#000");
     }
 }
 
