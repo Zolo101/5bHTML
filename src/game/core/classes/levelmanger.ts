@@ -70,6 +70,8 @@ export class LevelManager {
     terrain: Phaser.Physics.Arcade.StaticGroup
     decorateTerrain: Phaser.Physics.Arcade.StaticGroup
 
+    levelTextButton!: Phaser.GameObjects.Text
+
     constructor(
         levels: LevelData,
         blocks: Block[],
@@ -88,6 +90,10 @@ export class LevelManager {
 
         this.terrain = terrain;
         this.decorateTerrain = decorateTerrain;
+
+        this.levelTextButton = this.scene.add.text(
+            20, 480, "", levelnameStyle,
+        ).setScrollFactor(0, 0).setDepth(1)
     }
 
     setLevel(levelnum: number): void {
@@ -134,12 +140,9 @@ export class LevelManager {
         // Generate Dialogue
 
         // Set levelname
-        this.scene.add.text(
-            20, 480,
-            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber].name}`,
-            levelnameStyle,
-        ).setScrollFactor(0, 0).setDepth(1);
-
+        this.levelTextButton.setText(
+            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber].name}`
+        );
         const backButton = this.scene.add.text(
             800, 475, "MENU", backStyle,
         ).setInteractive().setAlpha(0.75).setScrollFactor(0, 0);
