@@ -49,11 +49,21 @@ export class Character extends Sprite {
     attemptGrab(sp: Sprite): void {
         const characterBounds = this.getBounds();
         const grabRange = 1.5
-        characterBounds.setSize(characterBounds.width * grabRange, characterBounds.height * grabRange)
-        if (characterBounds.contains(sp.x, sp.y)) {
+        // debug
+        /*
+        this.scene.add.rectangle(
+            this.body.x,
+            this.body.y,
+            characterBounds.width * grabRange * 2,
+            (characterBounds.height * grabRange) - 10,
+            0xffffff
+        ) */
+        characterBounds.setSize(characterBounds.width * grabRange * 2, (characterBounds.height * grabRange) - 10)
+        if (characterBounds.contains(sp.x, sp.y + 20)) {
             // console.log(sp.name);
             this.grabbing = sp; // a reference
             sp.grabbed = true;
+            // sp.body.enable = false;
         }
     }
 
@@ -77,7 +87,21 @@ export class Character extends Sprite {
             }
         }
         gsprite.grabbed = false;
+        gsprite.body.enable = true;
         this.grabbing = undefined;
+    }
+
+    die(): void {
+        // Drop any grabbed sprite
+        if (this.grabbing !== undefined) {
+
+            this.grabbing.grabbed = false;
+            this.grabbing.body.enable = true;
+            this.grabbing = undefined;
+
+            this.active = false;
+            this.destroy();
+        }
     }
 }
 

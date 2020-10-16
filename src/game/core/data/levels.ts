@@ -254,7 +254,7 @@ export default {
             ]
         },
         {
-            name: "Landfill",
+            name: "Landfill (WIP)",
             width: 32,
             height: 18,
             background: 4,

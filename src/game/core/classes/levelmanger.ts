@@ -143,6 +143,7 @@ export class LevelManager {
         this.levelTextButton.setText(
             `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber].name}`
         );
+
         const backButton = this.scene.add.text(
             800, 475, "MENU", backStyle,
         ).setInteractive().setAlpha(0.75).setScrollFactor(0, 0);
@@ -292,14 +293,14 @@ export class LevelManager {
         this.tilelayer.setCollision(collisionIndexes);
 
         // i'll put this somewhere else one day
-        this.tilelayer.setTileIndexCallback(killIndexes, (sp: Sprite) => {
+        this.tilelayer.setTileIndexCallback(killIndexes, (sp: Sprite | Character) => {
             if (sp.type === "Sprite") {
                 sp.body.setVelocityY(-100);
                 return;
             }
 
-            sp.active = false;
-            sp.destroy();
+            const chr = sp as Character
+            chr.die();
         }, this);
 
         // console.log(currentLevelData);
