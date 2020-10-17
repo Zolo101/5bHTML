@@ -1,5 +1,6 @@
 import { levels } from "../game/core/jsonmodule";
 import { openExternalLink } from "../game/core/misc";
+import Settings from "../game/settings";
 
 class menuScene extends Phaser.Scene {
     constructor() { super("menuScene"); }
@@ -72,6 +73,13 @@ class menuScene extends Phaser.Scene {
         // levelButton.on('pointerdown', () => openExternalLink("https://zolo101.github.io/5beam-edit/index.html"));
         exploreButton.on("pointerdown", () => this.scene.start("exploreScene"));
         // settingsButton.on('pointerdown', () => );
+
+        if (Settings.IS_DEBUG) {
+            this.add.text(421, 455, "Development Build", textStyle)
+                .setFontSize(32)
+                .setBackgroundColor("#000")
+                .setColor("#f11")
+        }
 
         // Credits
         this.add.text(612, 10, "Original By Cary Huang", textStyle).setFontSize(32);

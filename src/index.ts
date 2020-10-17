@@ -7,6 +7,7 @@ import levelselectScene from "./scenes/levelselect";
 import editorScene from "./scenes/editor";
 import gameScene from "./scenes/game";
 import exploreScene from "./scenes/explore";
+import Settings from "./game/settings";
 
 const config = {
     type: Phaser.AUTO,
@@ -17,7 +18,7 @@ const config = {
     physics: {
         default: "arcade",
         arcade: {
-            // debug: true,
+            debug: Settings.IS_DEBUG,
             gravity: { y: 2500 },
         },
     },
