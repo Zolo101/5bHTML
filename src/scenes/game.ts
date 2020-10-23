@@ -1,6 +1,5 @@
 import { SpecialBlock } from "../game/core/block";
 import { LevelManager } from "../game/core/classes/levelmanger";
-import Sprite, { Character } from "../game/core/classes/sprite";
 
 import { block } from "../game/core/jsonmodule";
 import { LevelData } from "../game/core/levelstructure";

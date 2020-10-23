@@ -6,6 +6,7 @@ import { Block, createSpecialBlock } from "../block";
 import { checkLevel } from "../checkLevel";
 import { Entity, LevelData } from "../levelstructure";
 import { entities } from "../jsonmodule";
+import Settings from "../../settings";
 
 // stop player from going past certain level
 const hardlimitlevel = 6;
@@ -106,7 +107,7 @@ export class LevelManager {
         // Parse level
         this.parseLevel();
 
-        // console.log(level);
+        if (Settings.IS_DEBUG) console.log(level);
 
         // console.log(level.levels[this.levelnumber].data[0].length);
         // console.log(level.levels[this.levelnumber].data.length);
@@ -180,6 +181,7 @@ export class LevelManager {
             case "sprite":
                 spr = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
                 this.sprites.add(spr);
+                console.log(spr.mass)
                 break;
 
             default:
@@ -190,16 +192,16 @@ export class LevelManager {
 
         // ahh repeated code :(
         this.scene.physics.add.collider(this.characters, this.sprites, (sp1, sp2) => {
-            // const b1 = sp1.body as Phaser.Physics.Arcade.Body;
-            // const b2 = sp2.body as Phaser.Physics.Arcade.Body;
+        // const b1 = sp1.body as Phaser.Physics.Arcade.Body;
+        // const b2 = sp2.body as Phaser.Physics.Arcade.Body;
 
-            // if (b1.y > b2.y) {
-            // b2.y += (b1.top - b2.bottom);
-            // b2.stop();
-            // } else {
-            // b1.y += (b2.top - b1.bottom);
-            // b1.stop();
-            // }
+        // if (b1.y > b2.y) {
+        // b2.y += (b1.top - b2.bottom);
+        // b2.stop();
+        // } else {
+        // b1.y += (b2.top - b1.bottom);
+        // b1.stop();
+        // }
         });
 
         // Collide with self

@@ -83,7 +83,7 @@ class exploreScene extends Phaser.Scene {
 
     create(): void {
         // Background
-        this.add.rectangle(0, 0, 960, 540, 0x6666666).setOrigin(0, 0);
+        this.add.rectangle(0, 0, 960, 540, 0x375342).setOrigin(0, 0);
 
         epochtimetext = this.add.text(0, 0, "awaiting time...", textStyle).setFontSize(32);
 
@@ -158,12 +158,15 @@ class exploreScene extends Phaser.Scene {
                     );
                     newtile.text.on("pointerdown", () => {
                         fetch(`https://5beam.zapto.org/get/${level.id}`)
-                            .then((response) => response.json().then((data: Level[]) => {
-                                level.levels = data;
+                            .then((response) => response.json().then((data: string) => {
+                                level.levels = JSON.parse(data) as Level[];
+                                console.log(data)
                             }).catch((error) => {
                                 this.add.text(100, 300, "Error getting level data!");
                                 return console.error(error);
                             }));
+
+                        // Start level
                         this.scene.start("gameScene", {
                             levelfile: level,
                             levelnumber: 1,

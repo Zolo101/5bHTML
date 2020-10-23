@@ -100,14 +100,13 @@ export class Character extends Sprite {
     die(): void {
         // Drop any grabbed sprite
         if (this.grabbing !== undefined) {
-
             this.grabbing.grabbed = false;
             this.grabbing.body.enable = true;
             this.grabbing = undefined;
-
-            this.active = false;
-            this.destroy();
         }
+
+        this.active = false;
+        this.destroy();
     }
 }
 
