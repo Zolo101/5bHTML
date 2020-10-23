@@ -75,7 +75,7 @@ class menuScene extends Phaser.Scene {
         // settingsButton.on('pointerdown', () => );
 
         if (Settings.IS_DEBUG) {
-            this.add.text(421, 455, "Development Build", textStyle)
+            this.add.text(321, 455, "Development Build", textStyle)
                 .setFontSize(32)
                 .setBackgroundColor("#000")
                 .setColor("#f11")
@@ -84,10 +84,19 @@ class menuScene extends Phaser.Scene {
         // Credits
         this.add.text(612, 10, "Original By Cary Huang", textStyle).setFontSize(32);
         this.add.text(686, 55, "Music by Michael Huang", textStyle).setFontSize(24);
-        this.add.text(785, 92, "Remade by Zelo101", textStyle).setFontSize(18);
+        this.add.text(785, 92, "Remake by Zelo101", textStyle).setFontSize(18);
 
-        // Alpha ver
-        this.add.text(701, 450, "v2.1 Alpha", textStyle).setBackgroundColor("#2fcaff").setFontSize(42).setColor("#000");
+        // Version
+        const versionText = this.add.text(600, 450, "dev-24", textStyle)
+            .setBackgroundColor("#4f9aff")
+            .setFontSize(16)
+            // .setFontSize(42)
+            .setColor("#000");
+
+        if (Settings.IS_DEBUG) {
+            versionText.setFontFamily("cursive")
+                .setDisplaySize(300, 60)
+        }
     }
 }
 

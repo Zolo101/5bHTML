@@ -1,7 +1,26 @@
 Emoji | meaning
 --- | ---
-🟥| Latest Dev version, these versions will not be on the [github page](https://zolo101.github.io/5bHTML/dist/), and you'll have to build them yourself.
+🟥| Latest Dev version, these versions will not be on the [github page](https://zolo101.github.io/5bHTML/dist/), so you'll have to build them yourself.
 🟦| Latest *""Stable""* version
+
+
+# dev-24 🟥 -- 23/10/2020
+
+Things since v2.1 Alpha:
+
+- Fixed [#8](https://github.com/Zolo101/5bHTML/issues/8), which was when level names kept getting added after level completion.
+
+- The character now moves accordingly to the mass of the sprite grabbed. (Heavy = slow)
+
+- Added a dev-mode for better debug info. This is enabled if you build using `build-dev` instead of `build-prod`.
+
+## Known issues
+
+- You can still interact when dead.
+
+- Finish sprites can hover in lvl 6.
+
+- The dreaded [#7](https://github.com/Zolo101/5bHTML/issues/7) still happens... :@
 
 # v2.1 Alpha 🟦 -- 11/10/2020
 
