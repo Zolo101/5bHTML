@@ -29,7 +29,7 @@ export default [
     {
         name: "crate",
         type: "sprite",
-        mass: 40,
+        mass: 5,
         size: {
             x: 128,
             y: 128
@@ -38,7 +38,7 @@ export default [
     {
         name: "metalbox",
         type: "sprite",
-        mass: 80,
+        mass: 8,
         size: {
             x: 128,
             y: 128
@@ -47,7 +47,7 @@ export default [
     {
         name: "package",
         type: "sprite",
-        mass: 20,
+        mass: 4,
         size: {
             x: 256,
             y: 128

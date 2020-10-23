@@ -70,18 +70,19 @@ class gameScene extends Phaser.Scene {
         // this.levelmanager.UpdatePhysics();
 
         if (alive) {
+            // TODO: Change once multiple characters become a thing
             if (spaceKey.isDown && (cc.body.blocked.down || cc.body.touching.down)) {
-                cc.body.setVelocityY(-700);
+                cc.body.setVelocityY(-700 * cc.speed);
             }
 
             if (leftKey.isDown) {
                 cc.direction = false;
-                cc.body.setVelocityX(-250);
+                cc.body.setVelocityX(-250 * cc.speed);
             }
 
             if (rightKey.isDown) {
                 cc.direction = true;
-                cc.body.setVelocityX(250);
+                cc.body.setVelocityX(250 * cc.speed);
             }
         }
 

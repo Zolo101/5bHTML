@@ -42,6 +42,7 @@ export class Sprite extends Phaser.GameObjects.Sprite {
 }
 
 export class Character extends Sprite {
+    speed = 1; // Speed of character
     direction = true; // Direction of character, true = right, false = left
     grabbing!: Sprite | Character | undefined; // Whats the character grabbing?
     grabbable = true; // Is the character grabbable
@@ -49,6 +50,7 @@ export class Character extends Sprite {
     attemptGrab(sp: Sprite): void {
         const characterBounds = this.getBounds();
         const grabRange = 1.5
+
         // debug
         /*
         this.scene.add.rectangle(
@@ -58,11 +60,14 @@ export class Character extends Sprite {
             (characterBounds.height * grabRange) - 10,
             0xffffff
         ) */
-        characterBounds.setSize(characterBounds.width * grabRange * 2, (characterBounds.height * grabRange) - 10)
-        if (characterBounds.contains(sp.x, sp.y + 20)) {
+
+        characterBounds.setSize(characterBounds.width * grabRange * 1.5, (characterBounds.height * grabRange))
+        if (characterBounds.contains(sp.x, sp.y)) {
             // console.log(sp.name);
             this.grabbing = sp; // a reference
             sp.grabbed = true;
+            // console.log(sp.mass)
+            this.speed = 1 / Math.sqrt(sp.mass / 4);
             // sp.body.enable = false;
         }
     }
@@ -74,7 +79,7 @@ export class Character extends Sprite {
         }
 
         const gsprite = this.grabbing;
-        const throwpower = 400 / (gsprite.mass / 2);
+        const throwpower = 500 * this.speed;
         if (throwsprite) {
             if (this.direction) {
                 gsprite.body.velocity = new Phaser.Math.Vector2(
@@ -88,6 +93,7 @@ export class Character extends Sprite {
         }
         gsprite.grabbed = false;
         gsprite.body.enable = true;
+        this.speed = 1;
         this.grabbing = undefined;
     }
 
@@ -137,7 +143,7 @@ export function makeSpriteFromString(
 ): Sprite {
     const newSprite = new Sprite(
         sceneReference, entity.x, entity.y, sprite.name,
-        tilelayer, undefined, undefined, true, true,
+        tilelayer, sprite.mass, undefined, true, true,
     );
     newSprite.setDisplaySize(sprite.size.x, sprite.size.y);
     newSprite.setScale(0.45);
