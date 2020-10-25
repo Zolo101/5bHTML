@@ -1,6 +1,7 @@
 import { levels } from "../game/core/jsonmodule";
-import { openExternalLink } from "../game/core/misc";
+import { hexColourFromSeed, openExternalLink } from "../game/core/misc";
 import Settings from "../game/settings";
+const commits = 24;
 
 class menuScene extends Phaser.Scene {
     constructor() { super("menuScene"); }
@@ -75,7 +76,7 @@ class menuScene extends Phaser.Scene {
         // settingsButton.on('pointerdown', () => );
 
         if (Settings.IS_DEBUG) {
-            this.add.text(321, 455, "Development Build", textStyle)
+            this.add.text(685, 500, "Development Build", textStyle)
                 .setFontSize(32)
                 .setBackgroundColor("#000")
                 .setColor("#f11")
@@ -87,15 +88,18 @@ class menuScene extends Phaser.Scene {
         this.add.text(785, 92, "Remake by Zelo101", textStyle).setFontSize(18);
 
         // Version
-        const versionText = this.add.text(600, 450, "dev-24", textStyle)
-            .setBackgroundColor("#4f9aff")
+        const versionText = this.add.text(600, 450, "v3 Alpha", textStyle)
+            .setBackgroundColor(hexColourFromSeed(commits))
+            //.setBackgroundColor("#4f9aff")
             .setFontSize(16)
             // .setFontSize(42)
             .setColor("#000");
 
         if (Settings.IS_DEBUG) {
             versionText.setFontFamily("cursive")
-                .setDisplaySize(300, 60)
+                .setText(`dev-${commits}`)
+                .setDisplaySize(150, 30)
+                .setPosition(525, 502)
         }
     }
 }
