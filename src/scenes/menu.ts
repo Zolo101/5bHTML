@@ -1,5 +1,5 @@
 import { levels } from "../game/core/jsonmodule";
-import { hexColourFromSeed, openExternalLink } from "../game/core/misc";
+import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
 import Settings from "../game/settings";
 const commits = 24;
 

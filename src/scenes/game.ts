@@ -1,4 +1,4 @@
-import { SpecialBlock } from "../game/core/block";
+import { SpecialBlock } from "../game/core/classes/block";
 import { LevelManager } from "../game/core/classes/levelmanger";
 
 import { block } from "../game/core/jsonmodule";

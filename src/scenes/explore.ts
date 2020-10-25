@@ -1,6 +1,6 @@
 import { textStyle, backStyle, levelnameStyle } from "../game/core/buttons";
 import { Level } from "../game/core/levelstructure";
-import { openExternalLink } from "../game/core/misc";
+import { openExternalLink } from "../game/core/misc/other";
 
 let epochtimetext: Phaser.GameObjects.Text;
 const levelelements: LevelTile[] = [];

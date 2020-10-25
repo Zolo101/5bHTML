@@ -1,25 +1,25 @@
-import { SpecialBlock, SimpleBlock } from "../block";
+import { SpecialBlock, SimpleBlock } from "../classes/block";
 export default [
     {
         name: "/",
-        collide: true,
+        canCollide: true,
         visible: true,
-        kill: false,
+        canKill: false,
         special: false,
         tile: 1
     },
     {
         name: "6",
-        collide: false,
+        canCollide: false,
         visible: false,
-        kill: false,
+        canKill: false,
         special: false
     },
     {
         name: "4",
-        collide: false,
+        canCollide: false,
         visible: true,
-        kill: false,
+        canKill: false,
         special: true,
         size: {
             x: 60,
@@ -32,16 +32,16 @@ export default [
     },
     {
         name: ":",
-        collide: false,
+        canCollide: false,
         visible: true,
-        kill: false,
+        canKill: false,
         special: false
     },
     {
         name: "5",
-        collide: false,
+        canCollide: false,
         visible: true,
-        kill: false,
+        canKill: false,
         animate: true,
         size: {
             x: 150,
@@ -50,25 +50,25 @@ export default [
     },
     {
         name: ">",
-        collide: true,
+        canCollide: true,
         visible: true,
-        kill: false,
+        canKill: false,
         animate: true,
         special: false
     },
     {
         name: "7",
-        collide: false,
+        canCollide: false,
         visible: true,
-        kill: false,
+        canKill: false,
         special: false,
         tile: 6
     },
     {
         name: "0",
-        collide: false,
+        canCollide: false,
         visible: true,
-        kill: true,
+        canKill: true,
         special: false,
         tile: 2,
         sides: {
@@ -80,9 +80,9 @@ export default [
     },
     {
         name: "1",
-        collide: false,
+        canCollide: false,
         visible: true,
-        kill: true,
+        canKill: true,
         special: false,
         tile: 3,
         sides: {
@@ -94,9 +94,9 @@ export default [
     },
     {
         name: "2",
-        collide: false,
+        canCollide: false,
         visible: true,
-        kill: true,
+        canKill: true,
         special: false,
         tile: 4,
         sides: {
@@ -108,9 +108,9 @@ export default [
     },
     {
         name: "3",
-        collide: false,
+        canCollide: false,
         visible: true,
-        kill: true,
+        canKill: true,
         special: false,
         tile: 5,
         sides: {

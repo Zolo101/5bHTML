@@ -1,18 +1,41 @@
-/*
-class Block {
-    name: string;
-    collidable = true;
+import Sprite, { Character } from "./sprite";
 
-    constructor(name: string, collidable: boolean) {
-        this.name = c
+class Block implements BlockType {
+    // defaults
+    name = "Unknown Block"
+    size: { x: number; y: number; };
+    offset: { x: number; y: number; };
+    canCollide = true;
+    visible = true;
+    canKill = false;
+    special = false;
+    animate = false;
+    tile = 13; // unknown/unset texture
+    side: { left: boolean; right: boolean; up: boolean; down: boolean; };
+
+    constructor(blockinfo: SpecialBlock) {
+        this.name = blockinfo.name
+        this.canCollide = blockinfo.canCollide
+        this.visible = blockinfo.visible
+        this.canKill = blockinfo.canKill
+        this.special = blockinfo.special
+        this.animate = blockinfo.animate
+        this.size = blockinfo.size
+        this.offset = blockinfo.offset
+        this.tile = blockinfo.tile
+        this.side = blockinfo.side
     }
-} */
+
+    onCollision(sp: Sprite | Character): void {
+
+    }
+}
 
 export type SimpleBlock = {
     name: string
-    collide: boolean
+    canCollide: boolean
     visible: boolean
-    kill: boolean
+    canKill: boolean
     tile: number
     side: {
         left: boolean
@@ -24,9 +47,9 @@ export type SimpleBlock = {
 
 export type SpecialBlock = {
     name: string
-    collide: boolean
+    canCollide: boolean
     visible: boolean
-    kill: boolean
+    canKill: boolean
     special: boolean
     animate: boolean
     size: {
@@ -55,7 +78,7 @@ export type SpecialBlockCollisions = {
 
 }
 
-export type Block = SpecialBlock // | SimpleBlockInterface
+export type BlockType = SpecialBlock // | SimpleBlockInterface
 
 const bcoord = (blocksize: number, x: number) => blocksize * x + (blocksize / 2);
 

@@ -2,7 +2,7 @@ import {
     Sprite, Character, makeSpriteFromString, makeCharacterFromString, SpriteType,
 } from "./sprite";
 import { levelnameStyle, backStyle } from "../buttons";
-import { Block, createSpecialBlock } from "../block";
+import { BlockType, createSpecialBlock } from "./block";
 import { checkLevel } from "../checkLevel";
 import { Entity, LevelData } from "../levelstructure";
 import { entities } from "../jsonmodule";
@@ -55,7 +55,7 @@ export class LevelManager {
     background!: Phaser.GameObjects.Image
 
     levels: LevelData
-    blocks: Block[]
+    blocks: BlockType[]
     scene: Phaser.Scene
 
     tilelayer!: Phaser.Tilemaps.StaticTilemapLayer
@@ -75,7 +75,7 @@ export class LevelManager {
 
     constructor(
         levels: LevelData,
-        blocks: Block[],
+        blocks: BlockType[],
         scene: Phaser.Scene,
 
         terrain: Phaser.Physics.Arcade.StaticGroup,
@@ -257,11 +257,11 @@ export class LevelManager {
                     } else if (blockObject?.special === false && tileNumber !== undefined) {
                         tilemapData[i][j] = tileNumber;
                         switch (true) {
-                        case blockObject?.collide:
+                        case blockObject?.canCollide:
                             collisionIndexes.push(tileNumber);
                             break;
 
-                        case blockObject?.kill:
+                        case blockObject?.canKill:
                             killIndexes.push(tileNumber);
                             break;
 
