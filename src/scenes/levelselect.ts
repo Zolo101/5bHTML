@@ -10,6 +10,13 @@ function adjustHexValue(color: string, amount: number) {
     return `#${color.replace(/^#/, "").replace(/../g, (colorResult) => (`0${Math.min(255, Math.max(0, parseInt(colorResult, 16) + amount)).toString(16)}`).substr(-2))}`;
 }
 
+enum buttonType {
+    locked = "#585858",
+    next = "#fc7d00",
+    completed = "#ede229",
+    perfected = "#0ecc29"
+}
+
 class levelselectScene extends Phaser.Scene {
     constructor() { super({ key: "levelselectScene" }); }
 
@@ -40,21 +47,27 @@ class levelselectScene extends Phaser.Scene {
     }
 
     createButton(i: number, j: number, num: string): void {
+        this.add.text(
+            // math xD
+            i * 110 - 72, j * 60 + 22, "test123",
+        ).setBackgroundColor("#000").setPadding(18, 18, 18, 18)
+
         const levelButton = this.add.text(
             // math xD
             i * 110 - 70, j * 60 + 25, num.padStart(3, "0"), levelbuttonStyle,
         ).setInteractive();
 
+        // set code for buttons that have levels
         if (Number(num) <= levels.levels.length) {
             levelButton.on("pointerdown", () => this.scene.start("gameScene", {
                 levelfile: levels,
                 levelnumber: num,
             }));
         } else {
-            levelButton.setBackgroundColor("#555");
+            levelButton.setBackgroundColor(buttonType.locked);
         }
 
-        if (num === "1") levelButton.setBackgroundColor("#f80");
+        if (num === "1") levelButton.setBackgroundColor(buttonType.next);
         buttonlist.push(levelButton);
     }
 }

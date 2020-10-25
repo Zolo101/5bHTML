@@ -10,11 +10,11 @@ export const levelbuttonStyle = {
     fontStyle: "bold",
     align: "center",
     fixedWidth: 100,
-    fixedHeight: 50,
+    fixedHeight: 45,
     backgroundColor: "#ee0",
     color: "#000",
     padding: {
-        y: 4,
+        y: -4,
         x: 4,
     },
 };
@@ -41,7 +41,7 @@ export const backStyle = {
     },
 };
 
-export const backButton = (scene: Phaser.Scene, start = "menuScene") => {
+export const backButton = (scene: Phaser.Scene, start = "menuScene"): void => {
     new Phaser.GameObjects.Text(
         scene, 800, 475, "BACK", backStyle,
     ).setInteractive().setAlpha(0.75).on("pointerdown", () => scene.scene.start(start));
