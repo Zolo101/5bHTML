@@ -1,33 +1,72 @@
-import Sprite, { Character } from "./sprite";
-
-class Block implements BlockType {
+export class Block implements BlockType {
     // defaults
-    name = "Unknown Block"
-    size: { x: number; y: number; };
-    offset: { x: number; y: number; };
-    canCollide = true;
-    visible = true;
-    canKill = false;
-    special = false;
-    animate = false;
-    tile = 13; // unknown/unset texture
-    side: { left: boolean; right: boolean; up: boolean; down: boolean; };
+    size!: { x: number; y: number; };
+    offset = { x: 0, y: 0 };
+    onCollide!: ArcadePhysicsCallback
+    //onCollide!: (scene: Phaser.Scene, sp: Sprite | Character) => void;
+    side!: { left: boolean; right: boolean; up: boolean; down: boolean; };
 
-    constructor(blockinfo: SpecialBlock) {
-        this.name = blockinfo.name
-        this.canCollide = blockinfo.canCollide
-        this.visible = blockinfo.visible
-        this.canKill = blockinfo.canKill
-        this.special = blockinfo.special
-        this.animate = blockinfo.animate
-        this.size = blockinfo.size
-        this.offset = blockinfo.offset
-        this.tile = blockinfo.tile
-        this.side = blockinfo.side
+    constructor(
+        public name = "Unknown Block",
+        public canCollide = true,
+        public visible = true,
+        public canKill = false,
+        public special = false,
+        public animate = false,
+        public tile = 13, // unknown/unset texture
+    ) {
+        this.name = name
+        this.canCollide = canCollide
+        this.visible = visible
+        this.canKill = canKill
+        this.special = special
+        this.animate = animate
+        this.tile = tile
     }
 
-    onCollision(sp: Sprite | Character): void {
+    setSize(x: number, y: number): this {
+        this.size = {x, y}
+        return this
+    }
 
+    setOffset(x: number, y: number): this {
+        this.offset = {x, y}
+        return this
+    }
+
+    setCollisionCallback(callback: ArcadePhysicsCallback): this {
+        this.onCollide = callback;
+        return this
+    }
+
+    setSides(left: boolean, right: boolean, up: boolean, down: boolean): this {
+        this.side = { left, right, up, down }
+        return this
+    }
+
+    setVisible(visible: boolean): this {
+        this.visible = visible;
+        return this
+    }
+
+    setCollision(cancollide: boolean): this {
+        this.canCollide = cancollide;
+        return this
+    }
+
+    setSpecial(special: boolean): this {
+        this.special = special;
+        return this
+    }
+
+    setTile(tile: number): this {
+        this.tile = tile;
+        return this
+    }
+
+    setAnimate(animate: boolean): this {
+        this.animate = animate;
+        return this
     }
 }
 

@@ -11,7 +11,7 @@ export function hexColourFromSeed(seed: number): string {
         const genNumber = Math.abs(Math.floor(Math.sin(seed + i) * 15))
         finalHex = finalHex + genNumber.toString(16)
     }
-    console.log(finalHex)
+    // console.log(finalHex)
     return "#" + finalHex;
 }
 

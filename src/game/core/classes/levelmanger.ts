@@ -2,7 +2,7 @@ import {
     Sprite, Character, makeSpriteFromString, makeCharacterFromString, SpriteType,
 } from "./sprite";
 import { levelnameStyle, backStyle } from "../buttons";
-import { BlockType, createSpecialBlock } from "./block";
+import { Block, createSpecialBlock } from "./block";
 import { checkLevel } from "../checkLevel";
 import { Entity, LevelData } from "../levelstructure";
 import { entities } from "../jsonmodule";
@@ -55,7 +55,7 @@ export class LevelManager {
     background!: Phaser.GameObjects.Image
 
     levels: LevelData
-    blocks: BlockType[]
+    blocks: Block[]
     scene: Phaser.Scene
 
     tilelayer!: Phaser.Tilemaps.StaticTilemapLayer
@@ -75,7 +75,7 @@ export class LevelManager {
 
     constructor(
         levels: LevelData,
-        blocks: BlockType[],
+        blocks: Block[],
         scene: Phaser.Scene,
 
         terrain: Phaser.Physics.Arcade.StaticGroup,
@@ -231,49 +231,69 @@ export class LevelManager {
 
         const tilemapData: any[][] = JSON.parse(JSON.stringify(currentLevelData));
         // console.log(tilemapData);
-        tilemapData.forEach((row: string[], i: number) => {
+        tilemapData.forEach((row: string[], i) => {
             row.forEach((block: string, j) => {
+                // Skip if air
                 if (block !== ".") {
                     const blockObject = this.blocks.find((foundblock) => foundblock.name === block);
-                    const tileNumber = blockObject?.tile;
 
-                    // do some work on this
-                    if (blockObject?.special === true) {
-                        const specialblock = createSpecialBlock(
-                            this.scene,
-                            blockObject, j, i,
-                            blockObject.size.x, blockObject.size.y,
-                            blockObject.offset.x, blockObject.offset.y,
-                            () => {
-                                if ((this.levelnumber + 1 < hardlimitlevel)
-                                    && this.currentcharacter.active
-                                ) {
-                                    this.levelnumber += 1;
-                                    this.setLevel(this.levelnumber + 1);
-                                }
-                            }, this.characters,
-                        );
-                        this.specialblocks.add(specialblock);
-                    } else if (blockObject?.special === false && tileNumber !== undefined) {
-                        tilemapData[i][j] = tileNumber;
-                        switch (true) {
-                        case blockObject?.canCollide:
-                            collisionIndexes.push(tileNumber);
-                            break;
-
-                        case blockObject?.canKill:
-                            killIndexes.push(tileNumber);
-                            break;
-
-                        case blockObject?.visible:
-                            // tilemapData[i][j]
-                            break;
-
-                        default:
-                            break;
-                        }
+                    if (blockObject === undefined) {
+                        console.warn("Unknown block skipped.")
+                        tilemapData[i][j] = 13;
                     } else {
-                        tilemapData[i][j] = 0;
+                        const tileNumber = blockObject.tile;
+                        if (blockObject.special) {
+                            const specialblock = createSpecialBlock(
+                                this.scene,
+                                blockObject, j, i,
+                                blockObject.size.x, blockObject.size.y,
+                                blockObject.offset.x, blockObject.offset.y, blockObject.onCollide, this.characters,
+                            );
+                            this.specialblocks.add(specialblock);
+                        } else if (tileNumber !== undefined) {
+                            // bad code, please change in the future
+                            tilemapData[i][j] = tileNumber;
+                            if (tileNumber === 13) {
+                                switch (true) {
+                                case blockObject.canCollide:
+                                    collisionIndexes.push(tileNumber);
+                                    break;
+
+                                case blockObject.canKill:
+                                    tilemapData[i][j] = 12;
+                                    killIndexes.push(tileNumber);
+                                    break;
+
+                                case blockObject.visible:
+                                    // tilemapData[i][j]
+                                    break;
+
+                                default:
+                                    tilemapData[i][j] = 10;
+                                    break;
+                                }
+                            } else {
+                                switch (true) {
+                                case blockObject.canCollide:
+                                    collisionIndexes.push(tileNumber);
+                                    break;
+
+                                case blockObject.canKill:
+                                    killIndexes.push(tileNumber);
+                                    break;
+
+                                case blockObject.visible:
+                                    // tilemapData[i][j]
+                                    break;
+
+                                default:
+                                    break;
+                                }
+                            }
+                        } else {
+                            // unknown/unset tile
+                            tilemapData[i][j] = 0;
+                        }
                     }
                 }
             });

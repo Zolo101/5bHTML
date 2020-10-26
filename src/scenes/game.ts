@@ -1,4 +1,3 @@
-import { SpecialBlock } from "../game/core/classes/block";
 import { LevelManager } from "../game/core/classes/levelmanger";
 
 import { block } from "../game/core/jsonmodule";
@@ -55,7 +54,7 @@ class gameScene extends Phaser.Scene {
 
         this.levelmanager = new LevelManager(
             this.levelfile,
-            block as unknown as SpecialBlock[], this,
+            block, this,
             terrain, decorateterrain,
         );
 

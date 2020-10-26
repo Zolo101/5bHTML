@@ -1,13 +1,31 @@
-import { SpecialBlock, SimpleBlock } from "../classes/block";
+import { Block } from "../classes/block";
 export default [
-    {
-        name: "/",
-        canCollide: true,
-        visible: true,
-        canKill: false,
-        special: false,
-        tile: 1
-    },
+    // name
+    // cancollide
+    // visible
+    // cankill
+    // special
+    // animate
+    // tile
+    new Block("/", true, true, false, false, false, 1),
+    new Block("6", false, false, false, false, false),
+    new Block("4", false, true, false, true, false)
+        .setSize(60, 120)
+        .setOffset(-15, 0),
+    new Block(":", false, true, false, false, false),
+    new Block("5", false, true, false, true, false)
+        .setSize(150, 180),
+    new Block(">", true, true, false, false, true),
+    new Block("7", false, true, false, false, false, 6),
+    new Block("0", false, true, true, false, false, 2)
+        .setSides(true, true, true, true),
+    new Block("1", false, true, true, false, false, 3)
+        .setSides(true, true, true, true),
+    new Block("2", false, true, true, false, false, 4)
+        .setSides(true, true, true, true),
+    new Block("3", false, true, true, false, false, 5)
+        .setSides(true, true, true, true),
+    /*
     {
         name: "6",
         canCollide: false,
@@ -119,5 +137,5 @@ export default [
             up: true,
             down: true
         }
-    }
-] as unknown as SimpleBlock | SpecialBlock
+    } */
+]
