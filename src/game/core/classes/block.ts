@@ -1,8 +1,11 @@
+import gameSceneType from "../gamestructure";
+import LevelManager from "./levelmanger";
+
 export class Block implements BlockType {
     // defaults
     size!: { x: number; y: number; };
     offset = { x: 0, y: 0 };
-    onCollide!: ArcadePhysicsCallback
+    onCollide!: LevelPhysicsCallback
     //onCollide!: (scene: Phaser.Scene, sp: Sprite | Character) => void;
     side!: { left: boolean; right: boolean; up: boolean; down: boolean; };
 
@@ -14,7 +17,9 @@ export class Block implements BlockType {
         public special = false,
         public animate = false,
         public tile = 13, // unknown/unset texture
+        public texturename = "special_missing", // for specialblocks
     ) {
+        // Not sure if i need to do this
         this.name = name
         this.canCollide = canCollide
         this.visible = visible
@@ -22,6 +27,7 @@ export class Block implements BlockType {
         this.special = special
         this.animate = animate
         this.tile = tile
+        this.texturename = texturename
     }
 
     setSize(x: number, y: number): this {
@@ -34,7 +40,7 @@ export class Block implements BlockType {
         return this
     }
 
-    setCollisionCallback(callback: ArcadePhysicsCallback): this {
+    setCollisionCallback(callback: LevelPhysicsCallback): this {
         this.onCollide = callback;
         return this
     }
@@ -61,6 +67,11 @@ export class Block implements BlockType {
 
     setTile(tile: number): this {
         this.tile = tile;
+        return this
+    }
+
+    setTextureName(texturename: string): this {
+        this.texturename = texturename;
         return this
     }
 
@@ -91,6 +102,7 @@ export type SpecialBlock = {
     canKill: boolean
     special: boolean
     animate: boolean
+    texturename: string
     size: {
         x: number
         y: number
@@ -108,6 +120,10 @@ export type SpecialBlock = {
     }
 }
 
+export type LevelPhysicsCallback = (
+    levelmanager: LevelManager,
+) => void;
+
 //export type BlockCollisions = {
 //    indexs: number | number[],
 //    callback: Function,
@@ -121,6 +137,9 @@ export type BlockType = SpecialBlock // | SimpleBlockInterface
 
 const bcoord = (blocksize: number, x: number) => blocksize * x + (blocksize / 2);
 
+/**
+ * @deprecated Not needed, do not use.
+*/
 export function createBlock(
     scene: Phaser.Scene,
     blockinfo: SimpleBlock,
@@ -137,16 +156,16 @@ export function createBlock(
 }
 
 export function createSpecialBlock(
-    scene: Phaser.Scene,
+    scene: gameSceneType,
     blockinfo: SpecialBlock,
     x: number, y: number,
     sx: number = blockinfo.size.x, sy: number = blockinfo.size.x,
     ox: number = blockinfo.offset.x, oy: number = blockinfo.offset.y,
-    collisionCallback: ArcadePhysicsCallback,
+    collisionCallback: LevelPhysicsCallback,
     collisionGroup: Phaser.GameObjects.Group,
 ): Phaser.GameObjects.Sprite {
     const specialblock = scene.physics.add.sprite(
-        bcoord(30, x), bcoord(30, y - 1), "finish",
+        bcoord(30, x), bcoord(30, y - 1), blockinfo.texturename,
         // FOR NOW, special_missing should be used instead
     );
 
@@ -155,11 +174,11 @@ export function createSpecialBlock(
     specialblock.setDisplaySize(sx, sy);
     specialblock.setPosition(specialblock.x + ox, specialblock.y + oy);
 
-    scene.physics.add.collider(specialblock, collisionGroup, collisionCallback);
+    if (collisionCallback !== undefined) {
+        scene.physics.add.collider(specialblock, collisionGroup, () => { collisionCallback(scene.levelmanager) });
+    }
 
     specialblock.body.customSeparateX = true;
-
-    // specialblock.setY(specialblock.y-(sy-10));
 
     return specialblock;
 

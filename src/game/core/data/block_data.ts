@@ -9,10 +9,17 @@ export default [
     // tile
     new Block("/", true, true, false, false, false, 1),
     new Block("6", false, false, false, false, false),
-    new Block("4", false, true, false, true, false)
+    new Block("4", false, true, false, true, false) // Finish block
         .setSize(60, 120)
-        .setOffset(-15, 0),
-    new Block(":", false, true, false, false, false),
+        .setOffset(-15, 0)
+        .setTextureName("finish")
+        .setCollisionCallback((lm) => {
+            if ((lm.levelnumber + 1 < lm.hardlimitlevel) && lm.currentcharacter.active) {
+                lm.levelnumber += 1;
+                lm.setLevel(lm.levelnumber + 1);
+            }
+        }),
+    new Block(":", false, true, false, false, false), // Wintoken
     new Block("5", false, true, false, true, false)
         .setSize(150, 180),
     new Block(">", true, true, false, false, true),
@@ -137,5 +144,6 @@ export default [
             up: true,
             down: true
         }
-    } */
+    }
+    */
 ]

@@ -56,7 +56,6 @@ class loadingScene extends Phaser.Scene {
         this.loadAsset("deco_missing", "misc/deco_missing.png");
         this.loadAsset("special_missing", "misc/special_missing.png");
         this.loadAsset("kill_missing", "misc/kill_missing.png");
-        this.loadAsset("finish_missing", "misc/finish_missing.png");
 
         this.loadAsset("book", "sprites/book.png");
         this.loadAsset("crate", "sprites/crate.png");

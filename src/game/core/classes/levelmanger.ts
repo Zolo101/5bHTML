@@ -7,9 +7,7 @@ import { checkLevel } from "../checkLevel";
 import { Entity, LevelData } from "../levelstructure";
 import { entities } from "../jsonmodule";
 import Settings from "../../settings";
-
-// stop player from going past certain level
-const hardlimitlevel = 6;
+import gameSceneType from "../gamestructure";
 
 let level = { // Structure of a level in 5bhtml.
     name: "Undefined Levelpack",
@@ -72,6 +70,9 @@ export class LevelManager {
     decorateTerrain: Phaser.Physics.Arcade.StaticGroup
 
     levelTextButton!: Phaser.GameObjects.Text
+
+    // stop player from going past certain level
+    hardlimitlevel = 6;
 
     constructor(
         levels: LevelData,
@@ -244,7 +245,7 @@ export class LevelManager {
                         const tileNumber = blockObject.tile;
                         if (blockObject.special) {
                             const specialblock = createSpecialBlock(
-                                this.scene,
+                                this.scene as gameSceneType,
                                 blockObject, j, i,
                                 blockObject.size.x, blockObject.size.y,
                                 blockObject.offset.x, blockObject.offset.y, blockObject.onCollide, this.characters,
