@@ -157,6 +157,8 @@ export class LevelManager {
 
     startLevel(): void {
         // 5b reset shake animation here
+        this.scene.cameras.main.shake(400, 0.005);
+
 
         this.wipeSprites();
         this.generateSprites(this.levelnumber);
@@ -182,7 +184,7 @@ export class LevelManager {
             case "sprite":
                 spr = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
                 this.sprites.add(spr);
-                console.log(spr.mass)
+                // console.log(spr.mass)
                 break;
 
             default:
