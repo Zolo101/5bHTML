@@ -1,12 +1,12 @@
 # 5bHTML
 
+5bHTML is a remake of the htwins [5b flash game](http://bfdi.tv/5b/) thats based on [battle for dream island](https://www.youtube.com/user/jacknjellify). It's in alpha right now so not everything looks and feels the same, so please keep that in mind before playing.
+
 Hosted version: **v2.1 Alpha.**
 
-Latest version: **dev-24.**
+Latest version: **dev-20w46a**
 
 Join the [5b editing discord server!](https://discord.gg/qtePFSH)
-
-**This does NOT support Internet Explorer, since IE doesn't support ES6.**
 
 Check the **Projects** tab for progress on the next update.
 

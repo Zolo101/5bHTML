@@ -4,23 +4,45 @@ Emoji | meaning
 🟦| Latest *""Stable""* version
 
 
-# dev-24 🟥 -- 23/10/2020
+# dev-20w46a 🟥 -- 13/11/2020
 
-Things since v2.1 Alpha:
+**To be v3 Alpha.**
+
+## Things since v2.1 Alpha:
+
+- Collectables / Win tokens (WIP).
+
+- Transitions.
+
+- The character now moves accordingly to the mass of the sprite grabbed. This also affects throwing power.
+
+- Better level select screen.
+
+- Added a dev-mode for better debug info. This is enabled if you build using `build-dev` instead of `build-prod`, or if you use `watch`.
+
+- Revamped how blocks are made in levels. Most blocks *should* have their respected properties now.
 
 - Fixed [#8](https://github.com/Zolo101/5bHTML/issues/8), which was when level names kept getting added after level completion.
 
-- The character now moves accordingly to the mass of the sprite grabbed. (Heavy = slow)
-
-- Added a dev-mode for better debug info. This is enabled if you build using `build-dev` instead of `build-prod`.
-
 ## Known issues
+
+- **Levels 6 to 10 aren't complete.**
+
+- Platforms dont work yet.
+
+- Collectables / Win tokens wont save in v3. This will be fixed in v4.
 
 - You can still interact when dead.
 
-- Finish sprites can hover in lvl 6.
+- Finish sprites dont get deleted (instead they fall with no collision), causing them to hover in lvl 6.
+
+- Transitions apply to the UI, which shouldn't happen.
+
+- Spikes kill from all sides.
 
 - The dreaded [#7](https://github.com/Zolo101/5bHTML/issues/7) still happens... :@
+
+- You can grab stuff from below you. It's cool, but it shouldn't happen lol.
 
 # v2.1 Alpha 🟦 -- 11/10/2020
 

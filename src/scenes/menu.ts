@@ -1,7 +1,7 @@
 import { levels } from "../game/core/jsonmodule";
 import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
 import Settings from "../game/settings";
-const commits = 24;
+const devdate = new Date(2020, 11, 13)
 
 class menuScene extends Phaser.Scene {
     constructor() { super("menuScene"); }
@@ -89,7 +89,7 @@ class menuScene extends Phaser.Scene {
 
         // Version
         const versionText = this.add.text(600, 450, "v3 Alpha", textStyle)
-            .setBackgroundColor(hexColourFromSeed(commits))
+            .setBackgroundColor(hexColourFromSeed(devdate.getTime()))
             //.setBackgroundColor("#4f9aff")
             .setFontSize(16)
             // .setFontSize(42)
@@ -97,7 +97,7 @@ class menuScene extends Phaser.Scene {
 
         if (Settings.IS_DEBUG) {
             versionText.setFontFamily("cursive")
-                .setText(`dev-${commits}`)
+                .setText("dev-20w46a")
                 .setDisplaySize(150, 30)
                 .setPosition(525, 502)
         }
