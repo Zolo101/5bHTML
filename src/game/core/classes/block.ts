@@ -16,7 +16,7 @@ export class Block implements BlockType {
         public canKill = false,
         public special = false,
         public animate = false,
-        public tile = 13, // unknown/unset texture
+        public tile = 4, // unknown/unset texture
         public texturename = "special_missing", // for specialblocks
     ) {
         // Not sure if i need to do this

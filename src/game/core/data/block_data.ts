@@ -7,7 +7,9 @@ export default [
     // special
     // animate
     // tile
-    new Block("/", true, true, false, false, false, 1),
+
+    // in order of appearance
+    new Block("/", true, true, false, false, false, 6),
     new Block("6", false, false, false, false, false),
     new Block("4", false, true, false, true, false) // Finish block
         .setSize(60, 120)
@@ -23,127 +25,27 @@ export default [
     new Block("5", false, true, false, true, false)
         .setSize(150, 180),
     new Block(">", true, true, false, false, true),
-    new Block("7", false, true, false, false, false, 6),
-    new Block("0", false, true, true, false, false, 2)
+    new Block("7", false, true, false, false, false, 15),
+
+    // grey spikes
+    new Block("0", false, true, true, false, false, 11)
         .setSides(true, true, true, true),
-    new Block("1", false, true, true, false, false, 3)
+    new Block("1", false, true, true, false, false, 12)
         .setSides(true, true, true, true),
-    new Block("2", false, true, true, false, false, 4)
+    new Block("2", false, true, true, false, false, 13)
         .setSides(true, true, true, true),
-    new Block("3", false, true, true, false, false, 5)
+    new Block("3", false, true, true, false, false, 14)
         .setSides(true, true, true, true),
-    /*
-    {
-        name: "6",
-        canCollide: false,
-        visible: false,
-        canKill: false,
-        special: false
-    },
-    {
-        name: "4",
-        canCollide: false,
-        visible: true,
-        canKill: false,
-        special: true,
-        size: {
-            x: 60,
-            y: 120
-        },
-        offset: {
-            x: -15,
-            y: 0
-        }
-    },
-    {
-        name: ":",
-        canCollide: false,
-        visible: true,
-        canKill: false,
-        special: false
-    },
-    {
-        name: "5",
-        canCollide: false,
-        visible: true,
-        canKill: false,
-        animate: true,
-        size: {
-            x: 150,
-            y: 180
-        }
-    },
-    {
-        name: ">",
-        canCollide: true,
-        visible: true,
-        canKill: false,
-        animate: true,
-        special: false
-    },
-    {
-        name: "7",
-        canCollide: false,
-        visible: true,
-        canKill: false,
-        special: false,
-        tile: 6
-    },
-    {
-        name: "0",
-        canCollide: false,
-        visible: true,
-        canKill: true,
-        special: false,
-        tile: 2,
-        sides: {
-            left: true,
-            right: true,
-            up: true,
-            down: true
-        }
-    },
-    {
-        name: "1",
-        canCollide: false,
-        visible: true,
-        canKill: true,
-        special: false,
-        tile: 3,
-        sides: {
-            left: true,
-            right: true,
-            up: true,
-            down: true
-        }
-    },
-    {
-        name: "2",
-        canCollide: false,
-        visible: true,
-        canKill: true,
-        special: false,
-        tile: 4,
-        sides: {
-            left: true,
-            right: true,
-            up: true,
-            down: true
-        }
-    },
-    {
-        name: "3",
-        canCollide: false,
-        visible: true,
-        canKill: true,
-        special: false,
-        tile: 5,
-        sides: {
-            left: true,
-            right: true,
-            up: true,
-            down: true
-        }
-    }
-    */
+
+    new Block("^", false, true, false, false, false, 10),
+    new Block("_", undefined, true, false, false, true),
+
+    // one-sided platforms
+    new Block("Z", false, true, false, false, false, 19) // right
+        .setSides(false, true, true, true),
+    new Block("@", false, true, false, false, false, 16) // up
+        .setSides(false, false, false, false),
+
+    new Block("X", true, true, false, false, false, 21),
+    new Block("Y", true, true, false, false, false, 20),
 ]

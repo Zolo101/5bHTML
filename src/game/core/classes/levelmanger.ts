@@ -72,7 +72,7 @@ export class LevelManager {
     levelTextButton!: Phaser.GameObjects.Text
 
     // stop player from going past certain level
-    hardlimitlevel = 6;
+    hardlimitlevel = 10;
 
     constructor(
         levels: LevelData,
@@ -159,7 +159,6 @@ export class LevelManager {
         // 5b reset shake animation here
         this.scene.cameras.main.shake(400, 0.005);
 
-
         this.wipeSprites();
         this.generateSprites(this.levelnumber);
 
@@ -229,6 +228,8 @@ export class LevelManager {
             currentLevelData.push([...row]);
         });
 
+        console.log(currentLevelData)
+
         const collisionIndexes: number[] = [];
         const killIndexes: number[] = [];
 
@@ -242,7 +243,7 @@ export class LevelManager {
 
                     if (blockObject === undefined) {
                         console.warn("Unknown block skipped.")
-                        tilemapData[i][j] = 13;
+                        tilemapData[i][j] = 4;
                     } else {
                         const tileNumber = blockObject.tile;
                         if (blockObject.special) {
@@ -253,17 +254,18 @@ export class LevelManager {
                                 blockObject.offset.x, blockObject.offset.y, blockObject.onCollide, this.characters,
                             );
                             this.specialblocks.add(specialblock);
+                            tilemapData[i][j] = ".";
                         } else if (tileNumber !== undefined) {
                             // bad code, please change in the future
                             tilemapData[i][j] = tileNumber;
-                            if (tileNumber === 13) {
+                            if (tileNumber === 4) {
                                 switch (true) {
                                 case blockObject.canCollide:
                                     collisionIndexes.push(tileNumber);
                                     break;
 
                                 case blockObject.canKill:
-                                    tilemapData[i][j] = 12;
+                                    tilemapData[i][j] = 3;
                                     killIndexes.push(tileNumber);
                                     break;
 
@@ -272,7 +274,7 @@ export class LevelManager {
                                     break;
 
                                 default:
-                                    tilemapData[i][j] = 10;
+                                    tilemapData[i][j] = 4;
                                     break;
                                 }
                             } else {
@@ -295,7 +297,7 @@ export class LevelManager {
                             }
                         } else {
                             // unknown/unset tile
-                            tilemapData[i][j] = 0;
+                            tilemapData[i][j] = 4;
                         }
                     }
                 }
@@ -307,6 +309,7 @@ export class LevelManager {
             tileWidth: this.blocksize,
             tileHeight: this.blocksize,
         });
+        console.log(tilemapData);
 
         const tileset = tilemap.addTilesetImage(
             "core_tileset",
