@@ -124,36 +124,9 @@ export type LevelPhysicsCallback = (
     levelmanager: LevelManager,
 ) => void;
 
-//export type BlockCollisions = {
-//    indexs: number | number[],
-//    callback: Function,
-//}
-
-export type SpecialBlockCollisions = {
-
-}
-
 export type BlockType = SpecialBlock // | SimpleBlockInterface
 
 const bcoord = (blocksize: number, x: number) => blocksize * x + (blocksize / 2);
-
-/**
- * @deprecated Not needed, do not use.
-*/
-export function createBlock(
-    scene: Phaser.Scene,
-    blockinfo: SimpleBlock,
-    x: number, y: number,
-): Phaser.GameObjects.Image {
-    const block = new Phaser.GameObjects.Image(scene, x, y, "missing");
-
-    block.setDisplaySize(this.blocksize, this.blocksize);
-    block.setPosition(bcoord(this.blocksize, x), bcoord(this.blocksize, y));
-
-    return block;
-
-    // this.setTexture(block, blockinfo);
-}
 
 export function createSpecialBlock(
     scene: gameSceneType,
