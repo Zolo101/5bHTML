@@ -6,7 +6,7 @@ Hosted version: **v2.1 Alpha.**
 
 Latest version: **dev-20w46a**
 
-Join the [5b editing discord server!](https://discord.gg/qtePFSH)
+Join the [5bHTML discord server!](https://discord.gg/um5KWabefm)
 
 Check the **Projects** tab for progress on the next update.
 
@@ -37,4 +37,4 @@ You should now have a web server running at http://localhost:8080/.
 
 Cary & Michael Huang - Creating the orginial 5b game.
 
-Shiosh - HTwins.net-like css file.
+Midi - HTwins.net-like css file.
