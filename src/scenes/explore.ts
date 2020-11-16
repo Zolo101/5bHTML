@@ -158,19 +158,30 @@ class exploreScene extends Phaser.Scene {
                     );
                     newtile.text.on("pointerdown", () => {
                         fetch(`https://5beam.zapto.org/get/${level.id}`)
-                            .then((response) => response.json().then((data: string) => {
-                                level.levels = JSON.parse(data) as Level[];
-                                console.log(data)
+                            .then((response) => response.text().then((data: string) => {
+                                let escapedData = data
+                                escapedData = escapedData.substring(4, escapedData.length - 4)
+                                // eslint-disable-next-line quotes
+                                escapedData = escapedData.replace(/\\\\\\"/g, '"')
+
+                                const parsedData = JSON.parse(escapedData) as Level[]
+                                if ((parsedData.length) === undefined) {
+                                    level.levels = [] as Level[]
+                                    level.levels.push(parsedData as unknown as Level)
+                                } else {
+                                    level.levels = parsedData as Level[]
+                                }
+                                console.log(level)
+
+                                // Start level
+                                this.scene.start("gameScene", {
+                                    levelfile: level,
+                                    levelnumber: 1,
+                                });
                             }).catch((error) => {
                                 this.add.text(100, 300, "Error getting level data!");
                                 return console.error(error);
                             }));
-
-                        // Start level
-                        this.scene.start("gameScene", {
-                            levelfile: level,
-                            levelnumber: 1,
-                        });
                     });
                     levelelements.push(newtile);
                 });
