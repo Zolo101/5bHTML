@@ -113,8 +113,8 @@ export class LevelManager {
 
         if (Settings.IS_DEBUG) console.log(level);
 
-        const levelWidth = level.levels[0].data[0].length;
-        const levelHeight = level.levels[0].data.length;
+        const levelWidth = level.levels[this.levelnumber].data[0].length;
+        const levelHeight = level.levels[this.levelnumber].data.length;
 
         // Set background
         this.setBackground(
