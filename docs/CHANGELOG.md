@@ -4,7 +4,7 @@ Emoji | meaning
 🟦| Latest *""Stable""* version
 
 
-# dev-20w46a 🟥 -- 13/11/2020
+# dev-20w47a 🟥 -- 16/11/2020
 
 **To be v3 Alpha.**
 

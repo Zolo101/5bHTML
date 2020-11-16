@@ -1,7 +1,7 @@
 import { levels } from "../game/core/jsonmodule";
 import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
 import Settings from "../game/settings";
-const devdate = new Date(2020, 11, 13)
+const devdate = new Date(2020, 11, 16)
 
 class menuScene extends Phaser.Scene {
     constructor() { super("menuScene"); }
@@ -97,7 +97,7 @@ class menuScene extends Phaser.Scene {
 
         if (Settings.IS_DEBUG) {
             versionText.setFontFamily("cursive")
-                .setText("dev-20w46a")
+                .setText("dev-20w47a")
                 .setDisplaySize(150, 30)
                 .setPosition(525, 502)
         }
