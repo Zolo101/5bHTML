@@ -4,7 +4,7 @@ Emoji | meaning
 🟦| Latest *""Stable""* version
 
 
-# dev-20w47a 🟥 -- 16/11/2020
+# dev-20w47b 🟥 -- 22/11/2020
 
 **To be v3 Alpha.**
 
@@ -22,11 +22,17 @@ Emoji | meaning
 
 - Revamped how blocks are made in levels. Most blocks *should* have their respected properties now.
 
+- Revamped how levels are made. Levels are now made in [Tiled](https://www.mapeditor.org/).
+
 - Fixed [#8](https://github.com/Zolo101/5bHTML/issues/8), which was when level names kept getting added after level completion.
 
 ## Known issues
 
 - **Levels 6 to 10 aren't complete.**
+
+- The finish blocks are in different places in level 4 and 5.
+
+- **Explore doesn't work due to the switch to Tiled levels.**
 
 - Platforms dont work yet.
 
