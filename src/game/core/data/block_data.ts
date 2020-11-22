@@ -1,51 +1,60 @@
 import { Block } from "../classes/block";
-export default [
-    // name
-    // cancollide
-    // visible
-    // cankill
-    // special
-    // animate
-    // tile
+export const BlockObject = {
+    map: new Map<number, Block>(),
+    collisionIndexes: [] as number[],
+    killIndexes: [] as number[],
+    specialIndexes: [] as number[],
+}
 
-    // in order of appearance
-    new Block("/", true, true, false, false, false, 6),
-    new Block("6", false, false, false, false, false),
-    new Block("4", false, true, false, true, false) // Finish block
-        .setSize(60, 120)
-        .setOffset(-15, 0)
-        .setTextureName("finish")
-        .setCollisionCallback((lm) => {
-            if ((lm.levelnumber + 1 < lm.hardlimitlevel) && lm.currentcharacter.active) {
-                lm.levelnumber += 1;
-                lm.setLevel(lm.levelnumber + 1);
-            }
-        }),
-    new Block(":", false, true, false, false, false), // Wintoken
-    new Block("5", false, true, false, true, false)
-        .setSize(150, 180),
-    new Block(">", true, true, false, false, true),
-    new Block("7", false, true, false, false, false, 15),
+// in order of appearance
+BlockObject.map.set(6, new Block(6, true, true, false, false, false))
+BlockObject.map.set(-1, new Block(undefined, false, false, false, false, false))
+BlockObject.map.set(2, new Block(2, false, true, false, true, false) // Finish block
+    .setSize(60, 120)
+    // .setOffset(-15, 0)
+    .setTextureName("finish")
+    .setCollisionCallback((lm) => {
+        if ((lm.levelnumber + 1 < lm.hardlimitlevel) && lm.currentcharacter.active) {
+            lm.levelnumber += 1;
+            lm.setLevel(lm.levelnumber + 1);
+        }
+    })
+)
 
-    // grey spikes
-    new Block("0", false, true, true, false, false, 11)
-        .setSides(true, true, true, true),
-    new Block("1", false, true, true, false, false, 12)
-        .setSides(true, true, true, true),
-    new Block("2", false, true, true, false, false, 13)
-        .setSides(true, true, true, true),
-    new Block("3", false, true, true, false, false, 14)
-        .setSides(true, true, true, true),
+BlockObject.map.set(7, new Block(7, false, true, false, false, false)) // Wintoken
+// new Block("5", false, true, false, true, false)
+// .setSize(150, 180)
+// new Block(">", true, true, false, false, true)
+BlockObject.map.set(15, new Block(15, false, true, false, false, false))
 
-    new Block("^", false, true, false, false, false, 10),
-    new Block("_", undefined, true, false, false, true),
+// grey spikes
+BlockObject.map.set(11, new Block(11, false, true, true, false, false)
+    .setSides(true, true, true, true))
+BlockObject.map.set(12, new Block(12, false, true, true, false, false)
+    .setSides(true, true, true, true))
+BlockObject.map.set(13, new Block(13, false, true, true, false, false)
+    .setSides(true, true, true, true))
+BlockObject.map.set(14, new Block(14, false, true, true, false, false)
+    .setSides(true, true, true, true))
 
-    // one-sided platforms
-    new Block("Z", false, true, false, false, false, 19) // right
-        .setSides(false, true, true, true),
-    new Block("@", false, true, false, false, false, 16) // up
-        .setSides(false, false, false, false),
+BlockObject.map.set(10, new Block(10, false, true, false, false, false))
+// new Block("_", undefined, true, false, false, true)
 
-    new Block("X", true, true, false, false, false, 21),
-    new Block("Y", true, true, false, false, false, 20),
-]
+// one-sided platforms
+BlockObject.map.set(19, new Block(19, true, true, false, false, false) // right
+    .setSides(true, true, true, true))
+BlockObject.map.set(16, new Block(16, true, true, false, false, false) // up
+    .setSides(true, true, true, true))
+
+BlockObject.map.set(21, new Block(21, true, true, false, false, false))
+BlockObject.map.set(20, new Block(20, true, true, false, false, false))
+
+BlockObject.map.forEach((block, i) => {
+    if (block.canCollide) {
+        BlockObject.collisionIndexes.push(i);
+    } else if (block.canKill) {
+        BlockObject.killIndexes.push(i);
+    } else if (block.special) {
+        BlockObject.specialIndexes.push(i);
+    }
+})

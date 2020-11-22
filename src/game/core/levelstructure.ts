@@ -1,14 +1,5 @@
 export type Entity = {
     name: string
-    x: number
-    y: number
-
-    controllable?: boolean
-    roleid?: number
-}
-
-export type EntityObject = {
-    name: string
     type: string
     id: number
     gid: number // Global ID
@@ -38,12 +29,13 @@ export type Level = [
             id: number
             x: number
             y: number
+            background: number
         },
         {
             name: string
             id: number
             draworder: string
-            objects: EntityObject[]
+            objects: Entity[]
             opacity: number
             type: string
             visible: boolean

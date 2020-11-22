@@ -36,7 +36,7 @@ export default [
         }
     },
     {
-        name: "metalbox",
+        name: "metal",
         type: "sprite",
         mass: 8,
         size: {
@@ -45,7 +45,7 @@ export default [
         }
     },
     {
-        name: "package",
+        name: "parcel",
         type: "sprite",
         mass: 4,
         size: {

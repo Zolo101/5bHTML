@@ -1,8 +1,7 @@
 import { LevelManager } from "../game/core/classes/levelmanger";
-
+import { BlockObject } from "../game/core/data/block_data";
 import { block } from "../game/core/jsonmodule";
 import { LevelData } from "../game/core/levelstructure";
-
 // System Variables (Engine)
 
 let leftKey: Phaser.Input.Keyboard.Key;
@@ -54,7 +53,7 @@ class gameScene extends Phaser.Scene {
 
         this.levelmanager = new LevelManager(
             this.levelfile,
-            block, this,
+            BlockObject, this,
             terrain, decorateterrain,
         );
 
@@ -66,6 +65,8 @@ class gameScene extends Phaser.Scene {
         const alive = this.levelmanager.currentcharacter.active;
         const cc = this.levelmanager.currentcharacter;
         // this.levelmanager.UpdatePhysics();
+
+        // console.log(cc.x, cc.y)
 
         if (alive) {
             // TODO: Change once multiple characters become a thing

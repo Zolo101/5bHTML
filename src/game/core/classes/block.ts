@@ -1,33 +1,25 @@
+import { BlockObject } from "../data/block_data";
 import gameSceneType from "../gamestructure";
 import LevelManager from "./levelmanger";
-
 export class Block implements BlockType {
     // defaults
     size!: { x: number; y: number; };
     offset = { x: 0, y: 0 };
     onCollide!: LevelPhysicsCallback
-    //onCollide!: (scene: Phaser.Scene, sp: Sprite | Character) => void;
     side!: { left: boolean; right: boolean; up: boolean; down: boolean; };
+    name = "placeholder_name"
 
     constructor(
-        public name = "Unknown Block",
+        public tile = 4, // unknown/unset texture
         public canCollide = true,
         public visible = true,
         public canKill = false,
         public special = false,
         public animate = false,
-        public tile = 4, // unknown/unset texture
         public texturename = "special_missing", // for specialblocks
     ) {
-        // Not sure if i need to do this
-        this.name = name
-        this.canCollide = canCollide
-        this.visible = visible
-        this.canKill = canKill
-        this.special = special
-        this.animate = animate
-        this.tile = tile
-        this.texturename = texturename
+        // Add to blockMap
+        BlockObject.map.set(this.tile, this);
     }
 
     setSize(x: number, y: number): this {
@@ -67,6 +59,8 @@ export class Block implements BlockType {
 
     setTile(tile: number): this {
         this.tile = tile;
+        BlockObject.map.delete(tile);
+        BlockObject.map.set(tile, this);
         return this
     }
 
@@ -95,11 +89,7 @@ export type SimpleBlock = {
     }
 }
 
-export type SpecialBlock = {
-    name: string
-    canCollide: boolean
-    visible: boolean
-    canKill: boolean
+export type SpecialBlock = SimpleBlock & {
     special: boolean
     animate: boolean
     texturename: string
@@ -110,13 +100,6 @@ export type SpecialBlock = {
     offset: {
         x: number
         y: number
-    }
-    tile: number
-    side: {
-        left: boolean
-        right: boolean
-        up: boolean
-        down: boolean
     }
 }
 
@@ -137,9 +120,10 @@ export function createSpecialBlock(
     collisionCallback: LevelPhysicsCallback,
     collisionGroup: Phaser.GameObjects.Group,
 ): Phaser.GameObjects.Sprite {
+    console.log(y)
     const specialblock = scene.physics.add.sprite(
-        bcoord(30, x), bcoord(30, y - 1), blockinfo.texturename,
-        // FOR NOW, special_missing should be used instead
+        x, y, blockinfo.texturename,
+        // should be y - 15
     );
 
     // quick maths

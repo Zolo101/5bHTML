@@ -8,7 +8,6 @@ import { Entity, LevelData } from "../levelstructure";
 import { entities } from "../jsonmodule";
 import Settings from "../../settings";
 import gameSceneType from "../gamestructure";
-
 let level: LevelData
 
 export class LevelManager {
@@ -17,7 +16,10 @@ export class LevelManager {
     background!: Phaser.GameObjects.Image
 
     levels: LevelData
-    blocks: Block[]
+
+    // lazy lol
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    blocks: any
     scene: Phaser.Scene
 
     tilelayer!: Phaser.Tilemaps.StaticTilemapLayer
@@ -40,7 +42,8 @@ export class LevelManager {
 
     constructor(
         levels: LevelData,
-        blocks: Block[],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        blocks: any,
         scene: Phaser.Scene,
 
         terrain: Phaser.Physics.Arcade.StaticGroup,
@@ -50,7 +53,7 @@ export class LevelManager {
 
         this.hardlimitlevel = this.levels.levels.length;
 
-        this.blocks = blocks;
+        this.blocks = blocks; // i dont like this
         this.scene = scene;
 
         this.characters = this.scene.add.group();
@@ -77,12 +80,12 @@ export class LevelManager {
 
         if (Settings.IS_DEBUG) console.log(level);
 
-        const levelWidth = level.levels[this.levelnumber].data[0].length;
-        const levelHeight = level.levels[this.levelnumber].data.length;
+        const levelWidth = level.levels[this.levelnumber][0].width;
+        const levelHeight = level.levels[this.levelnumber][0].height;
 
         // Set background
         this.setBackground(
-            this.levels.levels[this.levelnumber].background,
+            this.levels.levels[this.levelnumber][0].background,
             this.blocksize * levelWidth,
             this.blocksize * levelHeight,
         );
@@ -108,7 +111,7 @@ export class LevelManager {
 
         // Set levelname
         this.levelTextButton.setText(
-            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber].name}`
+            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber][0].name}`
         );
 
         const backButton = this.scene.add.text(
@@ -132,28 +135,43 @@ export class LevelManager {
     }
 
     generateSprites(levelnum: number): void {
-        level.levels[levelnum].entity.forEach((sprite: Entity) => {
-            let spr: Sprite;
-            const spriteProperties = entities.find((spt: SpriteType) => spt.name === sprite.name)
-            if (!spriteProperties) return console.error("Couldn't find sprite!")
+        level.levels[levelnum][1].objects.forEach((sprite: Entity) => {
+            if (sprite.name === "Finish") {
+                const blockObject = this.blocks.map.get(2)
+                const specialblock = createSpecialBlock(
+                    this.scene as gameSceneType,
+                    blockObject, sprite.x, sprite.y,
+                    blockObject.size.x, blockObject.size.y,
+                    blockObject.offset.x, blockObject.offset.y, blockObject.onCollide, this.characters,
+                );
+                this.specialblocks.add(specialblock);
+                console.log(this.specialblocks)
+            } else {
 
-            switch (spriteProperties.type) {
-            case "character":
-                spr = makeCharacterFromString(this.scene, sprite, spriteProperties, this.tilelayer);
-                spr.type = "Character";
-                this.characters.add(spr as Character);
-                this.currentcharacter = spr as Character;
-                break;
+                let spr: Sprite;
 
-            case "sprite":
-                spr = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
-                this.sprites.add(spr);
-                // console.log(spr.mass)
-                break;
+                // Maybe use maps instead?
+                const spriteProperties = entities.find((spt: SpriteType) => spt.name === sprite.name.toLowerCase())
+                if (!spriteProperties) return console.error("Couldn't find sprite!")
 
-            default:
-                console.error("Unknown or unsupported sprite!");
-                break;
+                switch (spriteProperties.type) {
+                case "character":
+                    spr = makeCharacterFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                    spr.type = "Character";
+                    this.characters.add(spr as Character);
+                    this.currentcharacter = spr as Character;
+                    break;
+
+                case "sprite":
+                    spr = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                    this.sprites.add(spr);
+                    // console.log(spr.mass)
+                    break;
+
+                default:
+                    console.error("Unknown or unsupported sprite!");
+                    break;
+                }
             }
         });
 
@@ -187,89 +205,45 @@ export class LevelManager {
     }
 
     generateTerrain(levelnum: number): void {
-        const currentLevel = level.levels[levelnum];
-        const currentLevelData: string[][] = [];
-        currentLevel.data.forEach((row: string) => {
-            currentLevelData.push([...row]);
-        });
+        const currentLevel = level.levels[levelnum][0];
+        const levelData = currentLevel.data;
+        const levelDataprep: number[][] = [];
 
-        console.log(currentLevelData)
+        console.log(this.blocks)
 
-        const collisionIndexes: number[] = [];
-        const killIndexes: number[] = [];
+        // Clone array, dont reference it
+        const levelDataMapBuffer = [...levelData];
+        levelDataMapBuffer.forEach((n: number, i) => levelDataMapBuffer[i] -= 1);
 
-        const tilemapData: any[][] = JSON.parse(JSON.stringify(currentLevelData));
-        // console.log(tilemapData);
+        for (let i = 0; i < currentLevel.height; i++) {
+            levelDataprep[i] = levelDataMapBuffer.slice(currentLevel.width * i, currentLevel.width * (i + 1))
+        }
 
-        tilemapData.forEach((row: string[], i) => {
-            row.forEach((block: string, j) => {
-                // Skip if air
-                if (block !== ".") {
-                    const blockObject = this.blocks.find((foundblock) => foundblock.name === block);
+        /*
+        levelDataprep.forEach((row, i) => {
+            row.forEach((num, j) => {
+                // if (num === )
+            })
+        })*/
 
-                    if (blockObject === undefined) {
-                        console.warn("Unknown block skipped.")
-                        tilemapData[i][j] = 4;
-                    } else {
-                        tilemapData[i][j] = this.selectTileNumber(blockObject, i, j);
-                        if (tilemapData[i][j] === 4) {
-                            switch (true) {
-                            case blockObject.canCollide:
-                                collisionIndexes.push(tilemapData[i][j]);
-                                break;
-
-                            case blockObject.canKill:
-                                tilemapData[i][j] = 3;
-                                killIndexes.push(tilemapData[i][j]);
-                                break;
-
-                            case blockObject.visible:
-                                break;
-
-                            default:
-                                tilemapData[i][j] = 4;
-                                break;
-                            }
-                        } else {
-                            switch (true) {
-                            case blockObject.canCollide:
-                                collisionIndexes.push(tilemapData[i][j]);
-                                break;
-
-                            case blockObject.canKill:
-                                killIndexes.push(tilemapData[i][j]);
-                                break;
-
-                            case blockObject.visible:
-                                break;
-
-                            default:
-                                break;
-                            }
-                        }
-                    }
-                }
-            });
-        });
-
+        // Make tilemap
         const tilemap = this.scene.make.tilemap({
-            data: tilemapData,
+            data: levelDataprep,
             tileWidth: this.blocksize,
             tileHeight: this.blocksize,
         });
-        console.log(tilemapData);
+        console.log(levelDataprep);
 
         const tileset = tilemap.addTilesetImage(
             "core_tileset",
             "core_tileset",
-            this.blocksize, this.blocksize,
         );
 
         this.tilelayer = tilemap.createStaticLayer(0, tileset, 0, 0);
-        this.tilelayer.setCollision(collisionIndexes);
+        this.tilelayer.setCollision(this.blocks.collisionIndexes);
 
         // i'll put this somewhere else one day
-        this.tilelayer.setTileIndexCallback(killIndexes, (sp: Sprite | Character) => {
+        this.tilelayer.setTileIndexCallback(this.blocks.killIndexes, (sp: Sprite | Character) => {
             if (sp.type === "Sprite") {
                 sp.body.setVelocityY(-100);
                 return;
@@ -310,9 +284,13 @@ export class LevelManager {
 
     wipeSprites(): void {
         this.sprites.clear(true, true);
+        this.specialblocks.clear(true, true);
         this.characters.clear(true, true);
     }
 
+    /**
+     * @deprecated Don't use this
+     */
     selectTileNumber(blockObject: Block, i: number, j: number): number | string {
         let numberToSelect: number | string = 4;
         const tileNumber = blockObject.tile;
