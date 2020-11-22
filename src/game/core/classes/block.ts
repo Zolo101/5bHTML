@@ -141,7 +141,3 @@ export function createSpecialBlock(
 
     // this.setTexture(specialblock, blockinfo);
 }
-
-// export function parseBlockType(blockinfo: SimpleBlockInterface) {
-//
-// }

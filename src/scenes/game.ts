@@ -64,7 +64,6 @@ class gameScene extends Phaser.Scene {
         // console.log(aslist.map(sp => sp.grabbable));
         const alive = this.levelmanager.currentcharacter.active;
         const cc = this.levelmanager.currentcharacter;
-        // this.levelmanager.UpdatePhysics();
 
         // console.log(cc.x, cc.y)
 

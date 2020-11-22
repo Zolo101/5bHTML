@@ -287,31 +287,6 @@ export class LevelManager {
         this.specialblocks.clear(true, true);
         this.characters.clear(true, true);
     }
-
-    /**
-     * @deprecated Don't use this
-     */
-    selectTileNumber(blockObject: Block, i: number, j: number): number | string {
-        let numberToSelect: number | string = 4;
-        const tileNumber = blockObject.tile;
-        if (blockObject.special) {
-            const specialblock = createSpecialBlock(
-                    this.scene as gameSceneType,
-                    blockObject, j, i,
-                    blockObject.size.x, blockObject.size.y,
-                    blockObject.offset.x, blockObject.offset.y, blockObject.onCollide, this.characters,
-            );
-            this.specialblocks.add(specialblock);
-            numberToSelect = ".";
-        } else if (tileNumber !== undefined) {
-            numberToSelect = tileNumber;
-        } else {
-            // unknown/unset tile
-            numberToSelect = 4;
-        }
-
-        return numberToSelect;
-    }
 }
 
 export default LevelManager;
