@@ -84,11 +84,6 @@ class gameScene extends Phaser.Scene {
             }
         }
 
-        if (Phaser.Input.Keyboard.JustDown(rKey)) {
-            this.levelmanager.scene.cameras.main.flash(400, 255, 255, 255);
-            this.levelmanager.startLevel();
-        }
-
         // Flip the character based on direction
         cc.setFlipX(!cc.direction);
 
@@ -128,6 +123,11 @@ class gameScene extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(downKey)) {
                 cc.releaseGrab(false);
             }
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(rKey)) { // RESET
+            this.levelmanager.scene.cameras.main.flash(400, 255, 255, 255);
+            this.levelmanager.startLevel();
         }
     }
 }
