@@ -11,7 +11,8 @@ v0 Alpha -- August 2020 :heavy_check_mark:
 <!-- v2 Alpha -- Late September 2020 :heavy_check_mark: -->
 v2 Alpha -- Mid October 2020 :heavy_check_mark:
 
-v3 Alpha -- Late October 2020 :x:
+<!-- v3 Alpha -- Late October 2020 :x: -->
+v3 Alpha -- Late December 2020 :heavy_plus_sign:
 
 *Please look in **Projects** tab for up-to-date progress on this.*
 

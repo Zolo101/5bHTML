@@ -4,13 +4,11 @@ Emoji | meaning
 🟦| Latest *""Stable""* version
 
 
-# dev-20w47b 🟥 -- 22/11/2020
+# dev-20w51a 🟥 -- 18/12/2020
 
 **To be v3 Alpha.**
 
 ## Things since v2.1 Alpha:
-
-- Collectables / Win tokens (WIP).
 
 - Transitions.
 
@@ -18,25 +16,15 @@ Emoji | meaning
 
 - Better level select screen.
 
-- Added a dev-mode for better debug info. This is enabled if you build using `build-dev` instead of `build-prod`, or if you use `watch`.
+- Added favicon.
 
-- Revamped how blocks are made in levels. Most blocks *should* have their respected properties now.
-
-- Revamped how levels are made. Levels are now made in [Tiled](https://www.mapeditor.org/).
-
-- Fixed [#8](https://github.com/Zolo101/5bHTML/issues/8), which was when level names kept getting added after level completion.
+- Fixed issues [#7](https://github.com/Zolo101/5bHTML/issues/7), [#8](https://github.com/Zolo101/5bHTML/issues/8) and [#11](https://github.com/Zolo101/5bHTML/issues/11)
 
 ## Known issues
-
-- **Levels 6 to 10 aren't complete.**
-
-- The finish blocks are in different places in level 4 and 5.
 
 - **Explore doesn't work due to the switch to Tiled levels.**
 
 - Platforms dont work yet.
-
-- Collectables / Win tokens wont save in v3. This will be fixed in v4.
 
 - You can still interact when dead.
 
@@ -44,11 +32,21 @@ Emoji | meaning
 
 - Transitions apply to the UI, which shouldn't happen.
 
-- Spikes kill from all sides.
+## Dev changes
 
-- The dreaded [#7](https://github.com/Zolo101/5bHTML/issues/7) still happens... :@
+- Revamped how blocks are made in levels. Most blocks *should* have their respected properties now.
 
-- You can grab stuff from below you. It's cool, but it shouldn't happen lol.
+- Revamped how levels are made. Levels are now made in [Tiled](https://www.mapeditor.org/).
+
+- Added a dev mode for better debug info. This is enabled if you build using `build-dev` instead of `build-prod`, or if you use `watch`.
+
+- Webpack updated from `4.44.2` to `5.11.0`
+
+- Typescript updated from `4.0.3` to `4.1.3`
+
+- Eslint updated from `7.11.0` to `7.15.0`
+
+- Phaser updated from `3.24.1` to `3.50.0`
 
 # v2.1 Alpha 🟦 -- 11/10/2020
 
