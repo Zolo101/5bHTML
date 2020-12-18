@@ -22,7 +22,7 @@ export class LevelManager {
     blocks: BlockObjectType
     scene: Phaser.Scene
 
-    tilelayer!: Phaser.Tilemaps.StaticTilemapLayer
+    tilelayer!: Phaser.Tilemaps.TilemapLayer
     specialblocks!: Phaser.GameObjects.Group
     // collisons!:
     camera!: Phaser.Cameras.Scene2D.Camera

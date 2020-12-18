@@ -12,7 +12,7 @@ export class Sprite extends Phaser.GameObjects.Sprite {
         x: number,
         y: number,
         key: string,
-        tilemap: Phaser.Tilemaps.StaticTilemapLayer,
+        tilemap: Phaser.Tilemaps.TilemapLayer,
         public mass = 2,
         public friction = 1.15,
         topcollide = false,
@@ -30,10 +30,10 @@ export class Sprite extends Phaser.GameObjects.Sprite {
         this.body.setDragX(friction * 1000);
         this.body.setMass(mass);
 
-        if (topcollide) {
-            this.body.checkCollision.left = false;
-            this.body.checkCollision.right = false;
-        }
+        //if (topcollide) {
+        //    this.body.checkCollision.left = false;
+        //    this.body.checkCollision.right = false;
+        //}
 
         if (dontmove) this.body.immovable = true;
 
@@ -126,7 +126,7 @@ export function makeCharacterFromString(
     sceneReference: Phaser.Scene,
     entity: Entity,
     sprite: SpriteType, // property
-    tilelayer: Phaser.Tilemaps.StaticTilemapLayer,
+    tilelayer: Phaser.Tilemaps.TilemapLayer,
 ): Character {
     return new Character(
         sceneReference, entity.x, entity.y, sprite.name,
@@ -138,15 +138,14 @@ export function makeSpriteFromString(
     sceneReference: Phaser.Scene,
     entity: Entity,
     sprite: SpriteType, // property
-    tilelayer: Phaser.Tilemaps.StaticTilemapLayer,
+    tilelayer: Phaser.Tilemaps.TilemapLayer,
 ): Sprite {
     const newSprite = new Sprite(
-        sceneReference, entity.x, entity.y, sprite.name,
+        sceneReference, entity.x + 15, entity.y, sprite.name,
         tilelayer, sprite.mass, undefined, true, true,
     );
     newSprite.setDisplaySize(sprite.size.x, sprite.size.y);
     newSprite.setScale(0.45);
-    newSprite.body.customSeparateX = true;
     return newSprite;
 }
 
