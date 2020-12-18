@@ -1,3 +1,4 @@
+import Settings from "../../settings";
 import { Entity } from "../levelstructure";
 
 export class Sprite extends Phaser.GameObjects.Sprite {
@@ -48,20 +49,25 @@ export class Character extends Sprite {
     grabbable = true; // Is the character grabbable
 
     attemptGrab(sp: Sprite): void {
+        // Stop if sprite is dead
+        if (!this.active) return;
+
         const characterBounds = this.getBounds();
-        const grabRange = 1.5
+        const cbWidth = characterBounds.width * 1.75
+        const cbHeight = characterBounds.height
 
-        // debug
-        /*
-        this.scene.add.rectangle(
-            this.body.x,
-            this.body.y,
-            characterBounds.width * grabRange * 2,
-            (characterBounds.height * grabRange) - 10,
-            0xffffff
-        ) */
+        characterBounds.setPosition(this.getCenter().x, this.getCenter().y - 15);
+        characterBounds.setSize(cbWidth, cbHeight);
 
-        characterBounds.setSize(characterBounds.width * grabRange * 1.5, (characterBounds.height * grabRange))
+        if (Settings.IS_DEBUG) {
+            this.scene.add.rectangle(
+                characterBounds.x,
+                characterBounds.y,
+                cbWidth,
+                cbHeight
+            ).setStrokeStyle(2, 0xa2ff00, 0.4)
+        }
+
         if (characterBounds.contains(sp.x, sp.y)) {
             // console.log(sp.name);
             this.grabbing = sp; // a reference
