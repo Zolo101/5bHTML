@@ -38,7 +38,7 @@ export class LevelManager {
     levelTextButton!: Phaser.GameObjects.Text
 
     // stop player from going past certain level
-    hardlimitlevel = 10;
+    hardlimitlevel = 6;
 
     constructor(
         levels: LevelData,
@@ -227,12 +227,10 @@ export class LevelManager {
 
         this.tilelayer.setCollision(this.blocks.collisionIndexes);
 
-        // this.tilelayer
-
         // i'll put this somewhere else one day
         this.tilelayer.setTileIndexCallback(this.blocks.killIndexes, (sp: Sprite | Character) => {
             if (sp.type === "Sprite") {
-                // sp.body.setVelocityY(-100);
+                sp.body.setVelocityY(-50);
                 return;
             }
 

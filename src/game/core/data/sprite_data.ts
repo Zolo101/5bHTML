@@ -38,7 +38,7 @@ export default [
     {
         name: "metal",
         type: "sprite",
-        mass: 8,
+        mass: 6.5,
         size: {
             x: 128,
             y: 128

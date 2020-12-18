@@ -1,6 +1,5 @@
 import { LevelManager } from "../game/core/classes/levelmanger";
 import { BlockObject } from "../game/core/data/block_data";
-import { block } from "../game/core/jsonmodule";
 import { LevelData } from "../game/core/levelstructure";
 // System Variables (Engine)
 
@@ -17,7 +16,6 @@ class gameScene extends Phaser.Scene {
     levelnumber = 0
     blocksize = 30
     levelfile!: LevelData
-    // block!: BlockInterface[]
     background!: Phaser.GameObjects.Image
 
     levelmanager!: LevelManager
@@ -61,11 +59,8 @@ class gameScene extends Phaser.Scene {
     }
 
     update(): void {
-        // console.log(aslist.map(sp => sp.grabbable));
         const alive = this.levelmanager.currentcharacter.active;
         const cc = this.levelmanager.currentcharacter;
-
-        // console.log(cc.x, cc.y)
 
         if (alive) {
             // TODO: Change once multiple characters become a thing

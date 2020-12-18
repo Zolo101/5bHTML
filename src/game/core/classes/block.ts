@@ -20,6 +20,7 @@ export class Block implements BlockType {
     ) {
         // Add to blockMap
         BlockObject.map.set(this.tile, this);
+        this.side = {left: true, right: true, up: true, down: true}
     }
 
     setSize(x: number, y: number): this {
@@ -122,8 +123,7 @@ export function createSpecialBlock(
 ): Phaser.GameObjects.Sprite {
     console.log(y)
     const specialblock = scene.physics.add.sprite(
-        x, y, blockinfo.texturename,
-        // should be y - 15
+        x, y, blockinfo.texturename
     );
 
     // quick maths
