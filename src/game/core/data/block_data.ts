@@ -1,5 +1,12 @@
 import { Block } from "../classes/block";
-export const BlockObject = {
+
+export type BlockObjectType = {
+    map: Map<number, Block>,
+    collisionIndexes: number[],
+    killIndexes: number[],
+    specialIndexes: number[],
+}
+export const BlockObject: BlockObjectType = {
     map: new Map<number, Block>(),
     collisionIndexes: [] as number[],
     killIndexes: [] as number[],
@@ -11,7 +18,7 @@ BlockObject.map.set(6, new Block(6, true, true, false, false, false))
 BlockObject.map.set(-1, new Block(undefined, false, false, false, false, false))
 BlockObject.map.set(2, new Block(2, false, true, false, true, false) // Finish block
     .setSize(60, 120)
-    // .setOffset(-15, 0)
+    .setOffset(30, 0)
     .setTextureName("finish")
     .setCollisionCallback((lm) => {
         if ((lm.levelnumber + 1 < lm.hardlimitlevel) && lm.currentcharacter.active) {
@@ -41,10 +48,10 @@ BlockObject.map.set(10, new Block(10, false, true, false, false, false))
 // new Block("_", undefined, true, false, false, true)
 
 // one-sided platforms
-BlockObject.map.set(19, new Block(19, true, true, false, false, false) // right
-    .setSides(true, true, true, true))
-BlockObject.map.set(16, new Block(16, true, true, false, false, false) // up
-    .setSides(true, true, true, true))
+BlockObject.map.set(19, new Block(19, false, true, false, false, false) // right
+    .setSides(false, true, false, false))
+BlockObject.map.set(16, new Block(16, false, true, false, false, false) // up
+    .setSides(false, false, true, false))
 
 BlockObject.map.set(21, new Block(21, true, true, false, false, false))
 BlockObject.map.set(20, new Block(20, true, true, false, false, false))

@@ -8,6 +8,7 @@ import { Entity, LevelData } from "../levelstructure";
 import { entities } from "../jsonmodule";
 import Settings from "../../settings";
 import gameSceneType from "../gamestructure";
+import { BlockObjectType } from "../data/block_data";
 let level: LevelData
 
 export class LevelManager {
@@ -17,9 +18,8 @@ export class LevelManager {
 
     levels: LevelData
 
-    // lazy lol
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    blocks: any
+    // shouldnt need to repeat this
+    blocks: BlockObjectType
     scene: Phaser.Scene
 
     tilelayer!: Phaser.Tilemaps.StaticTilemapLayer
@@ -43,7 +43,7 @@ export class LevelManager {
     constructor(
         levels: LevelData,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        blocks: any,
+        blocks: BlockObjectType,
         scene: Phaser.Scene,
 
         terrain: Phaser.Physics.Arcade.StaticGroup,
@@ -137,7 +137,7 @@ export class LevelManager {
     generateSprites(levelnum: number): void {
         level.levels[levelnum][1].objects.forEach((sprite: Entity) => {
             if (sprite.name === "Finish") {
-                const blockObject = this.blocks.map.get(2)
+                const blockObject = this.blocks.map.get(2) as Block
                 const specialblock = createSpecialBlock(
                     this.scene as gameSceneType,
                     blockObject, sprite.x, sprite.y,
@@ -175,18 +175,9 @@ export class LevelManager {
             }
         });
 
-        // ahh repeated code :(
-        this.scene.physics.add.collider(this.characters, this.sprites, (sp1, sp2) => {
-        // const b1 = sp1.body as Phaser.Physics.Arcade.Body;
-        // const b2 = sp2.body as Phaser.Physics.Arcade.Body;
-
-        // if (b1.y > b2.y) {
-        // b2.y += (b1.top - b2.bottom);
-        // b2.stop();
-        // } else {
-        // b1.y += (b2.top - b1.bottom);
-        // b1.stop();
-        // }
+        // Character with Sprite collision
+        this.scene.physics.add.collider(this.characters, this.sprites, undefined, (sp1) => {
+            return (sp1.body.velocity.y > 0) ? true : false
         });
 
         // Collide with self
@@ -219,13 +210,6 @@ export class LevelManager {
             levelDataprep[i] = levelDataMapBuffer.slice(currentLevel.width * i, currentLevel.width * (i + 1))
         }
 
-        /*
-        levelDataprep.forEach((row, i) => {
-            row.forEach((num, j) => {
-                // if (num === )
-            })
-        })*/
-
         // Make tilemap
         const tilemap = this.scene.make.tilemap({
             data: levelDataprep,
@@ -239,13 +223,16 @@ export class LevelManager {
             "core_tileset",
         );
 
-        this.tilelayer = tilemap.createStaticLayer(0, tileset, 0, 0);
+        this.tilelayer = tilemap.createLayer(0, tileset, 0, 0);
+
         this.tilelayer.setCollision(this.blocks.collisionIndexes);
+
+        // this.tilelayer
 
         // i'll put this somewhere else one day
         this.tilelayer.setTileIndexCallback(this.blocks.killIndexes, (sp: Sprite | Character) => {
             if (sp.type === "Sprite") {
-                sp.body.setVelocityY(-100);
+                // sp.body.setVelocityY(-100);
                 return;
             }
 
@@ -257,7 +244,7 @@ export class LevelManager {
         // console.log(tilemapData);
 
         this.scene.cameras.main.setBounds(0, 0, tilemap.widthInPixels, tilemap.heightInPixels);
-        this.scene.cameras.main.setRoundPixels(false);
+        // this.scene.cameras.main.setRoundPixels(false);
         // const tilesetParse = currentLevel.data.map((row) => {row.})
     }
 
