@@ -36,35 +36,40 @@ class menuScene extends Phaser.Scene {
 
         const buttonlist = [];
 
+        const newnewButton = this.add.text(
+            640, 125, "New to 5bHTML?", buttonStyle,
+        ).setInteractive();
+
         const watchButton = this.add.text(
-            600, 200, "WATCH BFDIA 5A", buttonStyle,
+            640, 175, "WATCH BFDIA 5a", buttonStyle,
         ).setInteractive();
 
         const newButton = this.add.text(
-            600, 250, "NEW GAME", buttonStyle,
+            640, 350, "NEW GAME", buttonStyle,
         ).setInteractive();
 
         const continueButton = this.add.text(
-            600, 300, "LEVEL SELECT", buttonStyle,
+            640, 400, "LEVEL SELECT", buttonStyle,
         ).setInteractive();
 
         // const levelButton = this.add.text(
-        //    600, 350, "LEVEL EDITOR (old)", buttonStyle,
+        //    640, 350, "LEVEL EDITOR (old)", buttonStyle,
         // ).setInteractive();
         const exploreButton = this.add.text(
-            600, 400, "EXPLORE", buttonStyle,
+            640, 450, "EXPLORE", buttonStyle,
         ).setInteractive();
         // const settingsButton = this.add.text(
-        //    600,450,"Settings",buttonStyle,
+        //    640,450,"Settings",buttonStyle,
         // ).setInteractive();
 
-        buttonlist.push(watchButton, newButton, continueButton, exploreButton);
+        buttonlist.push(newnewButton, watchButton, newButton, continueButton, exploreButton);
         // ,settingsButton);
 
         buttonlist.forEach((btn) => {
             btn.on("pointerover", () => btn.setBackgroundColor("#d4d4d4"));
             btn.on("pointerout", () => btn.setBackgroundColor("#fff"));
         });
+        newnewButton.on("pointerdown", () => this.scene.start("newScene"));
         watchButton.on("pointerdown", () => openExternalLink("https://www.youtube.com/watch?v=4q77g4xo9ic"));
         newButton.on("pointerdown", () => this.scene.start("gameScene", {
             levelfile: levels,
