@@ -4,33 +4,20 @@ Emoji | meaning
 🟦| Latest *""Stable""* version
 
 
-# dev-20w51a 🟥 -- 18/12/2020
-
-**To be v3 Alpha.**
-
-## Things since v2.1 Alpha:
+# v3 Alpha 🟦 -- 31/12/2020
+## Major Changes
 
 - Transitions.
 
 - The character now moves accordingly to the mass of the sprite grabbed. This also affects throwing power.
 
-- Better level select screen.
+- Book now jumps slightly higher, and stops slightly faster.
 
-- Added favicon.
+- UI Improvements.
 
-- Fixed issues [#7](https://github.com/Zolo101/5bHTML/issues/7), [#8](https://github.com/Zolo101/5bHTML/issues/8) and [#11](https://github.com/Zolo101/5bHTML/issues/11)
+- Added favicon (the picture on the website tab).
 
-## Known issues
-
-- **Explore doesn't work due to the switch to Tiled levels.**
-
-- Platforms dont work yet.
-
-- You can still interact when dead.
-
-- Finish sprites dont get deleted (instead they fall with no collision), causing them to hover in lvl 6.
-
-- Transitions apply to the UI, which shouldn't happen.
+- Fixed issues [#7](https://github.com/Zolo101/5bHTML/issues/7), [#8](https://github.com/Zolo101/5bHTML/issues/8), [#9](https://github.com/Zolo101/5bHTML/issues/9), [#10]((https://github.com/Zolo101/5bHTML/issues/10)) and [#11](https://github.com/Zolo101/5bHTML/issues/11)
 
 ## Dev changes
 
@@ -59,7 +46,6 @@ Emoji | meaning
 - The levelname text has been given its correct depth (It used to be behind the sprites).
 
 # v2 Alpha -- 11/10/2020
-
 ## Major changes
 
 - 5beam Explore intergration. Browse and play custom-made levels! You can upload your levels [here](http://5beam.zapto.org/). 

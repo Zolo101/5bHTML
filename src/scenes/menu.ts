@@ -1,7 +1,7 @@
 import { levels } from "../game/core/jsonmodule";
 import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
 import Settings from "../game/settings";
-const devdate = new Date(2020, 12, 18)
+const devdate = new Date(2020, 12, 31)
 
 class menuScene extends Phaser.Scene {
     constructor() { super("menuScene"); }
@@ -95,16 +95,15 @@ class menuScene extends Phaser.Scene {
         this.add.text(785, 92, "Remake by Zelo101", textStyle).setFontSize(18);
 
         // Version
-        const versionText = this.add.text(600, 450, "v3 Alpha", textStyle)
+        const versionText = this.add.text(831, 500, "v3 Alpha", textStyle)
             .setBackgroundColor(hexColourFromSeed(devdate.getTime()))
-            //.setBackgroundColor("#4f9aff")
-            .setFontSize(16)
-            // .setFontSize(42)
+            .setFontSize(28)
             .setColor("#000");
 
+        // Debug Version
         if (Settings.IS_DEBUG) {
             versionText.setFontFamily("cursive")
-                .setText("dev-20w51a")
+                .setText("dev-20w52a")
                 .setDisplaySize(150, 30)
                 .setPosition(525, 502)
         }

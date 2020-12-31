@@ -12,11 +12,14 @@ v0 Alpha -- August 2020 :heavy_check_mark:
 v2 Alpha -- Mid October 2020 :heavy_check_mark:
 
 <!-- v3 Alpha -- Late October 2020 :x: -->
-v3 Alpha -- Late December 2020 :heavy_plus_sign:
+v3 Alpha -- Late December 2020 :heavy_check_mark:
 
-*Please look in **Projects** tab for up-to-date progress on this.*
+v4 Alpha -- 2021 :x:
 
-Beta -- December 2020
+*Please look in **Projects** tab for up-to-date progress on this. Dates shown are **NOT** final.*
+
+<!-- Beta -- December 2020 -->
+Beta -- Mid 2021
 - [:x:] Able to complete the game
 - [:heavy_plus_sign:] Support multiple characters
 - [:x:] Animations
