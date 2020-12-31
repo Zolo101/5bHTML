@@ -121,7 +121,7 @@ export function createSpecialBlock(
     collisionCallback: LevelPhysicsCallback,
     collisionGroup: Phaser.GameObjects.Group,
 ): Phaser.GameObjects.Sprite {
-    console.log(y)
+    // console.log(y)
     const specialblock = scene.physics.add.sprite(
         x, y, blockinfo.texturename
     );

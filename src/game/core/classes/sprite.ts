@@ -28,7 +28,7 @@ export class Sprite extends Phaser.GameObjects.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.collider(this, tilemap);
 
-        this.body.setDragX(friction * 600);
+        this.body.setDragX(friction * 700);
         this.body.setMass(mass);
 
         //if (topcollide) {
@@ -53,22 +53,24 @@ export class Character extends Sprite {
         if (!this.active) return;
 
         const characterBounds = this.getBounds();
-        const cbWidth = characterBounds.width * 1.75
+        const cbWidth = characterBounds.width * 2.25
         const cbHeight = characterBounds.height
+        const spriteCoord = sp.getCenter();
+        const weirdOffset = 58; // Fix the werid offset
 
-        characterBounds.setPosition(this.getCenter().x, this.getCenter().y - 15);
+        characterBounds.setPosition(this.getCenter().x - weirdOffset, this.getCenter().y - 15);
         characterBounds.setSize(cbWidth, cbHeight);
 
         if (Settings.IS_DEBUG) {
             this.scene.add.rectangle(
-                characterBounds.x,
+                characterBounds.x + weirdOffset,
                 characterBounds.y,
                 cbWidth,
                 cbHeight
-            ).setStrokeStyle(2, 0xa2ff00, 0.4)
+            ).setStrokeStyle(2, 0xa2ff00, 0.2)
         }
 
-        if (characterBounds.contains(sp.x, sp.y)) {
+        if (characterBounds.contains(spriteCoord.x, spriteCoord.y)) {
             // console.log(sp.name);
             this.grabbing = sp; // a reference
             sp.grabbed = true;
@@ -86,7 +88,7 @@ export class Character extends Sprite {
 
         const gsprite = this.grabbing;
         const throwpower = 400 * this.speed;
-        const resultVelocityX = (Math.abs(this.body.velocity.x) > 10)
+        const resultVelocityX = (Math.abs(this.body.velocity.x) > 140)
             ? this.body.velocity.x * 2 : (this.direction)
                 ? throwpower : -throwpower
 

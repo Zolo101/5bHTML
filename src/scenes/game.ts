@@ -106,13 +106,13 @@ class gameScene extends Phaser.Scene {
             cc.grabbing.body.velocity.set(cc.body.velocity.x, 0);
             if (cc.direction) {
                 cc.grabbing.body.position.set(
-                    cc.body.position.x + 30,
-                    cc.body.position.y + 5,
+                    cc.body.position.x + 25,
+                    cc.body.position.y - 10,
                 );
             } else {
                 cc.grabbing.body.position.set(
-                    cc.body.position.x - 10,
-                    cc.body.position.y + 5,
+                    cc.body.position.x - 15,
+                    cc.body.position.y - 10,
                 );
             }
 
