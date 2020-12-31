@@ -38,7 +38,7 @@ export class LevelManager {
     levelTextButton!: Phaser.GameObjects.Text
 
     // stop player from going past certain level
-    hardlimitlevel = 6;
+    hardlimitlevel = 5;
 
     constructor(
         levels: LevelData,
