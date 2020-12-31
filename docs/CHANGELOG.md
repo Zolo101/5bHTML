@@ -1,7 +1,39 @@
 Emoji | meaning
 --- | ---
-🟥| Latest Dev version, these versions will not be on the [github page](https://zolo101.github.io/5bHTML/dist/), and you'll have to build them yourself.
+🟥| Latest Dev version, these versions will not be on the [github page](https://zolo101.github.io/5bHTML/dist/), so you'll have to build them yourself.
 🟦| Latest *""Stable""* version
+
+
+# v3 Alpha 🟦 -- 31/12/2020
+## Major Changes
+
+- Transitions.
+
+- The character now moves accordingly to the mass of the sprite grabbed. This also affects throwing power.
+
+- Book now jumps slightly higher, and stops slightly faster.
+
+- UI Improvements.
+
+- Added favicon (the picture on the website tab).
+
+- Fixed issues [#7](https://github.com/Zolo101/5bHTML/issues/7), [#8](https://github.com/Zolo101/5bHTML/issues/8), [#9](https://github.com/Zolo101/5bHTML/issues/9), [#10]((https://github.com/Zolo101/5bHTML/issues/10)) and [#11](https://github.com/Zolo101/5bHTML/issues/11)
+
+## Dev changes
+
+- Revamped how blocks are made in levels. Most blocks *should* have their respected properties now.
+
+- Revamped how levels are made. Levels are now made in [Tiled](https://www.mapeditor.org/).
+
+- Added a dev mode for better debug info. This is enabled if you build using `build-dev` instead of `build-prod`, or if you use `watch`.
+
+- Webpack updated from `4.44.2` to `5.11.0`
+
+- Typescript updated from `4.0.3` to `4.1.3`
+
+- Eslint updated from `7.11.0` to `7.15.0`
+
+- Phaser updated from `3.24.1` to `3.50.0`
 
 # v2.1 Alpha 🟦 -- 11/10/2020
 
@@ -14,7 +46,6 @@ Emoji | meaning
 - The levelname text has been given its correct depth (It used to be behind the sprites).
 
 # v2 Alpha -- 11/10/2020
-
 ## Major changes
 
 - 5beam Explore intergration. Browse and play custom-made levels! You can upload your levels [here](http://5beam.zapto.org/). 

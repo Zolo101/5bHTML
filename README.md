@@ -1,12 +1,14 @@
 # 5bHTML
 
-Hosted version: **v2.1, Alpha.**
+## [Play here](https://5b.zelo.dev/)
 
-Latest version: **v2.1, Alpha.**
+5bHTML is a remake of the htwins [5b flash game](https://bfdi.tv/5b/) thats based on [battle for dream island](https://www.youtube.com/user/jacknjellify). It's in alpha right now so not everything looks and feels the same, so please keep that in mind before playing.
 
-Join the [5b editing discord server!](https://discord.gg/qtePFSH)
+Hosted version: **v3 Alpha**
 
-**This does NOT support Internet Explorer, since IE doesn't support ES6.**
+Latest version: **v3 Alpha**
+
+Join the [5bHTML discord server!](https://discord.gg/um5KWabefm)
 
 Check the **Projects** tab for progress on the next update.
 
@@ -37,4 +39,4 @@ You should now have a web server running at http://localhost:8080/.
 
 Cary & Michael Huang - Creating the orginial 5b game.
 
-Shiosh - HTwins.net-like css file.
+Midi - HTwins.net-like css file and exporting all of the orginial 5b assets (blocks, entities, etc) in high-quality. Ty!! :)

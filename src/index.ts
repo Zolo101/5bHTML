@@ -7,6 +7,8 @@ import levelselectScene from "./scenes/levelselect";
 import editorScene from "./scenes/editor";
 import gameScene from "./scenes/game";
 import exploreScene from "./scenes/explore";
+import newScene from "./scenes/new";
+import Settings from "./game/settings";
 
 const config = {
     type: Phaser.AUTO,
@@ -14,10 +16,12 @@ const config = {
     height: 540,
     // antialias: false,
     // roundPixels: true,
+    // pixelArt: true,
+    // zoom: 0.8,
     physics: {
         default: "arcade",
         arcade: {
-            // debug: true,
+            debug: Settings.IS_DEBUG,
             gravity: { y: 2500 },
         },
     },
@@ -29,7 +33,8 @@ const config = {
         gameScene,
         editorScene,
         exploreScene,
+        newScene,
     ],
 };
 
-const game = new Phaser.Game(config);
+new Phaser.Game(config);

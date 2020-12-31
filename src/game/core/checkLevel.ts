@@ -48,28 +48,28 @@ export function checkLevel(): void {
 
     curlevel.levels.forEach((level: Level, i: number) => {
         switch (true) {
-        case level.name === undefined:
+        case level[0].name === undefined:
             console.error(`No level name @ level number ${i}.`);
             // falls through
 
-        case level.width === undefined:
+        case level[0].width === undefined:
             console.error(`No level width @ level number ${i}.`);
             // falls through
 
-        case level.height === undefined:
+        case level[0].height === undefined:
             console.error(`No level height @ level number ${i}.`);
             // falls through
 
-        case level.background === undefined:
+        case level[0].background === undefined:
             console.error(`No level background @ level number ${i}.`);
             // falls through
 
-        case level.data === undefined:
+        case level[0].data === undefined:
             console.error(`No level data @ level number ${i}.`);
             // falls through
 
-        case level.entity === undefined:
-            console.warn(`No level entities @ level number ${i}.`);
+            //case level[0].entity === undefined:
+            //    console.warn(`No level entities @ level number ${i}.`);
             // falls through
 
         default:

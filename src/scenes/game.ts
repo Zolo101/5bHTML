@@ -1,10 +1,6 @@
-import { SpecialBlock } from "../game/core/block";
 import { LevelManager } from "../game/core/classes/levelmanger";
-import Sprite, { Character } from "../game/core/classes/sprite";
-
-import { block } from "../game/core/jsonmodule";
+import { BlockObject } from "../game/core/data/block_data";
 import { LevelData } from "../game/core/levelstructure";
-
 // System Variables (Engine)
 
 let leftKey: Phaser.Input.Keyboard.Key;
@@ -20,7 +16,6 @@ class gameScene extends Phaser.Scene {
     levelnumber = 0
     blocksize = 30
     levelfile!: LevelData
-    // block!: BlockInterface[]
     background!: Phaser.GameObjects.Image
 
     levelmanager!: LevelManager
@@ -56,7 +51,7 @@ class gameScene extends Phaser.Scene {
 
         this.levelmanager = new LevelManager(
             this.levelfile,
-            block as unknown as SpecialBlock[], this,
+            BlockObject, this,
             terrain, decorateterrain,
         );
 
@@ -64,29 +59,25 @@ class gameScene extends Phaser.Scene {
     }
 
     update(): void {
-        // console.log(aslist.map(sp => sp.grabbable));
         const alive = this.levelmanager.currentcharacter.active;
         const cc = this.levelmanager.currentcharacter;
-        // this.levelmanager.UpdatePhysics();
 
         if (alive) {
+            // TODO: Change once multiple characters become a thing
             if (spaceKey.isDown && (cc.body.blocked.down || cc.body.touching.down)) {
-                cc.body.setVelocityY(-700);
+                cc.body.setVelocityY(-710 * cc.speed);
             }
 
             if (leftKey.isDown) {
                 cc.direction = false;
-                cc.body.setVelocityX(-250);
+                cc.body.setVelocityX(-250 * cc.speed);
             }
 
             if (rightKey.isDown) {
                 cc.direction = true;
-                cc.body.setVelocityX(250);
+                cc.body.setVelocityX(250 * cc.speed);
             }
-        }
-
-        if (Phaser.Input.Keyboard.JustDown(rKey)) {
-            this.levelmanager.startLevel();
+            // console.log(cc.body.velocity.y)
         }
 
         // Flip the character based on direction
@@ -115,19 +106,24 @@ class gameScene extends Phaser.Scene {
             cc.grabbing.body.velocity.set(cc.body.velocity.x, 0);
             if (cc.direction) {
                 cc.grabbing.body.position.set(
-                    cc.body.position.x + 30,
-                    cc.body.position.y + 5,
+                    cc.body.position.x + 25,
+                    cc.body.position.y - 10,
                 );
             } else {
                 cc.grabbing.body.position.set(
-                    cc.body.position.x - 10,
-                    cc.body.position.y + 5,
+                    cc.body.position.x - 15,
+                    cc.body.position.y - 10,
                 );
             }
 
             if (Phaser.Input.Keyboard.JustDown(downKey)) {
                 cc.releaseGrab(false);
             }
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(rKey)) { // RESET
+            this.levelmanager.scene.cameras.main.flash(400, 255, 255, 255);
+            this.levelmanager.startLevel();
         }
     }
 }
