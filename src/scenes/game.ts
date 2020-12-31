@@ -65,7 +65,7 @@ class gameScene extends Phaser.Scene {
         if (alive) {
             // TODO: Change once multiple characters become a thing
             if (spaceKey.isDown && (cc.body.blocked.down || cc.body.touching.down)) {
-                cc.body.setVelocityY(-700 * cc.speed);
+                cc.body.setVelocityY(-710 * cc.speed);
             }
 
             if (leftKey.isDown) {
@@ -77,6 +77,7 @@ class gameScene extends Phaser.Scene {
                 cc.direction = true;
                 cc.body.setVelocityX(250 * cc.speed);
             }
+            // console.log(cc.body.velocity.y)
         }
 
         // Flip the character based on direction

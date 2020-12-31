@@ -28,7 +28,7 @@ export class Sprite extends Phaser.GameObjects.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.collider(this, tilemap);
 
-        this.body.setDragX(friction * 1000);
+        this.body.setDragX(friction * 600);
         this.body.setMass(mass);
 
         //if (topcollide) {
@@ -85,17 +85,15 @@ export class Character extends Sprite {
         }
 
         const gsprite = this.grabbing;
-        const throwpower = 500 * this.speed;
+        const throwpower = 400 * this.speed;
+        const resultVelocityX = (Math.abs(this.body.velocity.x) > 10)
+            ? this.body.velocity.x * 2 : (this.direction)
+                ? throwpower : -throwpower
+
         if (throwsprite) {
-            if (this.direction) {
-                gsprite.body.velocity = new Phaser.Math.Vector2(
-                    throwpower, -throwpower * 1.5,
-                );
-            } else {
-                gsprite.body.velocity = new Phaser.Math.Vector2(
-                    -throwpower, -throwpower * 1.5,
-                );
-            }
+            gsprite.body.velocity = new Phaser.Math.Vector2(
+                resultVelocityX, -throwpower * 1.5,
+            );
         }
         gsprite.grabbed = false;
         gsprite.body.enable = true;

@@ -4,6 +4,7 @@ export default [
     {
         name: "book",
         type: "character",
+        friction: 2.8,
         size: {
             x: 128,
             y: 128
