@@ -44,6 +44,8 @@ class menuScene extends Phaser.Scene {
             640, 175, "WATCH BFDIA 5a", buttonStyle,
         ).setInteractive();
 
+        this.add.text(675, 260, "Happy new year! :)", textStyle).setFontSize(28);
+
         const newButton = this.add.text(
             640, 350, "NEW GAME", buttonStyle,
         ).setInteractive();
