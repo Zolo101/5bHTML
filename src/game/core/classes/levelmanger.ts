@@ -8,7 +8,7 @@ import { Entity, LevelData } from "../levelstructure";
 import { entities } from "../jsonmodule";
 import Settings from "../../settings";
 import gameSceneType from "../gamestructure";
-import { BlockObjectType } from "../data/block_data";
+import { BlockObject, BlockObjectType } from "../data/block_data";
 let level: LevelData
 
 export class LevelManager {
@@ -102,7 +102,13 @@ export class LevelManager {
         // Generate level
         this.generateTerrain(this.levelnumber);
 
+        //this.scene.physics.collideTiles(this.sprites, undefined, undefined, () => {
+        //})
+
         this.scene.physics.add.collider(this.specialblocks, this.tilelayer);
+
+        // Init Sprite callbacks
+        this.initSprites();
 
         // Generate Sprites and start level
         this.startLevel();
@@ -134,6 +140,28 @@ export class LevelManager {
         this.scene.cameras.main.startFollow(this.currentcharacter);
     }
 
+    initSprites(): void {
+        // Character with Sprite collision
+        this.scene.physics.add.collider(this.characters, this.sprites, undefined, (sp1) => {
+            // console.log(sp1.body.velocity.y)
+            return (sp1.body.velocity.y > 84) ? true : false
+        });
+
+        // Collide with self
+        this.scene.physics.add.collider(this.sprites, this.sprites, (sp1, sp2) => {
+            const b1 = sp1.body as Phaser.Physics.Arcade.Body;
+            const b2 = sp2.body as Phaser.Physics.Arcade.Body;
+
+            if (b1.y > b2.y) {
+                b2.y += (b1.top - b2.bottom);
+                b2.stop();
+            } else {
+                b1.y += (b2.top - b1.bottom);
+                b1.stop();
+            }
+        });
+    }
+
     generateSprites(levelnum: number): void {
         level.levels[levelnum][1].objects.forEach((sprite: Entity) => {
             if (sprite.name === "Finish") {
@@ -145,7 +173,6 @@ export class LevelManager {
                     blockObject.offset.x, blockObject.offset.y, blockObject.onCollide, this.characters,
                 );
                 this.specialblocks.add(specialblock);
-                console.log(this.specialblocks)
             } else {
 
                 let spr: Sprite;
@@ -174,25 +201,6 @@ export class LevelManager {
                 }
             }
         });
-
-        // Character with Sprite collision
-        this.scene.physics.add.collider(this.characters, this.sprites, undefined, (sp1) => {
-            return (sp1.body.velocity.y > 0) ? true : false
-        });
-
-        // Collide with self
-        this.scene.physics.add.collider(this.sprites, this.sprites, (sp1, sp2) => {
-            const b1 = sp1.body as Phaser.Physics.Arcade.Body;
-            const b2 = sp2.body as Phaser.Physics.Arcade.Body;
-
-            if (b1.y > b2.y) {
-                b2.y += (b1.top - b2.bottom);
-                b2.stop();
-            } else {
-                b1.y += (b2.top - b1.bottom);
-                b1.stop();
-            }
-        });
     }
 
     generateTerrain(levelnum: number): void {
@@ -216,21 +224,50 @@ export class LevelManager {
             tileWidth: this.blocksize,
             tileHeight: this.blocksize,
         });
-        console.log(levelDataprep);
 
         const tileset = tilemap.addTilesetImage(
             "core_tileset",
             "core_tileset",
         );
 
+        //tilemap.forEachTile((tile) => {
+        //    const prop = BlockObject.map.get(tile.index);
+        //})
+
         this.tilelayer = tilemap.createLayer(0, tileset, 0, 0);
 
         this.tilelayer.setCollision(this.blocks.collisionIndexes);
 
         // i'll put this somewhere else one day
-        this.tilelayer.setTileIndexCallback(this.blocks.killIndexes, (sp: Sprite | Character) => {
+        this.tilelayer.setTileIndexCallback(this.blocks.killIndexes, (sp: Sprite | Character, se: Phaser.Tilemaps.Tile) => {
+            // console.log(sp, se)
             if (sp.type === "Sprite") {
-                sp.body.setVelocityY(-50);
+                // hardcoding xd
+                let velX = 0;
+                let velY = 0;
+                switch (se.index) {
+                case 11:
+                    velY = 50;
+                    break;
+
+                case 12:
+                    velY = -50;
+                    break;
+
+                case 13:
+                    velX = 50;
+                    break;
+
+                case 14:
+                    velX = -50;
+                    break;
+
+                default:
+                    break;
+                }
+
+                sp.body.stop();
+                sp.body.setVelocity(velX, velY);
                 return;
             }
 
