@@ -1,8 +1,18 @@
 Emoji | meaning
 --- | ---
-🟥| Latest Dev version, these versions will not be on the [github page](https://zolo101.github.io/5bHTML/dist/), so you'll have to build them yourself.
+🟥| Latest Dev version, these versions will not be on the [main website](https://5b.zelo.dev/), so you'll have to build them yourself.
 🟦| Latest *""Stable""* version
 
+
+# dev-21w02a 🟥 -- 12/01/2020
+
+**To be v4 Alpha.**
+
+## Things since v3 Alpha:
+
+- Menu redesign
+
+- Editor
 
 # v3 Alpha 🟦 -- 31/12/2020
 ## Major Changes
@@ -35,7 +45,7 @@ Emoji | meaning
 
 - Phaser updated from `3.24.1` to `3.50.0`
 
-# v2.1 Alpha 🟦 -- 11/10/2020
+# v2.1 Alpha -- 11/10/2020
 
 - Fixed 5beam Explore intergration. Github was blocking the fetch requests because it was fetching a http url, which is unsecure. This has now been fixed as 5beam now uses https.
 
