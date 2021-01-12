@@ -12,10 +12,10 @@ html {
 
 body {
 	height: 100%;
-	width: 960px;
-	margin: 0 auto 0 auto;
+	/* width: 960px; */
 	min-height: 600px;
 	position: relative;
+	overflow: hidden;
 }
 
 p {
@@ -34,4 +34,5 @@ a:hover {
 
 #center {
 	position: initial;
+	margin: 0 auto 0 auto;
 }
