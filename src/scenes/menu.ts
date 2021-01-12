@@ -1,112 +1,155 @@
 import { levels } from "../game/core/jsonmodule";
 import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
 import Settings from "../game/settings";
-const devdate = new Date(2020, 12, 31)
+const devdate = new Date(2021, 1, 12)
+
+const textStyle = {
+    fontFamily: "Helvetica, Arial, sans-serif",
+    // backgroundColor: "#fff",
+    color: "#fff",
+};
+
+const miniButtonStyle = {
+    fontFamily: "Helvetica, Arial, sans-serif",
+    fontSize: "16px",
+    fontStyle: "bold",
+    align: "center",
+    fixedWidth: 160,
+    backgroundColor: "#fff",
+    color: "#666",
+    padding: {
+        y: 4,
+        x: 4,
+    },
+};
+
+const buttonStyle = {
+    fontFamily: "Helvetica, Arial, sans-serif",
+    fontSize: "26px",
+    fontStyle: "bold",
+    align: "center",
+    fixedWidth: 300,
+    backgroundColor: "#fff",
+    color: "#666",
+    padding: {
+        y: 16,
+        x: 4,
+    },
+};
 
 class menuScene extends Phaser.Scene {
+    hoverText!: Phaser.GameObjects.Text
     constructor() { super("menuScene"); }
 
     create(): void {
-        // this.scene.start("gameScene"); // go straight into gameplay
-        const textStyle = {
-            fontFamily: "Helvetica, Arial, sans-serif",
-            // backgroundColor: "#fff",
-            color: "#fff",
-        };
-
-        const buttonStyle = {
-            fontFamily: "Helvetica, Arial, sans-serif",
-            fontSize: "26px",
-            fontStyle: "bold",
-            align: "center",
-            fixedWidth: 300,
-            backgroundColor: "#fff",
-            color: "#666",
-            padding: {
-                y: 4,
-                x: 4,
-            },
-        };
+        // this.scene.start("editorScene"); // go straight into gameplay
         // Background
-        this.add.rectangle(0, 0, 960, 540, 0x666666).setOrigin(0, 0);
+        this.add.rectangle(0, 0, 960, 540, 0x6a7773).setOrigin(0, 0);
+        this.add.image(480, 270, `background_${Math.round(Math.random() * 11)}`)
+            .setScale(0.6)
+            .setAlpha(0.35)
 
-        // 5b LOGO
-        this.add.image(260, 400, "5b_logo");
-        this.add.image(305, 175, "5b_people").setScale(0.9);
+        this.add.text(175, 175, "5bHTML", textStyle)
+            .setFontSize(48)
+            .setFontStyle("bold")
 
-        const buttonlist = [];
+        this.hoverText = this.add.text(480, 420, "", textStyle)
+            .setFontSize(24)
+            .setOrigin(0.5)
 
-        const newnewButton = this.add.text(
-            640, 125, "New to 5bHTML?", buttonStyle,
-        ).setInteractive();
+        // this.add.image(260, 400, "5b_logo").setScale(0.4);
+        this.add.image(205, 173, "5b_people").setScale(0.1);
 
-        const watchButton = this.add.text(
-            640, 175, "WATCH BFDIA 5a", buttonStyle,
-        ).setInteractive();
+        const newnewButton = new MenuButton(10, 10, "New to 5bHTML?", "Tells you all about this project.", this, () => this.scene.start("newScene"), true)
+        const watchButton = new MenuButton(180, 10, "WATCH BFDIA 5a", "WATCH IT OR ELSE!!!!", this, () => openExternalLink("https://www.youtube.com/watch?v=4q77g4xo9ic"), true)
+        const discordButton = new MenuButton(350, 10, "Discord", "Go join! :)", this, () => openExternalLink("https://discord.gg/um5KWabefm"), true)
+            .gameObject.setBackgroundColor("#7289da").setColor("#ffffff")
+            .on("pointerover", () => {
+                discordButton.setBackgroundColor("#5465a1");
+                this.hoverText.setText("Go join! :)");
+            })
+            .on("pointerout", () => {
+                discordButton.setBackgroundColor("#7289da");
+                this.hoverText.setText("");
+            });
 
-        this.add.text(675, 260, "Happy new year! :)", textStyle).setFontSize(28);
+        const newButton = new MenuButton(175, 225, "NEW GAME", "Start a new game!", this, () => {
+            this.scene.start("gameScene", {
+                levelfile: levels,
+                levelnumber: 1,
+            })
+        })
 
-        const newButton = this.add.text(
-            640, 350, "NEW GAME", buttonStyle,
-        ).setInteractive();
-
-        const continueButton = this.add.text(
-            640, 400, "LEVEL SELECT", buttonStyle,
-        ).setInteractive();
-
-        // const levelButton = this.add.text(
-        //    640, 350, "LEVEL EDITOR (old)", buttonStyle,
-        // ).setInteractive();
-        const exploreButton = this.add.text(
-            640, 450, "EXPLORE", buttonStyle,
-        ).setInteractive();
+        const continueButton = new MenuButton(175, 300, "LEVEL SELECT", "Choose from an extremely wide selection of levels!", this, () => this.scene.start("levelselectScene"))
+        const levelButton = new MenuButton(500, 225, "LEVEL EDITOR", "Here you can level editors.", this, () => this.scene.start("editorScene"))
+        const exploreButton = new MenuButton(500, 300, "EXPLORE", "Explore custom-made levels made by the community!", this, () => this.scene.start("exploreScene"))
         // const settingsButton = this.add.text(
-        //    640,450,"Settings",buttonStyle,
+        // 640, 425, "SETTINGS", buttonStyle,
         // ).setInteractive();
+        // settingsButton.on("pointerdown", () => this.scene.start("settingScene"));
 
-        buttonlist.push(newnewButton, watchButton, newButton, continueButton, exploreButton);
-        // ,settingsButton);
+        // Credits
+        this.add.text(698, 10, "Original By Cary Huang", textStyle).setFontSize(24);
+        this.add.text(753, 38, "Music by Michael Huang", textStyle).setFontSize(18);
+        this.add.text(824, 62, "Remake by Zelo101", textStyle).setFontSize(14);
 
-        buttonlist.forEach((btn) => {
-            btn.on("pointerover", () => btn.setBackgroundColor("#d4d4d4"));
-            btn.on("pointerout", () => btn.setBackgroundColor("#fff"));
-        });
-        newnewButton.on("pointerdown", () => this.scene.start("newScene"));
-        watchButton.on("pointerdown", () => openExternalLink("https://www.youtube.com/watch?v=4q77g4xo9ic"));
-        newButton.on("pointerdown", () => this.scene.start("gameScene", {
-            levelfile: levels,
-            levelnumber: 1,
-        }));
-        continueButton.on("pointerdown", () => this.scene.start("levelselectScene"));
-        // levelButton.on('pointerdown', () => openExternalLink("https://zolo101.github.io/5beam-edit/index.html"));
-        exploreButton.on("pointerdown", () => this.scene.start("exploreScene"));
-        // settingsButton.on('pointerdown', () => );
+        // Version
+        const versionText = this.add.text(831, 499, "v4 Alpha", textStyle)
+            .setBlendMode(Phaser.BlendModes.ADD)
+            .setColor(hexColourFromSeed(devdate.getTime()))
+            .setFontSize(28)
+            .setFontStyle("bold");
+
+        // Debug Version
+        if (Settings.IS_DEBUG) {
+            versionText.setText("dev-21w02a")
+                // .setFontFamily("cursive")
+                .setFontStyle("bold")
+                .setDisplaySize(150, 30)
+                .setPosition(795, 466)
+        }
 
         if (Settings.IS_DEBUG) {
-            this.add.text(685, 500, "Development Build", textStyle)
+            this.add.text(685, 499, "Development Build", textStyle)
                 .setFontSize(32)
                 .setBackgroundColor("#000")
                 .setColor("#f11")
         }
+    }
+}
 
-        // Credits
-        this.add.text(612, 10, "Original By Cary Huang", textStyle).setFontSize(32);
-        this.add.text(686, 55, "Music by Michael Huang", textStyle).setFontSize(24);
-        this.add.text(785, 92, "Remake by Zelo101", textStyle).setFontSize(18);
+class MenuButton {
+    gameObject: Phaser.GameObjects.Text
+    mini: boolean
+    text: string
+    hoverText: string
+    onClick: () => void
+    constructor(
+        x: number,
+        y: number,
+        text = "Untitled Button",
+        hoverText = "Untitled Hover Text",
+        scene: menuScene,
+        onClick: () => void,
+        mini = false,
+    ) {
+        this.mini = mini;
+        this.text = text;
+        this.hoverText = hoverText;
+        this.onClick = onClick;
 
-        // Version
-        const versionText = this.add.text(831, 500, "v3 Alpha", textStyle)
-            .setBackgroundColor(hexColourFromSeed(devdate.getTime()))
-            .setFontSize(28)
-            .setColor("#000");
-
-        // Debug Version
-        if (Settings.IS_DEBUG) {
-            versionText.setFontFamily("cursive")
-                .setText("dev-20w52a")
-                .setDisplaySize(150, 30)
-                .setPosition(525, 502)
-        }
+        const style = this.mini ? miniButtonStyle : buttonStyle;
+        this.gameObject = scene.add.text(x, y, text, style);
+        this.gameObject.setInteractive()
+            .on("pointerover", () => {
+                this.gameObject.setBackgroundColor("#d4d4d4");
+                scene.hoverText.setText(this.hoverText);
+            })
+            .on("pointerout", () => {
+                this.gameObject.setBackgroundColor("#fff");
+                scene.hoverText.setText("");
+            })
+            .on("pointerdown", onClick);
     }
 }
 
