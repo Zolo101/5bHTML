@@ -1,48 +1,17 @@
+import { BaseButton, textStyle } from "../game/core/buttons";
 import { levels } from "../game/core/jsonmodule";
 import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
-import Settings from "../game/settings";
+import Settings from "../game/settingsgame";
 const devdate = new Date(2021, 1, 12)
-
-const textStyle = {
-    fontFamily: "Helvetica, Arial, sans-serif",
-    // backgroundColor: "#fff",
-    color: "#fff",
-};
-
-const miniButtonStyle = {
-    fontFamily: "Helvetica, Arial, sans-serif",
-    fontSize: "16px",
-    fontStyle: "bold",
-    align: "center",
-    fixedWidth: 160,
-    backgroundColor: "#fff",
-    color: "#666",
-    padding: {
-        y: 4,
-        x: 4,
-    },
-};
-
-const buttonStyle = {
-    fontFamily: "Helvetica, Arial, sans-serif",
-    fontSize: "26px",
-    fontStyle: "bold",
-    align: "center",
-    fixedWidth: 300,
-    backgroundColor: "#fff",
-    color: "#666",
-    padding: {
-        y: 16,
-        x: 4,
-    },
-};
 
 class menuScene extends Phaser.Scene {
     hoverText!: Phaser.GameObjects.Text
     constructor() { super("menuScene"); }
 
     create(): void {
-        // this.scene.start("editorScene"); // go straight into gameplay
+        // this.scene.start("saveScene"); // go straight into gameplay
+        if (Settings.MENU_OLD) this.scene.start("menuOldScene")
+        if (Settings.ZELO_MODE) this.scale.setZoom(0.75);
         // Background
         this.add.rectangle(0, 0, 960, 540, 0x6a7773).setOrigin(0, 0);
         this.add.image(480, 270, `background_${Math.round(Math.random() * 11)}`)
@@ -60,6 +29,7 @@ class menuScene extends Phaser.Scene {
         // this.add.image(260, 400, "5b_logo").setScale(0.4);
         this.add.image(205, 173, "5b_people").setScale(0.1);
 
+        const settingsButton = new MenuButton(10, 500, "Settings", "Change things!", this, () => this.scene.start("settingsScene"), true)
         const newnewButton = new MenuButton(10, 10, "New to 5bHTML?", "Tells you all about this project.", this, () => this.scene.start("newScene"), true)
         const watchButton = new MenuButton(180, 10, "WATCH BFDIA 5a", "WATCH IT OR ELSE!!!!", this, () => openExternalLink("https://www.youtube.com/watch?v=4q77g4xo9ic"), true)
         const discordButton = new MenuButton(350, 10, "Discord", "Go join! :)", this, () => openExternalLink("https://discord.gg/um5KWabefm"), true)
@@ -81,7 +51,7 @@ class menuScene extends Phaser.Scene {
         })
 
         const continueButton = new MenuButton(175, 300, "LEVEL SELECT", "Choose from an extremely wide selection of levels!", this, () => this.scene.start("levelselectScene"))
-        const levelButton = new MenuButton(500, 225, "LEVEL EDITOR", "Here you can level editors.", this, () => this.scene.start("editorScene"))
+        const levelButton = new MenuButton(500, 225, "LEVEL EDITOR", "Here you can level editors.", this, () => this.scene.start("saveScene"))
         const exploreButton = new MenuButton(500, 300, "EXPLORE", "Explore custom-made levels made by the community!", this, () => this.scene.start("exploreScene"))
         // const settingsButton = this.add.text(
         // 640, 425, "SETTINGS", buttonStyle,
@@ -118,12 +88,8 @@ class menuScene extends Phaser.Scene {
     }
 }
 
-class MenuButton {
-    gameObject: Phaser.GameObjects.Text
-    mini: boolean
-    text: string
+class MenuButton extends BaseButton {
     hoverText: string
-    onClick: () => void
     constructor(
         x: number,
         y: number,
@@ -133,14 +99,9 @@ class MenuButton {
         onClick: () => void,
         mini = false,
     ) {
-        this.mini = mini;
-        this.text = text;
+        const basebutton = super(x, y, text, scene, onClick, mini) as unknown as BaseButton;
         this.hoverText = hoverText;
-        this.onClick = onClick;
-
-        const style = this.mini ? miniButtonStyle : buttonStyle;
-        this.gameObject = scene.add.text(x, y, text, style);
-        this.gameObject.setInteractive()
+        basebutton.gameObject
             .on("pointerover", () => {
                 this.gameObject.setBackgroundColor("#d4d4d4");
                 scene.hoverText.setText(this.hoverText);

@@ -6,7 +6,7 @@ import { Block, createSpecialBlock } from "./block";
 import { checkLevel } from "../checkLevel";
 import { Entity, LevelData } from "../levelstructure";
 import { entities } from "../jsonmodule";
-import Settings from "../../settings";
+import Settings from "../../settingsgame";
 import gameSceneType from "../gamestructure";
 import { BlockObject, BlockObjectType } from "../data/block_data";
 let level: LevelData
