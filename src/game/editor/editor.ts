@@ -1,5 +1,5 @@
-import Key from "../game/core/misc/key";
-import { Bar, subBar, subBarItem } from "../game/editor/bar";
+import Key from "../core/misc/key";
+import { Bar, subBar, subBarItem } from "./ui/bar";
 
 class editorScene extends Phaser.Scene {
     bar: Bar
@@ -23,7 +23,7 @@ class editorScene extends Phaser.Scene {
             "5b5t",
             "Join the discord server: https://discord.gg/um5KWabefm",
             "Hi, im book, and im 𒐫𒐫𒐫𒐫𒐫𒐫𒐫𒐫𒐫𒐫",
-            "5beam 21w02a snapshot || Removed Herobrine.",
+            "5beam 21w02b snapshot || Removed Herobrine.",
             "when is thoughtfloat coming back smh :\\",
             "mfw 5beam still dead",
             "mfw i do crtl+w",
@@ -69,7 +69,7 @@ class editorScene extends Phaser.Scene {
         this.bar.add(file);
         file.add(
             "Save",
-            new Key("S", false, true),
+            new Key("S", true),
             () => console.log("Saved!")
         )
         file.add(
@@ -89,7 +89,7 @@ class editorScene extends Phaser.Scene {
         this.bar.add(edit);
         edit.add(
             "Undo",
-            new Key("Z", false, true),
+            new Key("Z", true),
             () => console.log("Feature unfinished")
         )
         edit.add(
