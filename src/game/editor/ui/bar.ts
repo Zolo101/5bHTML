@@ -1,4 +1,4 @@
-import Key from "../core/misc/key";
+import Key from "../../core/misc/key";
 
 const barTextStyle = {
     fontFamily: "Helvetica, Arial, sans-serif",
