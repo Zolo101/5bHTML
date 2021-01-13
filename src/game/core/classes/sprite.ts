@@ -1,4 +1,4 @@
-import Settings from "../../settings";
+import Settings from "../../settingsgame";
 import { Entity } from "../levelstructure";
 
 export class Sprite extends Phaser.GameObjects.Sprite {
