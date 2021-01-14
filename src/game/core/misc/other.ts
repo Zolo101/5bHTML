@@ -16,4 +16,12 @@ export function hexColourFromSeed(seed: number): string {
     return "#" + finalHex;
 }
 
+export function create2DNumberArray(width: number, height: number): number[][] {
+    const widthArray = new Array(width);
+    // eslint-disable-next-line no-param-reassign
+    widthArray.forEach((w) => w.push(new Array(height).forEach((ww) => ww = 0)));
+    return widthArray;
+}
+
+
 export default openExternalLink;
