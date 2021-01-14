@@ -8,3 +8,4 @@ Block | 30x30 |
 Background | 1600x900 |
 Character | minimum 256x256 |
 Collectables | 64x64 |
+ToolWidget | 64x64 |

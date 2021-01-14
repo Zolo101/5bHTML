@@ -50,6 +50,15 @@ class loadingScene extends Phaser.Scene {
         this.loadAsset("background_10", "backgrounds/10.png");
         this.loadAsset("background_11", "backgrounds/11.png");
 
+        this.loadAsset("toolwidget_example", "misc/toolwidget.png");
+        this.loadAsset("cursor", "misc/cursor.png");
+        this.loadAsset("select", "misc/select.png");
+        this.loadAsset("pencil", "misc/pencil.png");
+        this.loadAsset("brush", "misc/brush.png");
+        this.loadAsset("fill", "misc/fill.png");
+        this.loadAsset("eraser", "misc/eraser.png");
+        this.loadAsset("zoom", "misc/zoom.png");
+
         this.loadAsset("missing", "misc/missing.png");
         this.loadAsset("animate_missing", "misc/animate_missing.png");
         this.loadAsset("special_missing", "misc/special_missing.png");
