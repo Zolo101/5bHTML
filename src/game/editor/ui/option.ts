@@ -44,7 +44,7 @@ export class BooleanOption extends BaseOption {
         const colour = (this.value) ? 0x999999 : 0x666666
         const button = scene.add.rectangle(x + 260, y + 20, 40, 40, colour)
             .setInteractive()
-            .on("pointerdown", () => { this.onClick();this.render(x, y, scene)})
+            .on("pointerdown", () => {this.onClick();this.render(x, y, scene)})
             //.on("pointerover", () => {
             //    button.setFillStyle(0x444444);
             //})

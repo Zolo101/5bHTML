@@ -86,6 +86,9 @@ export class subBar {
             this.open = !this.open;
             this.open ? this.onOpen(x, y, scene) : this.onClose()
         });
+        // button.on("pointerdownoutside", () => {
+        // this.onClose()
+        // });
         button.on("pointerover", () => {
             button.setBackgroundColor("#d4d4d4");
         });
@@ -99,9 +102,10 @@ export class subBar {
             const text = (item.key.code === "empty") ? `${item.text}` : `${item.text}   (${item.key.getName()})`
             const barItem = scene.add.text(x, (24 * (i + 1)) + 4, text, barTextStyleItem)
                 .setInteractive()
-                .on("pointerdown", () => item.onclick())
+                .setAlpha(0.8)
+                .on("pointerdown", () => {if (this.open) item.onclick()})
                 .on("pointerover", () => barItem.setBackgroundColor("#b7b7b7"))
-                .on("pointerout", () => barItem.setBackgroundColor("#d4d4d4"))
+                .on("pointerout", () => barItem.setBackgroundColor("#dddddd"))
             this.itemsGroup.add(barItem)
         })
     }

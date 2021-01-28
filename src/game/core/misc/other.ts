@@ -17,9 +17,9 @@ export function hexColourFromSeed(seed: number): string {
 }
 
 export function create2DNumberArray(width: number, height: number): number[][] {
-    const widthArray = new Array(width);
+    const widthArray = new Array(Math.floor(width));
     // eslint-disable-next-line no-param-reassign
-    widthArray.forEach((w) => w.push(new Array(height).forEach((ww) => ww = 0)));
+    widthArray.forEach((w) => w.push(new Array(Math.floor(height)).forEach((ww) => ww = 0)));
     return widthArray;
 }
 

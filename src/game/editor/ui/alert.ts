@@ -32,6 +32,7 @@ class Alert {
                 .on("pointerdown", remove)
             )
         }
+        // alert.on("pointerdownoutside", () => console.log("e"))
         // Exit
         //alert.add(scene.add.text(base.getTopRight().x - 20, base.getTopRight().y, "X", textStyle)
         //    .setFontSize(28)
