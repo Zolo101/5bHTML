@@ -1,76 +1,102 @@
+import SaveManager from "../core/misc/dataidb";
 import Key from "../core/misc/key";
+import Settings from "../settingsgame";
+import funnywords from "./funnywords";
+import { brushTool, cursorTool, eraserTool, fillTool, pencilTool, selectTool, zoomTool } from "./tools";
+import Alert from "./ui/alert";
 import { Bar, subBar, subBarItem } from "./ui/bar";
+import { Screen } from "./ui/screen";
+import { ToolWidgetBar } from "./ui/toolwidget";
 
 class editorScene extends Phaser.Scene {
     bar: Bar
     baritem: subBarItem[]
     key!: Key
+    keys!: Map<string, Key>
+
+    bookTalk!: Phaser.GameObjects.Container
+    screen!: Screen
+
+    tools!: ToolWidgetBar
+
+    width!: number
+    height!: number
     constructor() {
         super({ key: "editorScene" });
         this.bar = new Bar("Main");
         this.baritem = [];
         this.key = new Key("");
+        this.keys = new Map();
+
+        this.zeloModeHandle();
     }
 
     create(): void {
-        const funnywords = [
-            "5beam-reddit",
-            "5beam-edd-ed-and-edit",
-            "5beam-edit-edit",
-            "5bee buzz buzz",
-            "five horizontal metal blocks with the intent of editing levels in a video game",
-            "5bruh moment",
-            "5b5t",
-            "Join the discord server: https://discord.gg/um5KWabefm",
-            "Hi, im book, and im 𒐫𒐫𒐫𒐫𒐫𒐫𒐫𒐫𒐫𒐫",
-            "5beam 21w02b snapshot || Removed Herobrine.",
-            "when is thoughtfloat coming back smh :\\",
-            "mfw 5beam still dead",
-            "mfw i do crtl+w",
-            "mfw levels you've made dont save yet",
-            "mfw you cant upload levels yet",
-            "mfw depending on your screen ratio you can't read this awfully long piece of textual infomation unless you go into the source code and see what it looks like, which if you're doing now, hello! lol",
-            "\"Don't believe everything you read on the internet\" ~Cary Huang, 2021.",
-            "...have cots... have nots... more like have been hotel xdd",
-            "Whats up guys, book here, back for another tutorial on how to create levels in 5bHTML",
-            "AAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
-            "Now Playing: https://www.youtube.com/watch?v=g-Z7U77osT8",
-            "Now Playing: https://www.youtube.com/watch?v=KyNVRrHkwe0",
-            "The names book. James book.",
-        ]
-        const width = window.innerWidth;
-        const height = window.innerHeight;
         this.scale.scaleMode = Phaser.Scale.NONE;
-        this.game.scale.resize(width, height)
+        if (Settings.ZELO_MODE) {
+            this.game.scale.resize(Math.floor(this.width * 1.35), Math.floor(this.height * 1.35))
+        } else {
+            this.game.scale.resize(this.width, this.height)
+        }
         const eventResize = () => window.addEventListener("resize", () => {
-            this.game.scale.resize(width, height);
+            this.width = window.innerWidth;
+            this.height = window.innerHeight;
+            this.zeloModeHandle();
+            this.game.scale.resize(Math.floor(this.width), Math.floor(this.height));
+            // console.log(width, height)
         })
 
         const eventKeydown = () => window.addEventListener("keydown", (event) => {
-            this.key.change(event.code, false, event.ctrlKey)
+            this.key.change(event.code, event.ctrlKey, event.shiftKey, event.altKey)
             const item = this.bar.itemMap.get(event.code);
             // console.log(this.bar.itemMap.entries(), event)
             if (item !== undefined) {
                 item.onclick()
             }
-            // console.log(event);
         })
         const eventKeyup = () => window.addEventListener("keyup", (event) => {
             this.key.change(event.code, false, event.ctrlKey)
-            // console.log(event);
         })
+
+        this.input.on("wheel", (pointer: any, gameObject: any, deltaX: number, deltaY: number) => {
+            if (this.key.shift) {
+                this.screen.x += deltaY * 0.2
+            } else if (this.key.crtl) {
+                this.screen.changeZoom(-Math.sign(deltaY) / 10);
+            } else {
+                this.screen.y -= deltaY * 0.2;
+            }
+        })
+
+        // Init Tools
+        this.tools = new ToolWidgetBar();
+        this.tools.add(cursorTool);
+        this.tools.add(selectTool);
+        this.tools.add(pencilTool);
+        this.tools.add(brushTool);
+        this.tools.add(fillTool);
+        this.tools.add(eraserTool);
+        this.tools.add(zoomTool);
+        this.tools.selected = cursorTool;
+
 
         eventResize();
         eventKeydown();
         eventKeyup();
-
         // Init UI
+        this.screen = new Screen((Math.floor(this.width / 2)), (Math.floor(this.height / 2)), this.width, this.height - 100, this, this.tools);
+
         const file = new subBar("File", this);
         this.bar.add(file);
         file.add(
             "Save",
             new Key("S", true),
-            () => console.log("Saved!")
+            () => this.saveLevel()
+        )
+        file.add(
+            "Upload",
+            new Key("empty", true),
+            () => console.log("Uploaded... but to where?")
         )
         file.add(
             "Exit",
@@ -81,7 +107,7 @@ class editorScene extends Phaser.Scene {
                 window.removeEventListener("keyup", eventKeyup);
                 this.bar.itemMap.clear()
                 this.game.scale.resize(960, 540)
-                this.scene.start("menuScene")
+                this.scene.start("saveScene")
             }
         )
 
@@ -117,18 +143,38 @@ class editorScene extends Phaser.Scene {
         this.bar.add(view);
         view.add(
             "Zoom In",
-            new Key("=", true),
-            () => console.log("Feature unfinished")
+            new Key("=", true, true),
+            () => this.screen.changeZoom(1)
         )
         view.add(
             "Zoom Out",
-            new Key("-", true),
-            () => console.log("Feature unfinished")
+            new Key("-", true, true),
+            () => this.screen.changeZoom(-1)
         )
         view.add(
             "100% Zoom",
             new Key("empty"),
-            () => console.log("Feature unfinished")
+            () => this.screen.resetZoom()
+        )
+        view.add(
+            "lazy",
+            new Key("ArrowLeft"),
+            () => this.screen.x += 10
+        )
+        view.add(
+            "lazy",
+            new Key("ArrowRight"),
+            () => this.screen.x -= 10
+        )
+        view.add(
+            "lazy",
+            new Key("ArrowUp"),
+            () => this.screen.y += 10
+        )
+        view.add(
+            "lazy",
+            new Key("ArrowDown"),
+            () => this.screen.y -= 10
         )
 
         const help = new subBar("Help", this);
@@ -136,24 +182,60 @@ class editorScene extends Phaser.Scene {
         help.add(
             "About",
             new Key("empty"),
-            () => alert("5bHTML-edit, Last Updated: 12/01/2021")
+            () => new Alert("5bHTML-edit", "Last Updated: 22/01/2021").render(this)
         )
 
         this.bar.updateItemMap();
 
-        this.add.rectangle(0, 0, width, height, 0x333333).setOrigin(0, 0);
+        this.add.rectangle(0, 0, this.width, this.height, 0x333333).setOrigin(0, 0);
+
+        this.screen.render();
+
+        this.add.rectangle(0, 0, this.width, 93, 0x444444).setOrigin(0, 0);
+
         file.render(0, 0, this);
         edit.render(120, 0, this);
         view.render(240, 0, this);
         help.render(360, 0, this);
 
-        this.add.text(10, height - 50, "This is the level editor. You level editors here.");
+        this.add.text(10, this.height - 50, "This is the level editor. You level editors here.");
 
-        this.add.grid(510, 320, 960, 540, 30, 30, 0xcccccc)
+        this.bookTalk = this.add.container(10, this.height);
+        this.bookTalk.add(this.add.rectangle(0, -12, this.width * 2, 25, 0xffffff))
+        this.bookTalk.add(this.add.image(4, -12, "book").setScale(0.075))
+        this.bookTalk.add(this.add.text(18, -20, funnywords[Math.round(Math.random() * funnywords.length - 1)]).setColor("#000"))
 
-        this.add.rectangle(0, height - 15, width * 2, 25, 0xffffff);
-        this.add.image(12, height - 13, "book").setScale(0.075);
-        this.add.text(26, height - 22, funnywords[Math.round(Math.random() * funnywords.length - 1)]).setColor("#000");
+        this.add.text(457, 70, "Tool selected: ");
+
+        this.tools.render(0, 60, this)
+
+        SaveManager.getLocalStorage();
+    }
+
+    update(): void {
+        this.updateUI()
+    }
+
+    updateUI(): void {
+        this.bookTalk.setY(this.height)
+        this.screen.y = 25 + this.height / 2
+        this.screen.render();
+    }
+
+    zeloModeHandle(): void {
+        if (Settings.ZELO_MODE) {
+            this.width = window.innerWidth * 1.35;
+            this.height = window.innerHeight * 1.35;
+        } else {
+            this.width = window.innerWidth;
+            this.height = window.innerHeight;
+        }
+    }
+
+    saveLevel(): void {
+        const levelname = prompt("(temp) Choose a name for your save:") || "Untitled Level"
+        SaveManager.addSave(levelname, this.screen.grid.blockData)
+        SaveManager.push();
     }
 }
 
