@@ -29,7 +29,8 @@ Beta -- Mid 2021
 Release -- 2021
 - [:x:] Music
 - [:x:] Mod/Package Support (probably not)
-- [:heavy_check_mark:] Level Browsing ("Explore" mode / 5beam) This is complete! check out the [5beam level database](http://5beam.zapto.org/level)!
+- [:heavy_check_mark:] Level Editor
+- [:heavy_check_mark:] Custom Level Browsing ("Explore" mode / 5beam)
 
 Future (maybe)
 - [:x:] Multiplayer support??? :flushed:

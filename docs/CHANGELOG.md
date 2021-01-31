@@ -4,7 +4,7 @@ Emoji | meaning
 🟦| Latest *""Stable""* version
 
 
-# dev-21w02a 🟥 -- 12/01/2020
+# dev-21w04a 🟥 -- 31/01/2021
 
 **To be v4 Alpha.**
 
@@ -12,8 +12,19 @@ Emoji | meaning
 
 - Menu redesign
 
-- Editor
+- Level Editor! Create, Test, Share and Play your own custom levels!
 
+- Settings
+
+## Dev changes
+
+- Webpack updated from `5.11.0` to `5.18.0`
+
+- Webpack-cli updated from `3.3.12` to `4.4.0`
+
+- Webpack-dev-server updated from `3.11.0` to `3.11.2`
+
+- Phaser updated from `3.50.0` to `3.52.0`
 # v3 Alpha 🟦 -- 31/12/2020
 ## Major Changes
 

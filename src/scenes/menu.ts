@@ -2,14 +2,14 @@ import { BaseButton, textStyle } from "../game/core/buttons";
 import { levels } from "../game/core/jsonmodule";
 import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
 import Settings from "../game/settingsgame";
-const devdate = new Date(2021, 1, 12)
+const devdate = new Date(2021, 1, 31)
 
 class menuScene extends Phaser.Scene {
     hoverText!: Phaser.GameObjects.Text
     constructor() { super("menuScene"); }
 
     create(): void {
-        // this.scene.start("saveScene"); // go straight into gameplay
+        // this.scene.start("editorScene"); // go straight into gameplay
         if (Settings.MENU_OLD) this.scene.start("menuOldScene")
         if (Settings.ZELO_MODE) this.scale.setZoom(0.75);
         // Background
@@ -72,7 +72,7 @@ class menuScene extends Phaser.Scene {
 
         // Debug Version
         if (Settings.IS_DEBUG) {
-            versionText.setText("dev-21w02a")
+            versionText.setText("dev-21w04a")
                 // .setFontFamily("cursive")
                 .setFontStyle("bold")
                 .setDisplaySize(150, 30)

@@ -6,7 +6,7 @@
 
 Hosted version: **v3 Alpha**
 
-Latest version: **dev-21w02a**
+Latest version: **dev-21w04a**
 
 Join the [5bHTML discord server!](https://discord.gg/um5KWabefm)
 
