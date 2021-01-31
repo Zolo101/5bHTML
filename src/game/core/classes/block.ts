@@ -1,6 +1,6 @@
 import { BlockObject } from "../data/block_data";
 import gameSceneType from "../gamestructure";
-import LevelManager from "./levelmanger";
+import LevelManager from "./levelmanager";
 export class Block implements BlockType {
     // defaults
     size!: { x: number; y: number; };

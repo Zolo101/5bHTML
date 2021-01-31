@@ -1,4 +1,4 @@
-import LevelManager from "./classes/levelmanger";
+import LevelManager from "./classes/levelmanager";
 import { LevelData } from "./levelstructure";
 
 export interface gameSceneType extends Phaser.Scene {

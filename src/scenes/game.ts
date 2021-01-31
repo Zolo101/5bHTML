@@ -1,4 +1,4 @@
-import { LevelManager } from "../game/core/classes/levelmanger";
+import { LevelManager } from "../game/core/classes/levelmanager";
 import { BlockObject } from "../game/core/data/block_data";
 import { LevelData } from "../game/core/levelstructure";
 // System Variables (Engine)
