@@ -1,9 +1,9 @@
 import { textStyle, backStyle, levelnameStyle } from "../game/core/buttons";
 import { Level } from "../game/core/levelstructure";
-import { openExternalLink } from "../game/core/misc/other";
 
+const SERVER_NAME = "https://5beam.zelo.dev"; // http://localhost:3000
+const levelelements: LevelItem[] = [];
 let epochtimetext: Phaser.GameObjects.Text;
-const levelelements: LevelTile[] = [];
 let infoText: Phaser.GameObjects.Text;
 
 const exploreButtonStyle = {
@@ -52,41 +52,48 @@ type APIData = {
     levels: Level[]
 }
 
-
-class LevelTile {
-    scene!: Phaser.Scene
-    // thumbnail: Phaser.GameObjects.Rectangle
-    text: Phaser.GameObjects.Text
+class LevelItem {
+    meta: APIData
+    tile!: Phaser.GameObjects.Container
     constructor(
-        scene: Phaser.Scene,
         x: number,
         y: number,
-        public name: string = "Undefined Level",
-        public author: string = "John Doe",
-        public views: number = 0,
+        meta: APIData,
+        scene: Phaser.Scene
     ) {
-        this.name = name;
-        this.author = author;
-        this.views = views;
+        this.meta = meta;
 
-        // this.thumbnail = scene.add.rectangle(x, y, 225, 140, 0x333333);
-        this.text = scene.add.text(
-            x - 110, y + 80,
-            `"${name}" By: ${author}`,
-            levelnameButtonStyle,
-        ).setInteractive();
+        this.tile = new Phaser.GameObjects.Container(scene)
+        // RECTANGLE
+        this.tile.add(
+            new Phaser.GameObjects.Rectangle(scene, x, y, 625, 40, 0x333333).setOrigin(0, 0)
+        );
+        // TITLE
+        this.tile.add(
+            new Phaser.GameObjects.Text(scene, x + 10, y + 10, meta.name, textStyle).setFontStyle("bold")
+        );
+        // AUTHOR
+        this.tile.add(
+            new Phaser.GameObjects.Text(scene, x + 610, y + 10, `By: ${meta.author}`, textStyle).setOrigin(1, 0)
+        );
+    }
+
+    render(scene: Phaser.Scene): void {
+        scene.add.container(this.tile.x, this.tile.y, this.tile)
     }
 }
 
 class exploreScene extends Phaser.Scene {
+    selectedlevel!: APIData
+
     constructor() { super({ key: "exploreScene" }); }
 
     create(): void {
         // Background
         this.add.rectangle(0, 0, 960, 540, 0x375342).setOrigin(0, 0);
 
-        epochtimetext = this.add.text(0, 0, "awaiting time...", textStyle)
-            .setFontSize(32)
+        epochtimetext = this.add.text(10, 5, "awaiting time...", textStyle)
+            .setFontSize(24)
             .setFontStyle("bold")
             .setColor("#507860");
 
@@ -98,6 +105,10 @@ class exploreScene extends Phaser.Scene {
             document.body.style.backgroundColor = "initial";
             this.scene.start("menuScene");
         });
+
+        this.add.text(this.scale.width - 300, this.scale.height - 35, "5beam.zelo.dev")
+
+        /*
 
         const featuredbutton = this.add.text(
             30, 50, "FEATURED", exploreButtonStyle,
@@ -111,6 +122,8 @@ class exploreScene extends Phaser.Scene {
             580, 50, "TOP", exploreButtonStyle,
         );
 
+        */
+
         //const helpbutton = this.add.text(
         //    860, 50, "?", helpButtonStyle,
         //).setFontSize(42);
@@ -123,6 +136,8 @@ class exploreScene extends Phaser.Scene {
             this.refresh();
         });
 
+        /*
+
         const fivebeambutton = this.add.text(
             220, 475, "WEBSITE", helpButtonStyle,
         ).setInteractive().setBackgroundColor("#476");
@@ -131,7 +146,6 @@ class exploreScene extends Phaser.Scene {
             openExternalLink("https://5beam.zelo.dev/");
         });
 
-        /*
         const tutorialbutton = this.add.text(
             460, 475, "TUTORIAL", helpButtonStyle,
         ).setInteractive().setBackgroundColor("#b64");
@@ -140,22 +154,44 @@ class exploreScene extends Phaser.Scene {
             openExternalLink("https://gist.github.com/Zolo101/36ae33e5dd15510a2cb41e942dbf7044");
         }); */
 
-        infoText = this.add.text(118, 240, "", levelnameStyle);
+        infoText = this.add.text(200, this.scale.height - 80, "", levelnameStyle);
 
-        this.add.text(100, 100, "5beam (the custom level server) is currently offline\n for upgrades. Check back soon!", levelnameStyle)
-
-        //this.refresh();
+        this.refresh();
     }
 
-    // eslint-disable-next-line class-methods-use-this
     update(): void {
         const epochtime = Date.now();
         // console.log(epochtime);
         epochtimetext.setText(`${epochtime.toString()} // custom levels`);
     }
 
-    refresh(): void {
-        fetch("https://5beam.zelo.dev/api/5bhtml")
+    async refresh(): Promise<void> {
+        try {
+            const levels = await fetchAllLevels();
+            if (await checkForStatus(levels.status)) throw levels.status;
+            // const list = new List(700, 400, this);
+            console.log(levels)
+            levels.data.forEach((level: any, i: number) => {
+                const newTile = new LevelItem(
+                    30, 50 + (i * 50), level, this
+                    // this, 150, (i * 50), level.name, level.author
+                )
+                newTile.tile.on("pointerdown", async () => {
+                    const leveldata = await fetchLevelData(i)
+                    console.log(leveldata)
+                })
+                if (i > 7) return;
+                newTile.render(this);
+            })
+            infoText.setText("")
+        } catch (err) {
+            infoText.setText(`Error while fetching:\n${err}`)
+            console.error(err)
+            return;
+        }
+
+        /*
+        fetch("http://localhost:3000/api/all" "https://5beam.zelo.dev/api/5bhtml")
             .then((response) => response.json().then((levels: APIData[]) => {
                 infoText.setText("Fetching data...")
                 levels.forEach((level, i) => {
@@ -204,7 +240,30 @@ class exploreScene extends Phaser.Scene {
                 return console.error(error);
             });
         levelelements.length = 0; // empty array
+        */
     }
+}
+
+async function getAPIRequest(url: string): Promise<any> {
+    infoText.setText("Fetching data...")
+    const response = await fetch(url)
+    return await response.json()
+}
+
+async function fetchAllLevels(): Promise<any> {
+    return await getAPIRequest(`${SERVER_NAME}/api/all`)
+}
+
+async function fetchLevel(id: number): Promise<any> {
+    return await getAPIRequest(`${SERVER_NAME}/api/level/${id}`)
+}
+
+async function fetchLevelData(id: number): Promise<any> {
+    return await getAPIRequest(`${SERVER_NAME}/api/level/get/${id}`)
+}
+
+async function checkForStatus(status: string): Promise<boolean> {
+    return (status !== "success")
 }
 
 export default exploreScene;
