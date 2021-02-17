@@ -80,12 +80,12 @@ export class LevelManager {
 
         if (Settings.IS_DEBUG) console.log(level);
 
-        const levelWidth = level.levels[this.levelnumber][0].width;
-        const levelHeight = level.levels[this.levelnumber][0].height;
+        const levelWidth = level.levels[this.levelnumber].width;
+        const levelHeight = level.levels[this.levelnumber].height;
 
         // Set background
         this.setBackground(
-            this.levels.levels[this.levelnumber][0].background,
+            this.levels.levels[this.levelnumber].background,
             this.blocksize * levelWidth,
             this.blocksize * levelHeight,
         );
@@ -117,7 +117,7 @@ export class LevelManager {
 
         // Set levelname
         this.levelTextButton.setText(
-            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber][0].name}`
+            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber].name}`
         );
 
         const backButton = this.scene.add.text(
@@ -163,7 +163,7 @@ export class LevelManager {
     }
 
     generateSprites(levelnum: number): void {
-        level.levels[levelnum][1].objects.forEach((sprite: Entity) => {
+        level.levels[levelnum].entities.forEach((sprite: Entity) => {
             if (sprite.name === "Finish") {
                 const blockObject = this.blocks.map.get(2) as Block
                 const specialblock = createSpecialBlock(
@@ -204,23 +204,26 @@ export class LevelManager {
     }
 
     generateTerrain(levelnum: number): void {
-        const currentLevel = level.levels[levelnum][0];
+        const currentLevel = level.levels[levelnum];
         const levelData = currentLevel.data;
         const levelDataprep: number[][] = [];
 
         console.log(this.blocks)
 
+        /*
         // Clone array, dont reference it
         const levelDataMapBuffer = [...levelData];
         levelDataMapBuffer.forEach((n: number, i) => levelDataMapBuffer[i] -= 1);
 
         for (let i = 0; i < currentLevel.height; i++) {
             levelDataprep[i] = levelDataMapBuffer.slice(currentLevel.width * i, currentLevel.width * (i + 1))
-        }
+        } */
+
+        console.log([...levelData])
 
         // Make tilemap
         const tilemap = this.scene.make.tilemap({
-            data: levelDataprep,
+            data: [...levelData],
             tileWidth: this.blocksize,
             tileHeight: this.blocksize,
         });

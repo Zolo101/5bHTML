@@ -1,23 +1,23 @@
 // Cache and Savefile handling
 // Later: Change number[][]
 
-export const VERSION_NUMBER = 1;
+import { LevelData } from "../levelstructure";
+
+// version history
+// 1-5 = https://gist.github.com/Zolo101/36ae33e5dd15510a2cb41e942dbf7044
+// 6 = Tiled
+// 7 = Current structure
+export const VERSION_NUMBER = 7;
 const SAVE_NAME = "saves"
 const CACHE_NAME = "5beam-cache"
 
-export type SaveFile = {
-    name: string
-    data: number[][]
-    version: number
-}
-
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace SaveManager {
-    export const saves = new Map<string, SaveFile>()
-    export function addSave(name: string, data: number[][]): SaveFile {
-        const file = { name: name, data: data, version: VERSION_NUMBER }
-        saves.set(name, file)
-        return file
+    export const saves = new Map<string, LevelData>()
+    export function addSave(lvl: LevelData): LevelData {
+        lvl.struct_version = VERSION_NUMBER;
+        saves.set(lvl.name, lvl)
+        return lvl;
     }
 
     export function removeSave(name: string): void {
@@ -25,12 +25,12 @@ namespace SaveManager {
     }
 
     // NOT FROM LOCALSTORAGE
-    export function getCacheSave(name: string): SaveFile | undefined {
+    export function getCacheSave(name: string): LevelData | undefined {
         return saves.get(name)
     }
 
     // NOT FROM LOCALSTORAGE
-    export function getCacheAll(): IterableIterator<SaveFile> {
+    export function getCacheAll(): IterableIterator<LevelData> {
         return saves.values()
     }
 
@@ -41,9 +41,9 @@ namespace SaveManager {
         // Skip if empty
         if (locstore === null) return;
 
-        const locsaves: SaveFile[] = JSON.parse(locstore)
+        const locsaves: LevelData[] = JSON.parse(locstore)
         for (const save of locsaves) {
-            addSave(save.name, save.data)
+            addSave(save)
         }
     }
 

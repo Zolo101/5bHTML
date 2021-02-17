@@ -1,8 +1,9 @@
 import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
-import SaveManager, { SaveFile } from "../core/misc/dataidb";
+import { LevelData } from "../core/levelstructure";
+import SaveManager from "../core/misc/dataidb";
 
 class saveScene extends Phaser.Scene {
-    selectedsave!: SaveFile
+    selectedsave!: LevelData
     constructor() {
         super({ key: "saveScene" });
     }
@@ -36,15 +37,15 @@ class saveScene extends Phaser.Scene {
         }
     }
 
-    renderSaveFile(x: number, y: number, savefile: SaveFile): void {
+    renderSaveFile(x: number, y: number, savefile: LevelData): void {
         const container = this.add.container(x, y);
         container.add([
             this.add.rectangle(x + 185, y + 45, 400, 80, 0xaaaaaa),
             this.add.text(x + 10, y + 10, savefile.name, textStyle)
                 .setFontSize(18)
                 .setFontStyle("bold"),
-            this.add.text(x + 10, y + 30, `${new Blob([savefile.data.toString()]).size} Bytes`, textStyle),
-            this.add.text(x + 10, y + 60, `Structure level: ${savefile.version}`, textStyle)
+            this.add.text(x + 10, y + 30, `${new Blob([savefile.levels.toString()]).size} Bytes`, textStyle),
+            this.add.text(x + 10, y + 60, `Structure level: ${savefile.struct_version}`, textStyle)
         ])
     }
 }
