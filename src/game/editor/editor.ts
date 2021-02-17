@@ -42,17 +42,10 @@ class editorScene extends Phaser.Scene {
             level_version: "1.0",
             levels: []
         }
-
-        this.zeloModeHandle();
     }
 
     create(): void {
         this.scale.scaleMode = Phaser.Scale.NONE;
-        if (Settings.ZELO_MODE) {
-            this.game.scale.resize(Math.floor(this.width * 1.35), Math.floor(this.height * 1.35))
-        } else {
-            this.game.scale.resize(this.width, this.height)
-        }
 
         this.input.on("wheel", (pointer: any, gameObject: any, deltaX: number, deltaY: number) => {
             if (this.key.shift) {
@@ -119,16 +112,6 @@ class editorScene extends Phaser.Scene {
         this.bookTalk.setY(this.height)
         this.screen.y = 25 + this.height / 2
         this.screen.render();
-    }
-
-    zeloModeHandle(): void {
-        if (Settings.ZELO_MODE) {
-            this.width = window.innerWidth * 1.35;
-            this.height = window.innerHeight * 1.35;
-        } else {
-            this.width = window.innerWidth;
-            this.height = window.innerHeight;
-        }
     }
 
     saveLevel(): void {
@@ -254,7 +237,6 @@ class editorScene extends Phaser.Scene {
         eventResize = () => window.addEventListener("resize", () => {
             this.width = window.innerWidth;
             this.height = window.innerHeight;
-            this.zeloModeHandle();
             this.game.scale.resize(Math.floor(this.width), Math.floor(this.height));
             // console.log(width, height)
         })

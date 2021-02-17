@@ -25,12 +25,6 @@ class settingsScene extends Phaser.Scene {
             Settings.MENU_OLD,
             (value) => Settings.MENU_OLD = !value
         ))
-        tab.add(new BooleanOption(
-            "x0.75 Zoom",
-            "This is an option for zelo because he uses 125% zoom on his monitor and it makes the game blurry",
-            Settings.ZELO_MODE,
-            (value) => Settings.ZELO_MODE = !value
-        ))
         tab.render(100, 80, this);
 
         const backButton = this.add.text(
