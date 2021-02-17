@@ -44,7 +44,7 @@ class saveScene extends Phaser.Scene {
             this.add.text(x + 10, y + 10, savefile.name, textStyle)
                 .setFontSize(18)
                 .setFontStyle("bold"),
-            this.add.text(x + 10, y + 30, `${new Blob([savefile.levels.toString()]).size} Bytes`, textStyle),
+            this.add.text(x + 10, y + 30, `${new Blob([JSON.stringify(savefile)]).size} Bytes`, textStyle),
             this.add.text(x + 10, y + 60, `Structure level: ${savefile.struct_version}`, textStyle)
         ])
     }

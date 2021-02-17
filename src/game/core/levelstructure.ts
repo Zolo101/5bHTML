@@ -14,12 +14,12 @@ export type Dialogue = {
 }
 
 export type Level = {
-        name: string
-        width: number
-        height: number
-        data: number[][]
-        entities: Entity[]
-        background: number
+    name: string
+    width: number
+    height: number
+    data: number[][]
+    entities: Entity[]
+    background: number
 }
 
 export type LevelData = {
