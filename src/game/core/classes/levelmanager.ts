@@ -237,7 +237,7 @@ export class LevelManager {
         //    const prop = BlockObject.map.get(tile.index);
         //})
 
-        this.tilelayer = tilemap.createLayer(0, tileset, 0, 0);
+        this.tilelayer = tilemap.createLayer(0, tileset);
 
         this.tilelayer.setCollision(this.blocks.collisionIndexes);
 

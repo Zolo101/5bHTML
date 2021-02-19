@@ -1,7 +1,6 @@
 import { LevelData } from "../core/levelstructure";
 import SaveManager from "../core/misc/dataidb";
 import Key from "../core/misc/key";
-import Settings from "../settingsgame";
 import funnywords from "./funnywords";
 import { brushTool, cursorTool, eraserTool, fillTool, pencilTool, selectTool, zoomTool } from "./tools";
 import Alert from "./ui/alert";
@@ -21,6 +20,7 @@ class editorScene extends Phaser.Scene {
 
     bookTalk!: Phaser.GameObjects.Container
     screen!: Screen
+    marker!: Phaser.GameObjects.Graphics
 
     tools!: ToolWidgetBar
 
@@ -46,19 +46,23 @@ class editorScene extends Phaser.Scene {
 
     create(): void {
         this.scale.scaleMode = Phaser.Scale.NONE;
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.game.scale.resize(this.width, this.height);
 
-        this.input.on("wheel", (pointer: any, gameObject: any, deltaX: number, deltaY: number) => {
+        // Add Keybind Listeners
+        this.addListeners();
+
+        this.input.on("wheel", (pointer: never, gameObject: never, deltaX: number, deltaY: number) => {
+            console.log(this.key)
             if (this.key.shift) {
-                this.screen.x += deltaY * 0.2
+                this.screen.x += deltaY * 0.2;
             } else if (this.key.crtl) {
                 this.screen.changeZoom(-Math.sign(deltaY) / 10);
             } else {
                 this.screen.y -= deltaY * 0.2;
             }
         })
-
-        // Add Keybind Listeners
-        this.addListeners();
 
         // Init Tools
         this.tools = new ToolWidgetBar();
@@ -71,47 +75,60 @@ class editorScene extends Phaser.Scene {
         this.tools.add(zoomTool);
         this.tools.selected = cursorTool;
 
-        // Setup Bar Keybinds
-        this.setupBar();
-
-
         eventResize();
         eventKeydown();
         eventKeyup();
 
+        this.add.rectangle(0, 0, this.width, this.height, 0x333333).setOrigin(0, 0);
+
+        this.add.rectangle(0, 0, this.width, 93, 0x444444, 64).setOrigin(0, 0);
+
         // Init UI
-        this.screen = new Screen((Math.floor(this.width / 2)), (Math.floor(this.height / 2)), this.width, this.height - 100, this, this.tools);
+        this.screen = new Screen(150, 125, this.width, this.height - 100, this, this.tools);
+
+        this.marker = this.add.graphics();
+        this.marker.lineStyle(2, 0x000000);
+        this.marker.strokeRect(0, 0, 30 * this.screen.zoom, 30 * this.screen.zoom)
+
+        this.cameras.main.setBounds(0, 0, this.screen.map.widthInPixels, this.screen.map.heightInPixels);
 
         this.bar.updateItemMap();
 
-        this.add.rectangle(0, 0, this.width, this.height, 0x333333).setOrigin(0, 0);
+        // Setup & Render Bar Keybinds
+        this.setupBar();
 
-        this.screen.render();
+        // BookTalk
+        this.setupBookTalk();
 
-        this.add.rectangle(0, 0, this.width, 93, 0x444444).setOrigin(0, 0);
-
-        this.add.text(10, this.height - 50, "This is the level editor. You level editors here.");
-
-        this.bookTalk = this.add.container(10, this.height);
-        this.bookTalk.add(this.add.rectangle(0, -12, this.width * 2, 25, 0xffffff))
-        this.bookTalk.add(this.add.image(4, -12, "book").setScale(0.075))
-        this.bookTalk.add(this.add.text(18, -20, funnywords[Math.round(Math.random() * funnywords.length - 1)]).setColor("#000"))
-
+        // Placeholder
         this.add.text(457, 70, "Tool selected: ");
 
+        // Render Tools
         this.tools.render(0, 60, this)
 
+        // Block selection background
+        this.add.rectangle(0, this.height - 150, this.width, 150, 0x2b5937, 128).setOrigin(0, 0);
+
+        // Get local saves
         SaveManager.getLocalStorage();
     }
 
     update(): void {
         this.updateUI()
+        const activePointerBuffer = new Phaser.Math.Vector2();
+        this.input.activePointer.positionToCamera(this.cameras.main, activePointerBuffer)
+
+        const screenPos = activePointerBuffer.subtract(new Phaser.Math.Vector2(this.screen.x, this.screen.y))
+
+        const calcZoom = 30 * this.screen.zoom;
+        if (this.input.manager.activePointer.isDown) {
+            this.screen.placeTile(6, Math.floor(screenPos.x / calcZoom), Math.floor(screenPos.y / calcZoom))
+        }
     }
 
     updateUI(): void {
-        this.bookTalk.setY(this.height)
-        this.screen.y = 25 + this.height / 2
-        this.screen.render();
+        this.screen.updateMapPos();
+        this.bookTalk.setY(this.height);
     }
 
     saveLevel(): void {
@@ -218,7 +235,6 @@ class editorScene extends Phaser.Scene {
             new Key("ArrowDown"),
             () => this.screen.y -= 10
         )
-
         const help = new subBar("Help", this);
         this.bar.add(help);
         help.add(
@@ -252,6 +268,13 @@ class editorScene extends Phaser.Scene {
         eventKeyup = () => window.addEventListener("keyup", (event) => {
             this.key.change(event.code, false, event.ctrlKey)
         })
+    }
+
+    setupBookTalk(): void {
+        this.bookTalk = this.add.container(10, this.height);
+        this.bookTalk.add(this.add.rectangle(0, -162, this.width * 2, 25, 0xffffff, 16))
+        this.bookTalk.add(this.add.image(4, -162, "book").setScale(0.075))
+        this.bookTalk.add(this.add.text(18, -170, funnywords[Math.round(Math.random() * funnywords.length - 1)]).setColor("#000"))
     }
 }
 

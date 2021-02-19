@@ -1,10 +1,12 @@
-import { PairsFactory } from "matter";
 import { create2DNumberArray } from "../../core/misc/other";
 import editorScene from "../editor";
 import { Point } from "../tools";
 import { Screen } from "./screen";
 import ToolWidgetBar from "./toolwidget";
 
+/**
+ * @deprecated Use Phaser's Tilemapping instead.
+ */
 export class Grid {
     x: number
     y: number
@@ -65,7 +67,7 @@ export class Grid {
     }
 
     place(x: number, y: number, tile = 0): void {
-        console.log(x, y)
+        // console.log(x, y)
         if (this.blockExists(y, x)) this.blockData[y][x] = tile;
     }
 
@@ -81,7 +83,7 @@ export class Grid {
             Math.floor(finalPos.x / blockSize),
             Math.floor(finalPos.y / blockSize)
         ).add(addVector);
-        console.log(blockPos)
+        // console.log(blockPos)
 
         return blockPos
     }
@@ -97,8 +99,8 @@ export class Grid {
             (pos.y - 9) * 30 + 15,
             tile
         ).setDisplaySize(30, 30));
-        console.log(pos)
-        console.log(this.blockData)
+        // console.log(pos)
+        // console.log(this.blockData)
         this.place(pos.x, pos.y)
     }
 
