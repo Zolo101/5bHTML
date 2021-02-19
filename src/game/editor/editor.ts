@@ -35,12 +35,21 @@ class editorScene extends Phaser.Scene {
         this.key = new Key("");
         this.keys = new Map();
         this.level = {
-            name: "Untitled Level",
+            name: "Untitled Levelpack",
             author: "Lorem Ipsum",
             description: "Its Untitled!",
             struct_version: 7,
             level_version: "1.0",
-            levels: []
+            levels: [
+                {
+                    name: "Untitled Level",
+                    width: 32,
+                    height: 18,
+                    data: [],
+                    entities: [],
+                    background: 0
+                }
+            ]
         }
     }
 
@@ -132,8 +141,9 @@ class editorScene extends Phaser.Scene {
     }
 
     saveLevel(): void {
-        const levelname = prompt("(temp) Choose a name for your save:") || "Untitled Level"
-        //SaveManager.addSave(levelname, this.screen.grid.blockData)
+        this.level.levels[0].data = this.screen.getData();
+        this.level.name = prompt("(temp) Choose a name for your save:") || "Untitled Level"
+        SaveManager.addSave(this.level)
         SaveManager.push();
     }
 

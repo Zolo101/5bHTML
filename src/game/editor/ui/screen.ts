@@ -27,6 +27,22 @@ export class Screen {
         // this.map = new Grid(this.x, this.y, this, scene, 32, 18, this.zoom);
     }
 
+    getData(): number[][] {
+        const data = this.layer.culledTiles;
+        const indexData = data.map((tile) => tile.index)
+        const resultData: number[][] = [];
+        const resultBuffer: number[] = [];
+        indexData.forEach((tile, i) => {
+            if (i % this.map.width === 0) {
+                resultData.push(resultBuffer)
+                resultBuffer.length = 0;
+            }
+            resultBuffer.push(tile);
+        })
+
+        return resultData;
+    }
+
     placeTile(tile: number, x: number, y: number): void {
         this.map.putTileAt(tile, x, y)
     }
