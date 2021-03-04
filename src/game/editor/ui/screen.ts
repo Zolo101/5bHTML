@@ -28,17 +28,11 @@ export class Screen {
     }
 
     getData(): number[][] {
-        const data = this.layer.culledTiles;
-        const indexData = data.map((tile) => tile.index)
+        const indexData = this.layer.culledTiles.map((tile) => tile.index)
         const resultData: number[][] = [];
-        const resultBuffer: number[] = [];
-        indexData.forEach((tile, i) => {
-            if (i % this.map.width === 0) {
-                resultData.push(resultBuffer)
-                resultBuffer.length = 0;
-            }
-            resultBuffer.push(tile);
-        })
+        for (let i = 0; i < indexData.length; i += this.map.width) {
+            resultData.push(indexData.slice(i, i + this.map.width));
+        } // chunks
 
         return resultData;
     }

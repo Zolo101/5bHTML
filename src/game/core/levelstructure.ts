@@ -1,10 +1,9 @@
 export type Entity = {
     name: string
-    type: string
+    type?: "Character" | "Entity"
     x: number
     y: number
-    roleid: number
-    controllable: boolean
+    controllable?: boolean
 }
 
 export type Dialogue = {
