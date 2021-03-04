@@ -1,4 +1,4 @@
-const nodeEnv = (process.env.NODE_ENV === "development") ? true : false
+const nodeEnv = (import.meta.env.NODE_ENV === "development") ? true : false
 const settingsBuffer = localStorage.getItem("settings");
 let Settings = {
     IS_DEBUG: nodeEnv,
