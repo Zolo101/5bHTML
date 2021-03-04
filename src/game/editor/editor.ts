@@ -46,7 +46,13 @@ class editorScene extends Phaser.Scene {
                     width: 32,
                     height: 18,
                     data: [],
-                    entities: [],
+                    entities: [
+                        {
+                            name: "Book",
+                            x: 105,
+                            y: 0,
+                        }
+                    ],
                     background: 0
                 }
             ]
@@ -132,6 +138,7 @@ class editorScene extends Phaser.Scene {
         const calcZoom = 30 * this.screen.zoom;
         if (this.input.manager.activePointer.isDown) {
             this.screen.placeTile(6, Math.floor(screenPos.x / calcZoom), Math.floor(screenPos.y / calcZoom))
+            this.level.levels[0].data = this.screen.getData();
         }
     }
 
@@ -147,13 +154,26 @@ class editorScene extends Phaser.Scene {
         SaveManager.push();
     }
 
+    runLevel(): void {
+        this.resetChanges();
+        console.log(this.level)
+        this.scene.start("gameScene", {
+            levelfile: this.level,
+            levelnumber: 1,
+        })
+    }
+
     exit(): void {
+        this.resetChanges();
+        this.scene.start("saveScene")
+    }
+
+    resetChanges(): void {
         window.removeEventListener("resize", eventResize);
         window.removeEventListener("keydown", eventKeydown);
         window.removeEventListener("keyup", eventKeyup);
         this.bar.itemMap.clear()
         this.game.scale.resize(960, 540)
-        this.scene.start("saveScene")
     }
 
     setupBar(): void {
@@ -245,18 +265,26 @@ class editorScene extends Phaser.Scene {
             new Key("ArrowDown"),
             () => this.screen.y -= 10
         )
+        const run = new subBar("Run", this);
+        this.bar.add(run);
+        run.add(
+            "Run",
+            new Key("Enter", true),
+            () => this.runLevel()
+        )
         const help = new subBar("Help", this);
         this.bar.add(help);
         help.add(
             "About",
             new Key("empty"),
-            () => new Alert("5bHTML-edit", "Last Updated: 22/01/2021").render(this)
+            () => new Alert("5bHTML-edit", "Last Updated: 04/03/2021").render(this)
         )
 
         file.render(0, 0, this);
         edit.render(120, 0, this);
         view.render(240, 0, this);
-        help.render(360, 0, this);
+        run.render(360, 0, this);
+        help.render(480, 0, this);
     }
 
     addListeners(): void {
