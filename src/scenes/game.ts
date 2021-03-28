@@ -3,6 +3,12 @@ import { BlockObject } from "../game/core/data/block_data";
 import { LevelData } from "../game/core/levelstructure";
 // System Variables (Engine)
 
+export type GameOptions = {
+    from: Phaser.Scene,
+    levelfile: LevelData,
+    levelnumber?: number,
+}
+
 let leftKey: Phaser.Input.Keyboard.Key;
 let upKey: Phaser.Input.Keyboard.Key;
 let downKey: Phaser.Input.Keyboard.Key;
@@ -22,9 +28,8 @@ class gameScene extends Phaser.Scene {
 
     constructor() { super("gameScene"); }
 
-    init(lvl: { levelnumber: number, levelfile: LevelData }): void {
-        if (lvl.levelnumber === undefined) return;
-        this.levelnumber = lvl.levelnumber;
+    init(lvl: GameOptions): void {
+        this.levelnumber = lvl.levelnumber ?? 1;
 
         if (lvl.levelfile === undefined) return;
         this.levelfile = lvl.levelfile;

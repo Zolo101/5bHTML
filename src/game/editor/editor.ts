@@ -27,7 +27,8 @@ class editorScene extends Phaser.Scene {
     width!: number
     height!: number
 
-    level: LevelData
+    new!: boolean
+    level!: LevelData
     constructor() {
         super({ key: "editorScene" });
         this.bar = new Bar("Main");
@@ -57,6 +58,11 @@ class editorScene extends Phaser.Scene {
                 }
             ]
         }
+    }
+
+    init(initLevel: { level?: LevelData, new: boolean }): void {
+        this.new = initLevel.new;
+        if (initLevel.level !== undefined) this.level = initLevel.level
     }
 
     create(): void {
@@ -99,7 +105,7 @@ class editorScene extends Phaser.Scene {
         this.add.rectangle(0, 0, this.width, 93, 0x444444, 64).setOrigin(0, 0);
 
         // Init UI
-        this.screen = new Screen(150, 125, this.width, this.height - 100, this, this.tools);
+        this.screen = new Screen(150, 125, this, this.tools);
 
         this.marker = this.add.graphics();
         this.marker.lineStyle(2, 0x000000);
@@ -126,6 +132,7 @@ class editorScene extends Phaser.Scene {
 
         // Get local saves
         SaveManager.getLocalStorage();
+        if (!this.new) this.screen.setData(this.level.levels[0].data)
     }
 
     update(): void {
@@ -158,8 +165,8 @@ class editorScene extends Phaser.Scene {
         this.resetChanges();
         console.log(this.level)
         this.scene.start("gameScene", {
+            from: this,
             levelfile: this.level,
-            levelnumber: 1,
         })
     }
 

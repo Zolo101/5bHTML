@@ -11,7 +11,7 @@ export class Screen {
     zoom: number
     scene: Phaser.Scene
 
-    constructor(x: number, y: number, width: number, height: number, scene: editorScene, tools: ToolWidgetBar) {
+    constructor(x: number, y: number, scene: editorScene, tools: ToolWidgetBar) {
         this.x = x;
         this.y = y;
         this.scene = scene;
@@ -25,6 +25,10 @@ export class Screen {
         this.layer = this.map.createLayer(0, this.tiles);
         this.layer.fill(15)
         // this.map = new Grid(this.x, this.y, this, scene, 32, 18, this.zoom);
+    }
+
+    setData(data: number[][]): void {
+        this.map.putTilesAt(data, 0, 0);
     }
 
     getData(): number[][] {

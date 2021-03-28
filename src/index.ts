@@ -14,6 +14,7 @@ import newScene from "./scenes/new";
 import Settings from "./game/settingsgame";
 import settingsScene from "./scenes/settings";
 import menuOldScene from "./game/core/misc/menuold";
+import editsaveScene from "./game/editor/editsavescene";
 
 const config = {
     type: Phaser.AUTO,
@@ -40,6 +41,7 @@ const config = {
 
         editorScene,
         saveScene,
+        editsaveScene,
 
         settingsScene,
         exploreScene,
