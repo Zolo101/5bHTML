@@ -1,3 +1,4 @@
+import { textStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
 import SaveManager from "../core/misc/dataidb";
 import Key from "../core/misc/key";
@@ -26,6 +27,8 @@ class editorScene extends Phaser.Scene {
 
     width!: number
     height!: number
+
+    selectedBlock!: number
 
     new!: boolean
     level!: LevelData
@@ -58,6 +61,7 @@ class editorScene extends Phaser.Scene {
                 }
             ]
         }
+        this.selectedBlock = 6;
     }
 
     init(initLevel: { level?: LevelData, new: boolean }): void {
@@ -105,7 +109,7 @@ class editorScene extends Phaser.Scene {
         this.add.rectangle(0, 0, this.width, 93, 0x444444, 64).setOrigin(0, 0);
 
         // Init UI
-        this.screen = new Screen(150, 125, this, this.tools);
+        this.screen = new Screen(150, 125, this);
 
         this.marker = this.add.graphics();
         this.marker.lineStyle(2, 0x000000);
@@ -133,6 +137,8 @@ class editorScene extends Phaser.Scene {
         // Get local saves
         SaveManager.getLocalStorage();
         if (!this.new) this.screen.setData(this.level.levels[0].data)
+
+        this.setupBlocks();
     }
 
     update(): void {
@@ -144,7 +150,7 @@ class editorScene extends Phaser.Scene {
 
         const calcZoom = 30 * this.screen.zoom;
         if (this.input.manager.activePointer.isDown) {
-            this.screen.placeTile(6, Math.floor(screenPos.x / calcZoom), Math.floor(screenPos.y / calcZoom))
+            this.screen.placeTile(this.selectedBlock, Math.floor(screenPos.x / calcZoom), Math.floor(screenPos.y / calcZoom))
             this.level.levels[0].data = this.screen.getData();
         }
     }
@@ -156,7 +162,9 @@ class editorScene extends Phaser.Scene {
 
     saveLevel(): void {
         this.level.levels[0].data = this.screen.getData();
-        this.level.name = prompt("(temp) Choose a name for your save:") || "Untitled Level"
+        if (this.new) {
+            this.level.name = prompt("Choose a name for your save:") ?? "Untitled Level"
+        }
         SaveManager.addSave(this.level)
         SaveManager.push();
     }
@@ -171,8 +179,10 @@ class editorScene extends Phaser.Scene {
     }
 
     exit(): void {
-        this.resetChanges();
-        this.scene.start("saveScene")
+        if (confirm("Are you sure? Make sure you've saved before exiting!")) {
+            this.scene.start("saveScene");
+            this.resetChanges();
+        }
     }
 
     resetChanges(): void {
@@ -292,6 +302,33 @@ class editorScene extends Phaser.Scene {
         view.render(240, 0, this);
         run.render(360, 0, this);
         help.render(480, 0, this);
+    }
+
+    setupBlocks(): void {
+        const data: number[][] = [[]]
+        for (let i = 0; i < 20; i++) {
+            data[0].push(-1, i)
+        }
+        const map = this.make.tilemap({
+            data: data,
+            tileWidth: 30,
+            tileHeight: 30,
+        })
+        const tiles = map.addTilesetImage("core_tileset", "core_tileset");
+        const layer = map.createLayer(0, tiles);
+        layer.setPosition(-30, 800)
+        for (let i = 0; i < 21; i++) {
+            const container = this.add.container(60 * i, 850);
+            container.add(
+                this.add.text(0, 0, i.toString(), textStyle)
+                    .setBackgroundColor("#900")
+                    .setFontSize(36)
+                    .setInteractive()
+                    .on("pointerdown", () => {
+                        this.selectedBlock = i;
+                    })
+            )
+        }
     }
 
     addListeners(): void {

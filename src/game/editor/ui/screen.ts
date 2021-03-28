@@ -3,6 +3,7 @@ import { create2DNumberArray } from "../../core/misc/other"
 export class Screen {
     x: number
     y: number
+    background: Phaser.GameObjects.Image
     map: Phaser.Tilemaps.Tilemap
     tiles: Phaser.Tilemaps.Tileset
     layer: Phaser.Tilemaps.TilemapLayer
@@ -14,6 +15,9 @@ export class Screen {
         this.y = y;
         this.scene = scene;
         this.zoom = 1
+        this.background = this.scene.add.image(x, y, "background_0")
+            .setOrigin(0, 0)
+            .setScale(0.6, 0.6)
         this.map = this.scene.make.tilemap({
             data: create2DNumberArray(32, 18),
             tileWidth: 30,
@@ -21,7 +25,7 @@ export class Screen {
         })
         this.tiles = this.map.addTilesetImage("core_tileset", "core_tileset");
         this.layer = this.map.createLayer(0, this.tiles);
-        this.layer.fill(15)
+        this.layer.fill(99);
         // this.map = new Grid(this.x, this.y, this, scene, 32, 18, this.zoom);
     }
 
@@ -45,10 +49,12 @@ export class Screen {
 
     updateMapPos(): void {
         this.layer.setPosition(this.x, this.y);
+        this.background.setPosition(this.x, this.y)
     }
 
     changeZoom(zoom: number): void {
         this.layer.scale += zoom;
+        this.background.scale += (zoom * 0.6);
     }
 
     resetZoom(): void {

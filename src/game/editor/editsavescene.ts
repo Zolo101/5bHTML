@@ -18,8 +18,12 @@ class editsaveScene extends Phaser.Scene {
         this.add.rectangle(0, 0, 960, 540, 0x334433).setOrigin(0, 0);
         this.add.text(20, 10, this.save.name, titleStyle).setFontStyle("bold")
 
-        new BaseButton(80, 100, "Edit levelpack", this, () => this.scene.start("editorScene", {level: this.save}))
-        new BaseButton(80, 180, "Clone levelpack", this, () => {
+        new BaseButton(80, 100, "Play", this, () => this.scene.start("gameScene", {
+            from: this,
+            levelfile: this.save,
+        }))
+        new BaseButton(80, 180, "Edit", this, () => this.scene.start("editorScene", {level: this.save}))
+        new BaseButton(80, 260, "Clone", this, () => {
             const newName = prompt("What name should the new clone be called?") ?? "nil";
             if (newName !== "nil" && SaveManager.saves.has(newName)) {
                 alert("There is already a save with the same name!")
@@ -31,10 +35,10 @@ class editsaveScene extends Phaser.Scene {
                 SaveManager.push();
             }
         })
-        new BaseButton(80, 260, "Upload levelpack", this, () => {
+        new BaseButton(80, 340, "Upload", this, () => {
             // Upload stuff here
         })
-        new BaseButton(80, 340, "Delete levelpack", this, () => {
+        new BaseButton(80, 420, "Delete", this, () => {
             if (confirm("Are you sure? This WILL irreversibly delete your save.")) {
                 SaveManager.removeSave(this.save.name);
                 SaveManager.push();
