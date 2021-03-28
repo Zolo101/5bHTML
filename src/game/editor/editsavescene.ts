@@ -1,6 +1,7 @@
 import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
 import SaveManager from "../core/misc/dataidb";
+import { Screen } from "./ui/screen";
 
 class editsaveScene extends Phaser.Scene {
     save!: LevelData
@@ -15,7 +16,7 @@ class editsaveScene extends Phaser.Scene {
     create(): void {
         // this.scene.start("editorScene")
         this.add.rectangle(0, 0, 960, 540, 0x334433).setOrigin(0, 0);
-        this.add.text(10, 10, this.save.name, titleStyle).setFontStyle("bold")
+        this.add.text(20, 10, this.save.name, titleStyle).setFontStyle("bold")
 
         new BaseButton(80, 100, "Edit levelpack", this, () => this.scene.start("editorScene", {level: this.save}))
         new BaseButton(80, 180, "Clone levelpack", this, () => {
@@ -41,8 +42,13 @@ class editsaveScene extends Phaser.Scene {
             }
         })
 
-        this.add.text(440, 100, `By: ${this.save.author}`, titleStyle)
-        this.add.text(440, 180, this.save.description, textStyle).setFontSize(24)
+        this.add.text(420, 360, `By: ${this.save.author}`, titleStyle)
+        this.add.text(420, 420, this.save.description, textStyle).setFontSize(24)
+
+        const screen = new Screen(420, 80, this);
+        screen.setData(this.save.levels[0].data)
+        screen.changeZoom(-0.5);
+        screen.updateMapPos();
 
         const backButton = this.add.text(
             800, 475, "BACK", backStyle,

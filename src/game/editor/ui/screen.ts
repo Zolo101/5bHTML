@@ -1,6 +1,4 @@
 import { create2DNumberArray } from "../../core/misc/other"
-import editorScene from "../editor"
-import ToolWidgetBar from "./toolwidget"
 
 export class Screen {
     x: number
@@ -11,7 +9,7 @@ export class Screen {
     zoom: number
     scene: Phaser.Scene
 
-    constructor(x: number, y: number, scene: editorScene, tools: ToolWidgetBar) {
+    constructor(x: number, y: number, scene: Phaser.Scene) {
         this.x = x;
         this.y = y;
         this.scene = scene;
