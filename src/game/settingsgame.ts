@@ -1,4 +1,6 @@
-const nodeEnv = (import.meta.env.NODE_ENV === "development") ? true : false
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const nodeEnv = (import.meta.env.NODE_ENV === "development")
 const settingsBuffer = localStorage.getItem("settings");
 let Settings = {
     IS_DEBUG: nodeEnv,
