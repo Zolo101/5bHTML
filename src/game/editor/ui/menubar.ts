@@ -24,29 +24,29 @@ const barTextStyleItem = {
     },
 };
 
-export class Bar {
+export class MenuBar {
     name: string
-    itemMap: Map<string, subBarItem>
-    subBars: subBar[]
+    itemMap: Map<string, subMenuBarItem>
+    subMenuBars: subMenuBar[]
 
     constructor(name: string) {
         this.name = name;
         this.itemMap = new Map();
-        this.subBars = [];
+        this.subMenuBars = [];
     }
 
-    add(subbar: subBar): subBar {
-        this.subBars.push(subbar);
+    add(subbar: subMenuBar): subMenuBar {
+        this.subMenuBars.push(subbar);
         return subbar;
     }
 
-    allItems(): subBarItem[] {
-        const itemArray: subBarItem[] = [];
-        this.subBars.forEach((subbar) => subbar.items.forEach((item) => itemArray.push(item)));
+    allItems(): subMenuBarItem[] {
+        const itemArray: subMenuBarItem[] = [];
+        this.subMenuBars.forEach((subbar) => subbar.items.forEach((item) => itemArray.push(item)));
         return itemArray;
     }
 
-    addToSubBarItem(name: string, subbaritem: subBarItem): void {
+    addToSubBarItem(name: string, subbaritem: subMenuBarItem): void {
         this.itemMap.set(name, subbaritem);
     }
 
@@ -56,9 +56,9 @@ export class Bar {
     }
 }
 
-export class subBar {
+export class subMenuBar {
     text: string
-    items: subBarItem[]
+    items: subMenuBarItem[]
     scene: Phaser.Scene
     itemsGroup: Phaser.GameObjects.Group
     show: boolean
@@ -73,8 +73,8 @@ export class subBar {
         this.open = false;
     }
 
-    add(text: string, key: Key, onclick: () => void): subBarItem {
-        const item = new subBarItem(text, key, onclick)
+    add(text: string, key: Key, onclick: () => void): subMenuBarItem {
+        const item = new subMenuBarItem(text, key, onclick)
         this.items.push(item);
         return item;
     }
@@ -100,13 +100,13 @@ export class subBar {
     onOpen(x: number, y: number, scene: Phaser.Scene): void {
         this.items.forEach((item, i) => {
             const text = (item.key.code === "empty") ? `${item.text}` : `${item.text}   (${item.key.getName()})`
-            const barItem = scene.add.text(x, (24 * (i + 1)) + 4, text, barTextStyleItem)
+            const menuBarItem = scene.add.text(x, (24 * (i + 1)) + 4, text, barTextStyleItem)
                 .setInteractive()
                 .setAlpha(0.8)
                 .on("pointerdown", () => {if (this.open) item.onclick()})
-                .on("pointerover", () => barItem.setBackgroundColor("#b7b7b7"))
-                .on("pointerout", () => barItem.setBackgroundColor("#dddddd"))
-            this.itemsGroup.add(barItem)
+                .on("pointerover", () => menuBarItem.setBackgroundColor("#b7b7b7"))
+                .on("pointerout", () => menuBarItem.setBackgroundColor("#dddddd"))
+            this.itemsGroup.add(menuBarItem)
         })
     }
 
@@ -115,7 +115,7 @@ export class subBar {
     }
 }
 
-export class subBarItem {
+export class subMenuBarItem {
     text: string
     key: Key
     onclick: () => void
@@ -127,4 +127,4 @@ export class subBarItem {
     }
 }
 
-export default subBar;
+export default subMenuBar;

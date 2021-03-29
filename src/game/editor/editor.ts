@@ -5,7 +5,7 @@ import Key from "../core/misc/key";
 import funnywords from "./funnywords";
 import { brushTool, cursorTool, eraserTool, fillTool, pencilTool, selectTool, zoomTool } from "./tools";
 import Alert from "./ui/alert";
-import { Bar, subBar, subBarItem } from "./ui/bar";
+import { MenuBar, subMenuBar, subMenuBarItem } from "./ui/menubar";
 import { Screen } from "./ui/screen";
 import { ToolWidgetBar } from "./ui/toolwidget";
 
@@ -14,8 +14,8 @@ let eventKeydown: () => void;
 let eventKeyup: () => void;
 
 class editorScene extends Phaser.Scene {
-    bar: Bar
-    baritem: subBarItem[]
+    menubar: MenuBar
+    baritem: subMenuBarItem[]
     key!: Key
     keys!: Map<string, Key>
 
@@ -34,7 +34,7 @@ class editorScene extends Phaser.Scene {
     level!: LevelData
     constructor() {
         super({ key: "editorScene" });
-        this.bar = new Bar("Main");
+        this.menubar = new MenuBar("Main");
         this.baritem = [];
         this.key = new Key("");
         this.keys = new Map();
@@ -117,10 +117,10 @@ class editorScene extends Phaser.Scene {
 
         this.cameras.main.setBounds(0, 0, this.screen.map.widthInPixels, this.screen.map.heightInPixels);
 
-        this.bar.updateItemMap();
+        this.menubar.updateItemMap();
 
         // Setup & Render Bar Keybinds
-        this.setupBar();
+        this.setupMenuBar();
 
         // BookTalk
         this.setupBookTalk();
@@ -189,113 +189,41 @@ class editorScene extends Phaser.Scene {
         window.removeEventListener("resize", eventResize);
         window.removeEventListener("keydown", eventKeydown);
         window.removeEventListener("keyup", eventKeyup);
-        this.bar.itemMap.clear()
+        this.menubar.itemMap.clear()
         this.game.scale.resize(960, 540)
     }
 
-    setupBar(): void {
-        const file = new subBar("File", this);
-        this.bar.add(file);
-        file.add(
-            "Save",
-            new Key("S", true),
-            () => this.saveLevel()
-        )
-        file.add(
-            "Load",
-            new Key("L", true),
-            () => this.saveLevel()
-        )
-        file.add(
-            "Upload",
-            new Key("empty", true),
-            () => console.log("Uploaded... but to where?")
-        )
-        file.add(
-            "Exit",
-            new Key("Escape"),
-            () => this.exit()
-        )
+    setupMenuBar(): void {
+        const file = new subMenuBar("File", this);
+        this.menubar.add(file);
+        file.add("Save", new Key("S", true), () => this.saveLevel())
+        file.add("Load", new Key("L", true), () => this.saveLevel())
+        file.add("Upload", new Key("empty", true), () => console.log("Uploaded... but to where?"))
+        file.add("Exit", new Key("Escape"), () => this.exit())
 
-        const edit = new subBar("Edit", this);
-        this.bar.add(edit);
-        edit.add(
-            "Undo",
-            new Key("Z", true),
-            () => console.log("Feature unfinished")
-        )
-        edit.add(
-            "Redo",
-            new Key("Y", true),
-            () => console.log("Feature unfinished")
-        )
-        edit.add(
-            "Cut",
-            new Key("X", true),
-            () => console.log("Feature unfinished")
-        )
-        edit.add(
-            "Copy",
-            new Key("C", true),
-            () => console.log("Feature unfinished")
-        )
-        edit.add(
-            "Paste",
-            new Key("V", true),
-            () => console.log("Feature unfinished")
-        )
+        const edit = new subMenuBar("Edit", this);
+        this.menubar.add(edit);
+        edit.add("Undo", new Key("Z", true), () => console.log("Feature unfinished"))
+        edit.add("Redo", new Key("Y", true), () => console.log("Feature unfinished"))
+        edit.add("Cut", new Key("X", true), () => console.log("Feature unfinished"))
+        edit.add("Copy", new Key("C", true), () => console.log("Feature unfinished"))
+        edit.add("Paste", new Key("V", true), () => console.log("Feature unfinished"))
 
-        const view = new subBar("View", this);
-        this.bar.add(view);
-        view.add(
-            "Zoom In",
-            new Key("=", true, true),
-            () => this.screen.changeZoom(1)
-        )
-        view.add(
-            "Zoom Out",
-            new Key("-", true, true),
-            () => this.screen.changeZoom(-1)
-        )
-        view.add(
-            "100% Zoom",
-            new Key("empty"),
-            () => this.screen.resetZoom()
-        )
-        view.add(
-            "lazy",
-            new Key("ArrowLeft"),
-            () => this.screen.x += 10
-        )
-        view.add(
-            "lazy",
-            new Key("ArrowRight"),
-            () => this.screen.x -= 10
-        )
-        view.add(
-            "lazy",
-            new Key("ArrowUp"),
-            () => this.screen.y += 10
-        )
-        view.add(
-            "lazy",
-            new Key("ArrowDown"),
-            () => this.screen.y -= 10
-        )
-        const run = new subBar("Run", this);
-        this.bar.add(run);
-        run.add(
-            "Run",
-            new Key("Enter", true),
-            () => this.runLevel()
-        )
-        const help = new subBar("Help", this);
-        this.bar.add(help);
-        help.add(
-            "About",
-            new Key("empty"),
-            () => new Alert("5bHTML-edit", "Last Updated: 04/03/2021").render(this)
-        )
+        const view = new subMenuBar("View", this);
+        this.menubar.add(view);
+        view.add("Zoom In", new Key("=", true, true), () => this.screen.changeZoom(1))
+        view.add("Zoom Out", new Key("-", true, true), () => this.screen.changeZoom(-1))
+        view.add("100% Zoom", new Key("empty"), () => this.screen.resetZoom())
+        view.add("lazy", new Key("ArrowLeft"), () => this.screen.x += 10)
+        view.add("lazy", new Key("ArrowRight"), () => this.screen.x -= 10)
+        view.add("lazy", new Key("ArrowUp"), () => this.screen.y += 10)
+        view.add("lazy", new Key("ArrowDown"), () => this.screen.y -= 10)
+        const run = new subMenuBar("Run", this);
+        this.menubar.add(run);
+        run.add("Run", new Key("Enter", true), () => this.runLevel())
+        const help = new subMenuBar("Help", this);
+        this.menubar.add(help);
+        help.add("About", new Key("empty"), () => new Alert("5bHTML-edit", "Last Updated: 29/03/2021").render(this))
 
         file.render(0, 0, this);
         edit.render(120, 0, this);
@@ -341,7 +269,7 @@ class editorScene extends Phaser.Scene {
 
         eventKeydown = () => window.addEventListener("keydown", (event) => {
             this.key.change(event.code, event.ctrlKey, event.shiftKey, event.altKey)
-            const item = this.bar.itemMap.get(event.code);
+            const item = this.menubar.itemMap.get(event.code);
             // console.log(this.bar.itemMap.entries(), event)
             if (item !== undefined) {
                 item.onclick()
