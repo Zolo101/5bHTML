@@ -1,6 +1,7 @@
 // import { Structs } from "phaser";
 import { levelbuttonStyle, backStyle } from "../game/core/buttons";
 import { levels } from "../game/core/jsonmodule";
+import { padStart } from "../game/core/misc/other";
 // import gameScene from "./game";
 
 const buttonlist: Phaser.GameObjects.Text[] = [];
@@ -54,7 +55,7 @@ class levelselectScene extends Phaser.Scene {
 
         const levelButton = this.add.text(
             // math xD
-            i * 110 - 70, j * 60 + 25, num.padStart(3, "0"), levelbuttonStyle,
+            i * 110 - 70, j * 60 + 25, padStart(num, 3), levelbuttonStyle,
         ).setInteractive();
 
         // set code for buttons that have levels

@@ -18,8 +18,13 @@ export function hexColourFromSeed(seed: number): string {
 
 export function create2DNumberArray(width: number, height: number): number[][] {
     const newArray = [...new Array(Math.floor(height))].map(() => new Array(Math.floor(width)).fill(-1))
-    console.log(newArray)
+    // console.log(newArray)
     return newArray;
+}
+
+export function padStart(num: number | string, amount: number, pad = "0"): string {
+    const str = num.toString();
+    return pad.repeat(amount - str.length) + str;
 }
 
 
