@@ -26,13 +26,17 @@ class gameScene extends Phaser.Scene {
 
     levelmanager!: LevelManager
 
+    backScene!: string
+
     constructor() { super("gameScene"); }
 
     init(lvl: GameOptions): void {
         this.levelnumber = lvl.levelnumber ?? 1;
 
-        if (lvl.levelfile === undefined) return;
+        if (lvl.levelfile === undefined) throw "Levelfile needed!";
         this.levelfile = lvl.levelfile;
+
+        this.backScene = (lvl.from === undefined) ? "levelselectScene" : lvl.from.scene.key;
     }
 
     create(): void {
@@ -57,7 +61,7 @@ class gameScene extends Phaser.Scene {
         this.levelmanager = new LevelManager(
             this.levelfile,
             BlockObject, this,
-            terrain, decorateterrain,
+            terrain, decorateterrain, this.backScene
         );
 
         this.levelmanager.setLevel(this.levelnumber);

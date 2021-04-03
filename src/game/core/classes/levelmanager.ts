@@ -9,6 +9,7 @@ import { entities } from "../jsonmodule";
 import Settings from "../../settingsgame";
 import gameSceneType from "../gamestructure";
 import { BlockObject, BlockObjectType } from "../data/block_data";
+import { padStart } from "../misc/other";
 let level: LevelData
 
 export class LevelManager {
@@ -37,6 +38,8 @@ export class LevelManager {
 
     levelTextButton!: Phaser.GameObjects.Text
 
+    backScene!: string
+
     // stop player from going past certain level
     hardlimitlevel = 5;
 
@@ -48,6 +51,7 @@ export class LevelManager {
 
         terrain: Phaser.Physics.Arcade.StaticGroup,
         decorateTerrain: Phaser.Physics.Arcade.StaticGroup,
+        backScene: string,
     ) {
         this.levels = levels;
 
@@ -62,6 +66,8 @@ export class LevelManager {
 
         this.terrain = terrain;
         this.decorateTerrain = decorateTerrain;
+
+        this.backScene = backScene;
 
         this.levelTextButton = this.scene.add.text(
             20, 480, "", levelnameStyle,
@@ -117,7 +123,7 @@ export class LevelManager {
 
         // Set levelname
         this.levelTextButton.setText(
-            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber].name}`
+            `${padStart(this.levelnumber + 1, 3)}. ${level.levels[this.levelnumber].name}`
         );
 
         const backButton = this.scene.add.text(
@@ -125,7 +131,7 @@ export class LevelManager {
         ).setInteractive().setAlpha(0.75).setScrollFactor(0, 0);
 
         backButton.on("pointerdown", () => {
-            this.scene.scene.start("levelselectScene");
+            this.scene.scene.start(this.backScene);
         });
     }
 
