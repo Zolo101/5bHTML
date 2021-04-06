@@ -1,10 +1,11 @@
 import { textStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
-import SaveManager from "../core/misc/dataidb";
+import { s_getLocalStorage, s_addSave, s_push, VERSION_NUMBER } from "../core/misc/dataidb";
 import Key from "../core/misc/key";
 import funnywords from "./funnywords";
 import { brushTool, cursorTool, eraserTool, fillTool, pencilTool, selectTool, zoomTool } from "./tools";
 import Alert from "./ui/alert";
+import Bar from "./ui/bar";
 import { MenuBar, subMenuBar, subMenuBarItem } from "./ui/menubar";
 import { Screen } from "./ui/screen";
 import { ToolWidgetBar } from "./ui/toolwidget";
@@ -15,6 +16,7 @@ let eventKeyup: () => void;
 
 class editorScene extends Phaser.Scene {
     menubar: MenuBar
+    bottombar: Bar
     baritem: subMenuBarItem[]
     key!: Key
     keys!: Map<string, Key>
@@ -35,6 +37,7 @@ class editorScene extends Phaser.Scene {
     constructor() {
         super({ key: "editorScene" });
         this.menubar = new MenuBar("Main");
+        this.bottombar = new Bar("Bottom");
         this.baritem = [];
         this.key = new Key("");
         this.keys = new Map();
@@ -42,8 +45,8 @@ class editorScene extends Phaser.Scene {
             name: "Untitled Levelpack",
             author: "Lorem Ipsum",
             description: "Its Untitled!",
-            struct_version: 7,
-            level_version: "1.0",
+            struct_version: VERSION_NUMBER,
+            level_version: "1",
             levels: [
                 {
                     name: "Untitled Level",
@@ -135,10 +138,13 @@ class editorScene extends Phaser.Scene {
         this.add.rectangle(0, this.height - 150, this.width, 150, 0x2b5937, 128).setOrigin(0, 0);
 
         // Get local saves
-        SaveManager.getLocalStorage();
+        s_getLocalStorage();
         if (!this.new) this.screen.setData(this.level.levels[0].data)
 
-        this.setupBlocks();
+        // this.setupBlocks();
+
+        this.setupBottomBar();
+        this.bottombar.render(10, 800, this);
     }
 
     update(): void {
@@ -165,8 +171,8 @@ class editorScene extends Phaser.Scene {
         if (this.new) {
             this.level.name = prompt("Choose a name for your save:") ?? "Untitled Level"
         }
-        SaveManager.addSave(this.level)
-        SaveManager.push();
+        s_addSave(this.level)
+        s_push();
     }
 
     runLevel(): void {
@@ -232,7 +238,32 @@ class editorScene extends Phaser.Scene {
         help.render(480, 0, this);
     }
 
-    setupBlocks(): void {
+    setupBottomBar(): void {
+        const blocksTab = this.make.container({}, false).add([
+            this.createBlockContainer()
+        ])
+        this.bottombar.add("Blocks", blocksTab);
+
+        //const entityTab = this.make.container({}, false).add([
+        //])
+        //this.bottombar.add("Entity", entityTab);
+
+        //const levelScreen = new Screen(0, 0, this)
+        //levelScreen.setData(this.level.levels[0].data)
+        //levelScreen.changeZoom(-0.8)
+        //levelScreen.y = 800;
+        //levelScreen.x = 20;
+        //levelScreen.updateMapPos()
+
+        //const levelsTab = this.make.container({}, false).add([
+        //    this.make.text({ text: "Level 001", y: 10 }),
+        //    // levelScreen.layer
+        //])
+        //this.bottombar.add("Levels", levelsTab);
+    }
+
+    createBlockContainer(): Phaser.GameObjects.Container {
+        const container = this.add.container(60, 850)
         const data: number[][] = [[]]
         for (let i = 0; i < 20; i++) {
             data[0].push(-1, i)
@@ -246,17 +277,17 @@ class editorScene extends Phaser.Scene {
         const layer = map.createLayer(0, tiles);
         layer.setPosition(-30, 800)
         for (let i = 0; i < 21; i++) {
-            const container = this.add.container(60 * i, 850);
-            container.add(
-                this.add.text(0, 0, i.toString(), textStyle)
-                    .setBackgroundColor("#900")
-                    .setFontSize(36)
-                    .setInteractive()
-                    .on("pointerdown", () => {
-                        this.selectedBlock = i;
-                    })
+            container.add(this.add.text(-60 + (60 * i), 0, i.toString(), textStyle)
+                .setBackgroundColor("#900")
+                .setFontSize(36)
+                .setInteractive()
+                .on("pointerdown", () => {
+                    this.selectedBlock = i;
+                })
             )
         }
+        container.add(layer);
+        return container;
     }
 
     addListeners(): void {

@@ -1,11 +1,14 @@
-import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
+import { backStyle, BaseButton, levelnameStyle, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
-import SaveManager from "../core/misc/dataidb";
+import { s_getCacheAll, s_getLocalStorage } from "../core/misc/dataidb";
 
 class saveScene extends Phaser.Scene {
+    page: number
     selectedsave!: LevelData
+
     constructor() {
         super({ key: "saveScene" });
+        this.page = 0;
     }
 
     create(): void {
@@ -24,13 +27,25 @@ class saveScene extends Phaser.Scene {
             this.scene.start("menuScene");
         });
 
-        // gets all the levels from the localstorage
-        SaveManager.getLocalStorage();
+        this.add.text(180, 425, "◀︎", textStyle)
+            .setFontSize(32)
+            .setInteractive()
+            .on("pointerdown", () => this.page -= 1);
 
-        let i = 1;
-        for (const savefile of SaveManager.getCacheAll()) {
-            this.renderSaveFile(40, 30 + (60 * i), savefile)
-            i += 1;
+        const pageText = this.add.text(250, 425, "1", levelnameStyle).setAlign("center");
+
+        this.add.text(300, 425, "▶︎", textStyle)
+            .setFontSize(32)
+            .setInteractive()
+            .on("pointerdown", () => this.page += 1);
+
+        // gets all the levels from the localstorage
+        s_getLocalStorage();
+        const saves = [...s_getCacheAll()];
+        const selStart = 6 * this.page;
+
+        for (let i = 0; i < Math.min(6, saves.length - selStart); i++) {
+            this.renderSaveFile(40, 30 + (60 * (i + 1)), saves[selStart + i])
         }
     }
 

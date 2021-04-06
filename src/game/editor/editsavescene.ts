@@ -1,6 +1,6 @@
 import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
-import SaveManager from "../core/misc/dataidb";
+import { s_addSave, s_push, s_removeSave, s_saves } from "../core/misc/dataidb";
 import { Screen } from "./ui/screen";
 
 class editsaveScene extends Phaser.Scene {
@@ -25,23 +25,31 @@ class editsaveScene extends Phaser.Scene {
         new BaseButton(80, 180, "Edit", this, () => this.scene.start("editorScene", {level: this.save}))
         new BaseButton(80, 260, "Clone", this, () => {
             const newName = prompt("What name should the new clone be called?") ?? "nil";
-            if (newName !== "nil" && SaveManager.saves.has(newName)) {
+            if (newName !== "nil" && s_saves.has(newName)) {
                 alert("There is already a save with the same name!")
             } else {
                 // Serialisation be like
                 const newSave = JSON.parse(JSON.stringify(this.save)) as LevelData;
                 newSave.name = newName;
-                SaveManager.addSave(newSave);
-                SaveManager.push();
+                s_addSave(newSave);
+                s_push();
             }
         })
-        new BaseButton(80, 340, "Upload", this, () => {
-            // Upload stuff here
+        new BaseButton(80, 340, "Upload", this, async () => {
+            console.log(this.save)
+            await fetch("https://5beam.zelo.dev/api/upload", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(this.save)
+            });
         })
         new BaseButton(80, 420, "Delete", this, () => {
             if (confirm("Are you sure? This WILL irreversibly delete your save.")) {
-                SaveManager.removeSave(this.save.name);
-                SaveManager.push();
+                s_removeSave(this.save.name);
+                s_push();
                 this.scene.start("saveScene");
             }
         })

@@ -1,6 +1,6 @@
 import Key from "../../core/misc/key";
 
-const barTextStyle = {
+export const barTextStyle = {
     fontFamily: "Helvetica, Arial, sans-serif",
     fontSize: "18px",
     backgroundColor: "#ccc",
@@ -12,7 +12,7 @@ const barTextStyle = {
     },
 };
 
-const barTextStyleItem = {
+export const barTextStyleItem = {
     fontFamily: "Helvetica, Arial, sans-serif",
     fontSize: "14px",
     backgroundColor: "#ddd",
