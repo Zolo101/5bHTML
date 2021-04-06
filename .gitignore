@@ -1,6 +1,7 @@
-dev_files
+build
 node_modules
 .vscode
-5bhtml.code-workspace
+dev_files
+
 importTree.png
-dist/main.js
+5bhtml.code-workspace
