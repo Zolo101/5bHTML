@@ -1,5 +1,5 @@
 import { textStyle, backStyle, levelnameStyle, titleStyle } from "../core/buttons";
-import { APIData, APIResponse, c_addSaves, c_clear, c_getLocalStorage, c_push, c_saves } from "../core/misc/dataidb";
+import { APIData, APIResponse, c_addSaves, c_clear, c_clearEverything, c_getLocalStorage, c_push, c_saves } from "../core/misc/dataidb";
 import { Screen } from "../editor/ui/screen";
 
 const SERVER_NAME = "https://5beam.zelo.dev";
@@ -92,7 +92,6 @@ class LevelItem {
 }
 
 class exploreScene extends Phaser.Scene {
-    // selectedlevel!: APIData
     levels: Map<number, APIData[]>
     page: number
     refreshing: boolean
@@ -144,6 +143,7 @@ class exploreScene extends Phaser.Scene {
         ).setInteractive();
 
         refreshbutton.on("pointerdown", () => {
+            c_clearEverything();
             this.refreshPage();
         });
 
@@ -222,6 +222,14 @@ class exploreScene extends Phaser.Scene {
         // Make sure that the page being rendered actually has levels
         if (!this.levels.has(this.page)) await this.refreshPage();
         pageText.setText((this.page + 1).toString())
+
+        ////////////////////////////////////////////////////////////////
+        // warning to future zelo
+        //
+        // this masks the problem where levelitems dont get deleted
+        // it is cosmetic and doesnt fully fix the issue
+        ////////////////////////////////////////////////////////////////
+        this.add.rectangle(30, 100, 940, 350, 0x375342).setOrigin(0, 0);
 
         this.levels.get(this.page)?.forEach((level, i) => {
             const newTile = new LevelItem(
