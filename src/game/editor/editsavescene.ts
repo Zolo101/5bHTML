@@ -59,7 +59,7 @@ class editsaveScene extends Phaser.Scene {
 
         const screen = new Screen(420, 80, this);
         screen.setData(this.save.levels[0].data)
-        screen.changeZoom(-0.5);
+        screen.zoom = 0.5;
         screen.updateMapPos();
 
         const backButton = this.add.text(

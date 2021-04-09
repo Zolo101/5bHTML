@@ -1,20 +1,41 @@
 import { create2DNumberArray } from "../../core/misc/other"
+import { Point } from "../tools"
 
 export class Screen {
-    x: number
-    y: number
+    private _x: number
+    private _y: number
+    private _zoom: number
     background: Phaser.GameObjects.Image
     map: Phaser.Tilemaps.Tilemap
     tiles: Phaser.Tilemaps.Tileset
     layer: Phaser.Tilemaps.TilemapLayer
-    zoom: number
     scene: Phaser.Scene
 
+    get x(): number {return this._x}
+    set x(x: number) {
+        this._x = x;
+        this.updateMapPos();
+    }
+
+    get y(): number {return this._y}
+    set y(y: number) {
+        this._y = y;
+        this.updateMapPos();
+    }
+
+    get zoom(): number {return this._zoom}
+    set zoom(zoom: number) {
+        this._zoom = zoom;
+        this.layer.scale = this._zoom;
+        this.background.scale = (this._zoom * 0.6);
+    }
+
+
     constructor(x: number, y: number, scene: Phaser.Scene) {
-        this.x = x;
-        this.y = y;
+        this._x = x;
+        this._y = y;
+        this._zoom = 1
         this.scene = scene;
-        this.zoom = 1
         this.background = this.scene.add.image(x, y, "background_0")
             .setOrigin(0, 0)
             .setScale(0.6, 0.6)
@@ -26,7 +47,6 @@ export class Screen {
         this.tiles = this.map.addTilesetImage("core_tileset", "core_tileset");
         this.layer = this.map.createLayer(0, this.tiles);
         this.layer.fill(99);
-        // this.map = new Grid(this.x, this.y, this, scene, 32, 18, this.zoom);
     }
 
     setData(data: number[][]): void {
@@ -48,16 +68,14 @@ export class Screen {
     }
 
     updateMapPos(): void {
-        this.layer.setPosition(this.x, this.y);
-        this.background.setPosition(this.x, this.y)
+        this.layer.setPosition(this._x, this._y);
+        this.background.setPosition(this._x, this._y)
     }
 
-    changeZoom(zoom: number): void {
-        this.layer.scale += zoom;
-        this.background.scale += (zoom * 0.6);
-    }
-
-    resetZoom(): void {
-        this.zoom = 1;
+    getRealXYFromCoord(x: number, y: number): Point {
+        return {
+            x: (x * 30),
+            y: (y * 30),
+        }
     }
 }

@@ -80,7 +80,7 @@ class LevelItem {
         try {
             this.screen = new Screen(this.x + 4, this.y + 4, scene);
             this.screen.setData(this.meta.levels[0].data);
-            this.screen.changeZoom(-0.78);
+            this.screen.zoom = 0.78;
             this.screen.updateMapPos();
         } catch (error) {
             console.error(error)
