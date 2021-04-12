@@ -1,5 +1,6 @@
 import { textStyle, backStyle, levelnameStyle, titleStyle } from "../core/buttons";
 import { APIData, APIResponse, c_addSaves, c_clear, c_clearEverything, c_getLocalStorage, c_push, c_saves } from "../core/misc/dataidb";
+import NumInc from "../editor/ui/numinc";
 import { Screen } from "../editor/ui/screen";
 
 const SERVER_NAME = "https://5beam.zelo.dev";
@@ -7,7 +8,6 @@ const SERVER_NAME = "https://5beam.zelo.dev";
 const levelelements: LevelItem[] = [];
 let epochtimetext: Phaser.GameObjects.Text;
 let infoText: Phaser.GameObjects.Text;
-let pageText: Phaser.GameObjects.Text;
 
 const exploreButtonStyle = {
     fontFamily: "Helvetica, Arial, sans-serif",
@@ -80,7 +80,7 @@ class LevelItem {
         try {
             this.screen = new Screen(this.x + 4, this.y + 4, scene);
             this.screen.setData(this.meta.levels[0].data);
-            this.screen.zoom = 0.78;
+            this.screen.zoom = 0.22;
             this.screen.updateMapPos();
         } catch (error) {
             console.error(error)
@@ -147,28 +147,12 @@ class exploreScene extends Phaser.Scene {
             this.refreshPage();
         });
 
-        pageText = this.add.text(440, 475, "", levelnameStyle).setAlign("center");
         infoText = this.add.text(30, 40, "", levelnameStyle);
 
-        this.add.text(370, 475, "◀︎", textStyle)
-            .setFontSize(32)
-            .setBackgroundColor("#222")
-            .setInteractive()
-            .on("pointerdown", () => {
-                if (this.page > 0) {
-                    this.page -= 1
-                    this.renderPage()
-                }
-            });
-
-        this.add.text(500, 475, "▶︎", textStyle)
-            .setFontSize(32)
-            .setBackgroundColor("#222")
-            .setInteractive()
-            .on("pointerdown", () => {
-                this.page += 1
-                this.renderPage();
-            });
+        new NumInc(370, 475, 0, 999, this, (value) => {
+            this.page = value;
+            this.renderPage();
+        })
 
         // gets all the levels from the localstorage
         c_getLocalStorage();
@@ -221,7 +205,6 @@ class exploreScene extends Phaser.Scene {
     async renderPage(): Promise<void> {
         // Make sure that the page being rendered actually has levels
         if (!this.levels.has(this.page)) await this.refreshPage();
-        pageText.setText((this.page + 1).toString())
 
         ////////////////////////////////////////////////////////////////
         // warning to future zelo
