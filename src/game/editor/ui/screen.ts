@@ -1,4 +1,4 @@
-import { create2DNumberArray } from "../../core/misc/other"
+import { chunkArray, create2DNumberArray } from "../../core/misc/other"
 import { Point } from "../tools"
 
 export class Screen {
@@ -55,12 +55,7 @@ export class Screen {
 
     getData(): number[][] {
         const indexData = this.layer.culledTiles.map((tile) => tile.index)
-        const resultData: number[][] = [];
-        for (let i = 0; i < indexData.length; i += this.map.width) {
-            resultData.push(indexData.slice(i, i + this.map.width));
-        } // chunks
-
-        return resultData;
+        return chunkArray(indexData, this.map.width);
     }
 
     placeTile(tile: number, x: number, y: number): void {
