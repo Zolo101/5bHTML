@@ -10,7 +10,7 @@ class explorelevelScene extends Phaser.Scene {
     }
 
     init(save: LevelData): void {
-        this.save = (save as any).save as LevelData;
+        this.save = save;
     }
 
     create(): void {
@@ -41,6 +41,7 @@ class explorelevelScene extends Phaser.Scene {
         const screen = new Screen(420, 80, this);
         screen.setData(this.save.levels[0].data)
         screen.zoom = 0.5;
+        screen.setBackground(this.save.levels[0].background)
         screen.updateMapPos();
 
         const backButton = this.add.text(

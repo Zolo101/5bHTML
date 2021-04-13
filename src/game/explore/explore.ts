@@ -81,6 +81,7 @@ class LevelItem {
             this.screen = new Screen(this.x + 4, this.y + 4, scene);
             this.screen.setData(this.meta.levels[0].data);
             this.screen.zoom = 0.22;
+            this.screen.setBackground(this.meta.levels[0].background)
             this.screen.updateMapPos();
         } catch (error) {
             console.error(error)
@@ -106,6 +107,7 @@ class exploreScene extends Phaser.Scene {
     create(): void {
         // Background
         this.add.rectangle(0, 0, 960, 540, 0x375342).setOrigin(0, 0);
+        this.page = 0;
 
         epochtimetext = this.add.text(10, 5, "awaiting time...", textStyle)
             .setFontSize(24)
@@ -224,7 +226,7 @@ class exploreScene extends Phaser.Scene {
 
             newTile.tile.setInteractive(new Phaser.Geom.Rectangle(newTile.x, newTile.y, 220, 170), Phaser.Geom.Rectangle.Contains)
                 .on("pointerdown", () => {
-                    this.scene.start("explorelevelScene", { save: level })
+                    this.scene.start("explorelevelScene", level)
                 })
 
             newTile.render(this);

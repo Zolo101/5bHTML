@@ -9,8 +9,8 @@ class editsaveScene extends Phaser.Scene {
         super({ key: "editsaveScene" });
     }
 
-    init(save: LevelData): void {
-        this.save = save;
+    init(levels: LevelData): void {
+        this.save = levels;
     }
 
     create(): void {
@@ -22,7 +22,7 @@ class editsaveScene extends Phaser.Scene {
             from: this,
             levelfile: this.save,
         }))
-        new BaseButton(80, 180, "Edit", this, () => this.scene.start("editorScene", {level: this.save}))
+        new BaseButton(80, 180, "Edit", this, () => this.scene.start("editorScene", this.save))
         new BaseButton(80, 260, "Clone", this, () => {
             const newName = prompt("What name should the new clone be called?") ?? "nil";
             if (newName !== "nil" && s_saves.has(newName)) {
@@ -60,6 +60,7 @@ class editsaveScene extends Phaser.Scene {
         const screen = new Screen(420, 80, this);
         screen.setData(this.save.levels[0].data)
         screen.zoom = 0.5;
+        screen.setBackground(this.save.levels[0].background)
         screen.updateMapPos();
 
         const backButton = this.add.text(

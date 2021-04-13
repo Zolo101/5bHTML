@@ -53,6 +53,10 @@ export class Screen {
         this.map.putTilesAt(data, 0, 0);
     }
 
+    setBackground(num: number): void {
+        this.background.setTexture(`background_${num}`)
+    }
+
     getData(): number[][] {
         const indexData = this.layer.culledTiles.map((tile) => tile.index)
         return chunkArray(indexData, this.map.width);
