@@ -9,6 +9,7 @@ import levelselectScene from "./scenes/levelselect";
 import editorScene from "./game/editor/editor";
 import saveScene from "./game/editor/savescene";
 import editsaveScene from "./game/editor/editsavescene";
+import editrenameScene from "./game/editor/editrenamescene";
 
 import exploreScene from "./game/explore/explore";
 import explorelevelScene from "./game/explore/explorelevel";
@@ -42,6 +43,7 @@ const config = {
         editorScene,
         saveScene,
         editsaveScene,
+        editrenameScene,
 
         exploreScene,
         explorelevelScene,

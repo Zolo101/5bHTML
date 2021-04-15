@@ -54,6 +54,10 @@ class editsaveScene extends Phaser.Scene {
             }
         })
 
+        new BaseButton(740, 45, "Rename", this, () => {
+            this.scene.start("editrenameScene", this.save);
+        }, true)
+
         this.add.text(420, 360, `By: ${this.save.author}`, titleStyle)
         this.add.text(420, 420, this.save.description, textStyle).setFontSize(24)
 
@@ -68,7 +72,6 @@ class editsaveScene extends Phaser.Scene {
         ).setInteractive();
 
         backButton.on("pointerdown", () => {
-            document.body.style.backgroundColor = "initial";
             this.scene.start("saveScene");
         });
     }
