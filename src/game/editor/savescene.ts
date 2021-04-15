@@ -1,6 +1,6 @@
 import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
-import { s_getCacheAll, s_getLocalStorage } from "../core/misc/dataidb";
+import s_saves, { s_getCacheAll, s_getLocalStorage } from "../core/misc/dataidb";
 import NumInc from "./ui/numinc";
 import { Screen } from "./ui/screen";
 
@@ -19,7 +19,7 @@ class saveScene extends Phaser.Scene {
         this.page = 0;
         this.add.text(10, 10, "LEVEL EDITOR", titleStyle).setFontStyle("bold")
 
-        new BaseButton(40, 465, "New levelpack", this, () => this.scene.start("editorScene", {new: true}))
+        new BaseButton(40, 465, "New levelpack", this, () => this.scene.start("editorScene"))
 
         const backButton = this.add.text(
             800, 475, "BACK", backStyle,
@@ -36,6 +36,7 @@ class saveScene extends Phaser.Scene {
 
         // gets all the levels from the localstorage
         s_getLocalStorage();
+        console.log(s_saves)
         const saves = [...s_getCacheAll()];
 
         new NumInc(370, 475, 0, Math.ceil(saves.length / 6) - 1, this, (value) => {

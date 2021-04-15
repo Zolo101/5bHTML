@@ -25,7 +25,7 @@ class NumInc {
                     if (this.value > this.min) {
                         this.value -= 1
                         this.onChange(this.value)
-                        this._textObject.setText(this.value.toString());
+                        this._textObject.setText((this.value + 1).toString());
                     }
                 }),
 
@@ -37,12 +37,12 @@ class NumInc {
                     if (this.value < this.max) {
                         this.value += 1
                         this.onChange(this.value)
-                        this._textObject.setText(this.value.toString());
+                        this._textObject.setText((this.value + 1).toString());
                     }
                 })
         ])
 
-        this._textObject = scene.add.text(70, 0, this.value.toString(), levelnameStyle).setAlign("center");
+        this._textObject = scene.add.text(70, 0, (this.value + 1).toString(), levelnameStyle).setAlign("center");
         this.container.add(this._textObject)
     }
 }

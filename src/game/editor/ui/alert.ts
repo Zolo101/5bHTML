@@ -13,7 +13,6 @@ class Alert {
 
     render(scene: Phaser.Scene): void {
         const alert = scene.add.container(scene.scale.width / 2, scene.scale.height / 2);
-        const remove = () => alert.removeAll();
         // Base
         const base = scene.add.rectangle(0, 0, 400, 300, 0x666666)
         const top = base.getTopCenter();
@@ -29,7 +28,7 @@ class Alert {
                 .setOrigin(0.5, 0)
                 .setFontSize(24)
                 .setBackgroundColor("#aaaaaa")
-                .on("pointerdown", remove)
+                .on("pointerdown", () => alert.removeAll(true))
             )
         }
         // alert.on("pointerdownoutside", () => console.log("e"))

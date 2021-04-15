@@ -5,7 +5,7 @@ import { Screen } from "./screen";
 import ToolWidgetBar from "./toolwidget";
 
 /**
- * @deprecated Use Phaser's Tilemapping instead.
+ * @deprecated Use the Screen class instead.
  */
 export class Grid {
     x: number
@@ -35,7 +35,7 @@ export class Grid {
         const grid = new Phaser.GameObjects.Grid(scene, 0, 0, 960, 540, 30, 30, 0xcccccc, 64)
             .setInteractive({draggable: true})
             .on("drag", () => {
-                const clickBlocks = scene.tools.selected.onClick(this.calcuateGridMousePos(grid, scene), this)
+                const clickBlocks = scene.tools.selected.getCoords(this.calcuateGridMousePos(grid, scene), this.parent)
                 for (const block of clickBlocks) {
                     this.placeBlock(block, scene)
                 }
@@ -47,7 +47,7 @@ export class Grid {
                 //}
             })
             .on("pointerdown", () => {
-                const clickBlocks = scene.tools.selected.onClick(this.calcuateGridMousePos(grid, scene), this)
+                const clickBlocks = scene.tools.selected.getCoords(this.calcuateGridMousePos(grid, scene), this.parent)
                 for (const block of clickBlocks) {
                     this.placeBlock(block, scene)
                 }

@@ -27,14 +27,7 @@ export class Key {
     }
 
     equals(key: Key): boolean {
-        return (this.code === key.code)
-            ? (this.shift === key.shift)
-                ? (this.crtl === key.crtl)
-                    ? (this.alt === key.alt) ? true
-                        : false
-                    : false
-                : false
-            : false
+        return (this.code === key.code) && (this.shift === key.shift) && (this.crtl === key.crtl) && (this.alt === key.alt)
     }
 }
 

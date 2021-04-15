@@ -1,7 +1,7 @@
 import Key from "../../core/misc/key";
-import { PointArray } from "../tools";
-import { Grid } from "./grid";
+import { Point } from "../tools";
 import { BaseOption } from "./option";
+import { Screen } from "./screen";
 
 export class ToolWidgetBar {
     selected!: ToolWidget
@@ -18,8 +18,7 @@ export class ToolWidgetBar {
 
     select(name: string): void {
         if (this.tools.get(name) === undefined) {
-            console.error("5bHTML-Edit Error: Tried to get an unknown ToolWidget name")
-            return;
+            throw console.error("5bHTML-Edit Error: Tried to get an unknown ToolWidget name");
         }
         const tool = this.tools.get(name);
         this.selected = tool as ToolWidget;
@@ -33,8 +32,6 @@ export class ToolWidgetBar {
                 .setDisplaySize(64, 64)
                 .setInteractive()
                 .on("pointerdown", () => this.select(tool.name))
-            console.log(tool.name)
-            console.log(this.tools.get(tool.name))
             i += 1;
         }
     }
@@ -44,16 +41,16 @@ export class ToolWidget {
     name: string
     iconKey: string
     key: Key
+    special: boolean
     options!: BaseOption
     parent!: ToolWidgetBar | null
-    // onSelect: (parent: ToolWidgetBar) => void // on select tool
-    onClick!: (pos: Phaser.Math.Vector2, grid: Grid) => PointArray // on click on a block
-    renderHover!: (pos: Phaser.Math.Vector2, grid: Grid) => PointArray // hover on grid
+    getCoords!: (pos: Phaser.Math.Vector2, screen: Screen) => Point[]
 
-    constructor(name: string, key: Key, iconKey = "toolwidget_example") {
+    constructor(name: string, key: Key, iconKey = "toolwidget_example", special = false) {
         this.name = name;
         this.iconKey = iconKey;
         this.key = key;
+        this.special = special;
     }
 }
 

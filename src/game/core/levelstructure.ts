@@ -1,6 +1,6 @@
 export type Entity = {
     name: string
-    type?: "Character" | "Entity"
+    type: "Character" | "Entity"
     x: number
     y: number
     controllable?: boolean

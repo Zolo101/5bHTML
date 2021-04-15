@@ -131,7 +131,7 @@ export class LevelManager {
         ).setInteractive().setAlpha(0.75).setScrollFactor(0, 0);
 
         backButton.on("pointerdown", () => {
-            this.scene.scene.start(this.backScene);
+            this.scene.scene.start(this.backScene, this.levels);
         });
     }
 

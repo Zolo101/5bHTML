@@ -79,12 +79,12 @@ class gameScene extends Phaser.Scene {
 
             if (leftKey.isDown) {
                 cc.direction = false;
-                cc.body.setVelocityX(-250 * cc.speed);
+                cc.body.setVelocityX(-270 * cc.speed);
             }
 
             if (rightKey.isDown) {
                 cc.direction = true;
-                cc.body.setVelocityX(250 * cc.speed);
+                cc.body.setVelocityX(270 * cc.speed);
             }
             // console.log(cc.body.velocity.y)
         }

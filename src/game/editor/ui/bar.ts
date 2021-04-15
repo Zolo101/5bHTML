@@ -3,50 +3,53 @@ import { barTextStyle } from "./menubar";
 export class Bar {
     name: string
     tabs: Tab[]
-    openContainer!: Phaser.GameObjects.Container;
+    container!: Phaser.GameObjects.Container;
 
     constructor(name: string) {
         this.name = name;
         this.tabs = [];
     }
 
-    add(name: string, container: Phaser.GameObjects.Container): Tab {
-        const tab = new Tab(name, container);
+    add(name: string, objects: Phaser.GameObjects.GameObject[]): Tab {
+        const tab = new Tab(name, objects);
         this.tabs.push(tab)
         return tab;
     }
 
     render(x: number, y: number, scene: Phaser.Scene): void {
-        this.openContainer = scene.add.container(x, y)
+        this.container = scene.add.container(x, y)
         this.tabs.forEach((tab, i) => {
             const button = scene.add.text(x + (100 * i), y, tab.name, barTextStyle).setInteractive();
 
             button.on("pointerdown", () => {
-                this.openContainer.removeAll();
-                this.openContainer.add(tab.container);
-                // this.update(x, y + 30, scene);
+                // this.clear();
+                this.container.add(tab.objects);
             });
             button.on("pointerover", () => button.setBackgroundColor("#d4d4d4"));
             button.on("pointerout", () => button.setBackgroundColor("#cccccc"));
         })
     }
 
-    // update(x: number, y: number, scene: Phaser.Scene): void {
-    // this.openContainer.render(x, y, scene)
-    // }
+    clear(): void {
+        this.container.removeAll();
+    }
+
+    move(x: number, y: number): void {
+        this.container.setPosition(x, y)
+    }
 }
 
 export class Tab {
     name: string
-    container: Phaser.GameObjects.Container
+    objects: Phaser.GameObjects.GameObject[]
 
-    constructor(name: string, container: Phaser.GameObjects.Container) {
+    constructor(name: string, objects: Phaser.GameObjects.GameObject[]) {
         this.name = name;
-        this.container = container;
+        this.objects = objects;
     }
 
     render(x: number, y: number, scene: Phaser.Scene): void {
-        scene.add.container(x, y, this.container);
+        scene.add.container(x, y, this.objects);
     }
 }
 
