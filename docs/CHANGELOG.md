@@ -1,10 +1,10 @@
 Emoji | meaning
 --- | ---
-🟥| Latest Dev version, these versions will not be on the [main website](https://5b.zelo.dev/), so you'll have to build them yourself.
-🟦| Latest *""Stable""* version
+🟥| Latest Dev version, these versions are hosted on [the dev site](https://5bdev.zelo.dev/).
+🟦| Latest *"Stable"* version
 
 
-# dev-21w04a 🟥 -- 31/01/2021
+# dev-21w15a 🟥 -- 15/04/2021
 
 **To be v4 Alpha.**
 
@@ -16,15 +16,14 @@ Emoji | meaning
 
 - Settings
 
+- Character speed is now **8%** faster.
+
 ## Dev changes
 
-- Webpack updated from `5.11.0` to `5.18.0`
+- Changed from Webpack to Snowpack
 
-- Webpack-cli updated from `3.3.12` to `4.4.0`
+- Phaser updated from `3.50.0` to `3.54.0`
 
-- Webpack-dev-server updated from `3.11.0` to `3.11.2`
-
-- Phaser updated from `3.50.0` to `3.52.0`
 # v3 Alpha 🟦 -- 31/12/2020
 ## Major Changes
 

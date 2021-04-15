@@ -2,7 +2,7 @@ import { BaseButton, textStyle } from "../game/core/buttons";
 import { levels } from "../game/core/jsonmodule";
 import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
 import Settings from "../game/settingsgame";
-const devdate = new Date(2021, 1, 31)
+const devdate = new Date(2021, 4, 15)
 
 class menuScene extends Phaser.Scene {
     hoverText!: Phaser.GameObjects.Text
@@ -28,7 +28,7 @@ class menuScene extends Phaser.Scene {
         // this.add.image(260, 400, "5b_logo").setScale(0.4);
         this.add.image(205, 173, "5b_people").setScale(0.1);
 
-        const settingsButton = new MenuButton(10, 500, "Settings", "Change things!", this, () => this.scene.start("settingsScene"), true)
+        // const settingsButton = new MenuButton(10, 500, "Settings", "Change things!", this, () => this.scene.start("settingsScene"), true)
         const newnewButton = new MenuButton(10, 10, "New to 5bHTML?", "Tells you all about this project.", this, () => this.scene.start("newScene"), true)
         const watchButton = new MenuButton(180, 10, "WATCH BFDIA 5a", "WATCH IT OR ELSE!!!!", this, () => openExternalLink("https://www.youtube.com/watch?v=4q77g4xo9ic"), true)
         const discordButton = new MenuButton(350, 10, "Discord", "Go join! :)", this, () => openExternalLink("https://discord.gg/um5KWabefm"), true)
@@ -71,7 +71,7 @@ class menuScene extends Phaser.Scene {
 
         // Debug Version
         if (Settings.IS_DEBUG) {
-            versionText.setText("dev-21w04a")
+            versionText.setText("dev-21w15a")
                 // .setFontFamily("cursive")
                 .setFontStyle("bold")
                 .setDisplaySize(150, 30)
