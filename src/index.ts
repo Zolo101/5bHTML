@@ -17,7 +17,6 @@ import explorelevelScene from "./game/explore/explorelevel";
 import gameScene from "./scenes/game";
 import newScene from "./scenes/new";
 import settingsScene from "./scenes/settings";
-import menuOldScene from "./game/core/misc/menuold";
 
 const config = {
     type: Phaser.AUTO,
@@ -51,7 +50,6 @@ const config = {
         gameScene,
         newScene,
         settingsScene,
-        menuOldScene,
     ],
 };
 

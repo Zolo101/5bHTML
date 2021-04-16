@@ -10,7 +10,6 @@ class menuScene extends Phaser.Scene {
 
     create(): void {
         // this.scene.start("editorScene"); // go straight into gameplay
-        if (Settings.MENU_OLD) this.scene.start("menuOldScene")
         // Background
         this.add.rectangle(0, 0, 960, 540, 0x6a7773).setOrigin(0, 0);
         this.add.image(480, 270, `background_${Math.round(Math.random() * 11)}`)
