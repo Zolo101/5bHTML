@@ -5,7 +5,7 @@ import { levelnameStyle, backStyle } from "../buttons";
 import { Block, createSpecialBlock } from "./block";
 import { checkLevel } from "../checkLevel";
 import { Entity, LevelData } from "../levelstructure";
-import { entities } from "../jsonmodule";
+import { entityData } from "../jsonmodule";
 import Settings from "../../settingsgame";
 import gameSceneType from "../gamestructure";
 import { BlockObject, BlockObjectType } from "../data/block_data";
@@ -180,11 +180,9 @@ export class LevelManager {
                 );
                 this.specialblocks.add(specialblock);
             } else {
-
                 let spr: Sprite;
 
-                // Maybe use maps instead?
-                const spriteProperties = entities.find((spt: SpriteType) => spt.name === sprite.name.toLowerCase())
+                const spriteProperties = entityData.get(sprite.name.toLowerCase());
                 if (!spriteProperties) return console.error("Couldn't find sprite!")
 
                 switch (spriteProperties.type) {

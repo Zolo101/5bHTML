@@ -1,4 +1,5 @@
 import { textStyle, titleStyle } from "../core/buttons";
+import { entityData } from "../core/jsonmodule";
 import { Entity, Level, LevelData } from "../core/levelstructure";
 import { s_getLocalStorage, s_addSave, s_push, VERSION_NUMBER } from "../core/misc/dataidb";
 import Key from "../core/misc/key";
@@ -550,14 +551,15 @@ Made by Zelo101. Last Updated: 15/04/2021`).render(this))
         this.gameobjects.entityContainer.removeAll(true);
 
         for (const entity of entities) {
+            const spritedata = entityData.get(entity.name.toLowerCase())?.size ?? { x: 64, y: 64 };
+            console.log(spritedata)
             const container = this.add.container(entity.x,  entity.y)
             container.add([
-                this.add.rectangle(0, 0, 64, 64, 0x4444aa, 64)
-                    .setOrigin(0, 0),
                 this.add.image(0, 0, entity.name.toLowerCase())
                     .setOrigin(0, 0)
-                    .setDisplaySize(64, 64)
-                    .setAlpha(0.5)
+                    .setDisplaySize(spritedata.x, spritedata.y)
+                    .setScale(entity.type === "Character" ? 0.20 : 0.45)
+                    .setAlpha(0.85)
                     .setInteractive({
                         pixelPerfect: true,
                         draggable: true
