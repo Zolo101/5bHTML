@@ -179,6 +179,7 @@ class editorScene extends Phaser.Scene {
             }
         }
 
+        this.gameobjects.screen.setBackground(this.currentLevel.background)
         this.gameobjects.screen.updateMapPos()
 
         this.marker = this.add.graphics();
@@ -306,8 +307,8 @@ class editorScene extends Phaser.Scene {
 
     runLevel(): void {
         this.resetChanges();
-        console.log(this.level)
         this.currentLevel.entities.length = 0;
+        this.currentLevel.data = this.gameobjects.screen.getData();
         for (const entity of this.screenEntities) {
             this.currentLevel.entities.push({
                 name: entity.name,
@@ -425,12 +426,12 @@ Made by Zelo101. Last Updated: 16/04/2021`).render(this))
         const backgroundsSelect = new NumInc(10, 34, 0, 11, this, (value) => {
             this.gameobjects.screen.background.setTexture(`background_${value}`)
             this.currentLevel.background = value;
-        });
+        }, this.currentLevel.background);
 
-        const levelsSelect = new NumInc(10, 114, 0, 99, this, (value) => {
-            this.currentLevel = this.level.levels[value];
-            this.changeLevels(value);
-        })
+        // const levelsSelect = new NumInc(10, 114, 0, 99, this, (value) => {
+        //     this.currentLevel = this.level.levels[value];
+        //     this.changeLevels(value);
+        // })
 
         const createEntity = (name: string, type: Entity["type"]) => {
             this.screenEntities.push({
@@ -489,7 +490,7 @@ Made by Zelo101. Last Updated: 16/04/2021`).render(this))
 
         this.gameobjects.bookTalkBackground.main.add([
             this.add.text(10, 9, "Background for level", textStyle),
-            this.add.text(10, 89, "Level", textStyle),
+            // this.add.text(10, 89, "Level", textStyle),
             this.add.text(200, 4, "Characters:", textStyle)
                 .setFontSize(28),
             this.add.text(200, 104, "Entities:", textStyle)
@@ -497,7 +498,7 @@ Made by Zelo101. Last Updated: 16/04/2021`).render(this))
             this.add.text(650, 4, "Blocks:", textStyle)
                 .setFontSize(28),
             backgroundsSelect.container,
-            levelsSelect.container,
+            // levelsSelect.container,
             charactersContainer,
             entitiesContainer
         ])
@@ -629,7 +630,7 @@ Made by Zelo101. Last Updated: 16/04/2021`).render(this))
         eventKeydown = () => window.addEventListener("keydown", (event) => {
             this.key.change(event.code, event.ctrlKey, event.shiftKey, event.altKey)
             const item = this.menubar.itemMap.get(this.key.getName());
-            console.log(item, this.key.getName())
+            // console.log(item, this.key.getName())
             if (item?.key.getName() === this.key.getName()) {
                 item.onclick()
             }
