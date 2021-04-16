@@ -26,7 +26,7 @@ class levelselectScene extends Phaser.Scene {
 
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 7; j++) {
-                this.createButton(1 + i, j, `${(8 * j) + i}`);
+                this.createButton(1 + i, j, `${(8 * j) + i + 1}`);
             }
             this.add.text(50 + i * 110, 22, textNums[i], textStyle)
                 .setColor("#000")
@@ -57,9 +57,10 @@ class levelselectScene extends Phaser.Scene {
 
         // set code for buttons that have levels
         if (Number(num) <= levels.levels.length) {
+            levelButton.setFillStyle(buttonType.completed)
             levelButton.on("pointerdown", () => this.scene.start("gameScene", {
                 levelfile: levels,
-                levelnumber: `${num + 1}`,
+                levelnumber: num,
             }));
         } else {
             levelButton.setFillStyle(buttonType.locked);

@@ -163,7 +163,7 @@ export default {
                 {
                     name: "Finish",
                     type: "Entity",
-                    x: 700,
+                    x: 750,
                     y: 480,
                 }
             ]
