@@ -51,7 +51,7 @@ class editorScene extends Phaser.Scene {
         }
 
         panel: {
-            background: Phaser.GameObjects.Container
+            background: Phaser.GameObjects.Rectangle
             list: Phaser.GameObjects.Container
         },
     }
@@ -163,10 +163,8 @@ class editorScene extends Phaser.Scene {
             ]),
 
             panel: {
-                background: this.add.container(this.width - 250, 93).add(
-                    this.add.rectangle(0, 0, 250, this.height - 250 - 77, 0xffffff, 128)
-                        .setOrigin(0, 0)
-                ),
+                background: this.add.rectangle(this.width - 250, 93, 250, this.height - 250 - 77, 0xffffff, 128)
+                    .setOrigin(0, 0),
                 list: this.add.container(this.width - 250, 93)
             }
         }
@@ -272,8 +270,9 @@ class editorScene extends Phaser.Scene {
         this.gameobjects.bookTalkBackground.green.setY(this.height - 209);
         this.gameobjects.bookTalkBackground.main.setY(this.height - 209)
 
+        this.gameobjects.panel.list.setX(this.width - 250);
         this.gameobjects.panel.background.setX(this.width - 250);
-        (this.gameobjects.panel.background.first as Phaser.GameObjects.Rectangle).height = this.height - 250 - 77;
+        this.gameobjects.panel.background.height = this.height - 250 - 77;
 
         this.bottombar.container.setY(this.height);
     }
