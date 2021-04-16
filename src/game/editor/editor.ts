@@ -368,6 +368,15 @@ class editorScene extends Phaser.Scene {
         file.add("Save", new Key("S", true), () => this.saveLevel())
         file.add("Exit", new Key("Escape"), () => this.exit())
 
+        const select = new subMenuBar("Select", this);
+        this.menubar.add(select)
+
+        let i = 1;
+        for (const tool of this.tools.tools.values()) {
+            select.add(`Select ${tool.name}`, new Key(`Digit${i}`), () => this.tools.select(tool.name))
+            i += 1;
+        }
+
         // const edit = new subMenuBar("Edit", this);
         // this.menubar.add(edit);
         // edit.add("Undo", new Key("Z", true), () => console.log("Feature unfinished"))
@@ -397,9 +406,9 @@ Made by Zelo101. Last Updated: 15/04/2021`).render(this))
 
         file.render(0, 0, this);
         // edit.render(120, 0, this);
-        view.render(120, 0, this);
-        run.render(240, 0, this);
-        help.render(360, 0, this);
+        // view.render(120, 0, this);
+        run.render(120, 0, this);
+        help.render(240, 0, this);
 
         this.menubar.updateItemMap();
     }
@@ -621,7 +630,7 @@ Made by Zelo101. Last Updated: 15/04/2021`).render(this))
         eventKeydown = () => window.addEventListener("keydown", (event) => {
             this.key.change(event.code, event.ctrlKey, event.shiftKey, event.altKey)
             const item = this.menubar.itemMap.get(this.key.getName());
-            // console.log(item, this.key.getName())
+            console.log(item, this.key.getName())
             if (item?.key.getName() === this.key.getName()) {
                 item.onclick()
             }

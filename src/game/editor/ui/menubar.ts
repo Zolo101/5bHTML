@@ -57,18 +57,16 @@ export class MenuBar {
 }
 
 export class subMenuBar {
+    private _itemsGroup: Phaser.GameObjects.Group
     text: string
     items: subMenuBarItem[]
-    scene: Phaser.Scene
-    itemsGroup: Phaser.GameObjects.Group
     show: boolean
     open: boolean
 
     constructor(text: string, scene: Phaser.Scene, show = true) {
         this.text = text;
         this.items = [];
-        this.scene = scene;
-        this.itemsGroup = scene.add.group()
+        this._itemsGroup = scene.add.group()
         this.show = show;
         this.open = false;
     }
@@ -106,12 +104,12 @@ export class subMenuBar {
                 .on("pointerdown", () => {if (this.open) item.onclick()})
                 .on("pointerover", () => menuBarItem.setBackgroundColor("#b7b7b7"))
                 .on("pointerout", () => menuBarItem.setBackgroundColor("#dddddd"))
-            this.itemsGroup.add(menuBarItem)
+            this._itemsGroup.add(menuBarItem)
         })
     }
 
     onClose(): void {
-        this.itemsGroup.clear(true);
+        this._itemsGroup.clear(true);
     }
 }
 
