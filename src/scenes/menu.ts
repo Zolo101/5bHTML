@@ -2,7 +2,7 @@ import { BaseButton, textStyle } from "../game/core/buttons";
 import { levels } from "../game/core/jsonmodule";
 import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
 import Settings from "../game/settingsgame";
-const devdate = new Date(2021, 4, 15)
+const devdate = new Date(2021, 4, 16)
 
 class menuScene extends Phaser.Scene {
     hoverText!: Phaser.GameObjects.Text
@@ -71,7 +71,7 @@ class menuScene extends Phaser.Scene {
 
         // Debug Version
         if (Settings.IS_DEBUG) {
-            versionText.setText("dev-21w15a")
+            versionText.setText("dev-21w15b")
                 // .setFontFamily("cursive")
                 .setFontStyle("bold")
                 .setDisplaySize(150, 30)

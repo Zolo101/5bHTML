@@ -403,10 +403,14 @@ class editorScene extends Phaser.Scene {
         run.add("Run", new Key("Enter", true), () => this.runLevel())
         const help = new subMenuBar("Help", this);
         this.menubar.add(help);
-        help.add("About", new Key("empty"), () => new Alert("5bHTML-edit", `
-5bHTML-edit is a complete level editor made with the sole purpose of making 5bHTML levels.
+        help.add("About", new Key("empty"), () => new Alert("5bHTML-edit", `5bHTML-edit is a complete level editor made with the sole purpose of making 5bHTML levels.
 
-Made by Zelo101. Last Updated: 15/04/2021`).render(this))
+To move the level screen, use arrow keys.
+
+
+
+
+Made by Zelo101. Last Updated: 16/04/2021`).render(this))
 
         file.render(0, 0, this);
         // edit.render(120, 0, this);

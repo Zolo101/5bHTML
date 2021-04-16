@@ -4,17 +4,17 @@ Emoji | meaning
 🟦| Latest *"Stable"* version
 
 
-# dev-21w15a 🟥 -- 15/04/2021
+# dev-21w15b 🟥 -- 16/04/2021
 
 **To be v4 Alpha.**
 
 ## Things since v3 Alpha:
 
-- Menu redesign
+- Menu redesign!
 
 - Level Editor! Create, Test, Share and Play your own custom levels!
 
-- Settings
+- Settings.
 
 - Character speed is now **8%** faster.
 
