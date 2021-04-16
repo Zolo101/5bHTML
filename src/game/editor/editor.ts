@@ -424,6 +424,22 @@ Made by Zelo101. Last Updated: 15/04/2021`).render(this))
             this.changeLevels(value);
         })
 
+        const createEntity = (name: string, type: Entity["type"]) => {
+            this.screenEntities.push({
+                ID: this.screenEntities.length,
+                visible: true,
+                locked: false,
+                name: name,
+                type: type,
+                x: 0,
+                y: 0,
+                controllable: true
+            })
+            this.renderEntities(this.screenEntities);
+            this.renderEntityPanel();
+            if (this.tools.selected.name !== "Cursor") this.tools.select("Cursor");
+        }
+
         const charactersContainer = this.add.container(200, 34);
         const characterImageNames = ["Book"];
         const characterImages = characterImageNames.map((name, i) => {
@@ -431,20 +447,7 @@ Made by Zelo101. Last Updated: 15/04/2021`).render(this))
                 .setDisplaySize(64, 64)
                 .setOrigin(0, 0)
                 .setInteractive()
-                .on("pointerdown", () => {
-                    this.screenEntities.push({
-                        ID: this.screenEntities.length,
-                        visible: true,
-                        locked: false,
-                        name: name,
-                        type: "Character",
-                        x: 0,
-                        y: 0,
-                        controllable: true
-                    })
-                    this.renderEntities(this.screenEntities);
-                    this.renderEntityPanel();
-                })
+                .on("pointerdown", () => createEntity(name, "Character"))
         })
 
         const entitiesContainer = this.add.container(200, 134);
@@ -454,20 +457,7 @@ Made by Zelo101. Last Updated: 15/04/2021`).render(this))
                 .setDisplaySize(64, 64)
                 .setOrigin(0, 0)
                 .setInteractive()
-                .on("pointerdown", () => {
-                    this.screenEntities.push({
-                        ID: this.screenEntities.length,
-                        visible: true,
-                        locked: false,
-                        name: name,
-                        type: "Entity",
-                        x: 0,
-                        y: 0,
-                        controllable: false
-                    })
-                    this.renderEntities(this.screenEntities);
-                    this.renderEntityPanel();
-                })
+                .on("pointerdown", () => createEntity(name, "Entity"))
         })
 
         charactersContainer.add(characterImages);
@@ -486,6 +476,7 @@ Made by Zelo101. Last Updated: 15/04/2021`).render(this))
         layer.setInteractive()
         layer.on("pointerdown", (pointer: any) => {
             this.selectedBlock = layer.getTileAtWorldXY(pointer.worldX, pointer.worldY).index
+            if (this.tools.selected.name === "Cursor") this.tools.select("Pencil");
         })
 
         this.gameobjects.bookTalkBackground.main.add([
