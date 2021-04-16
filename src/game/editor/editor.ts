@@ -596,10 +596,12 @@ Made by Zelo101. Last Updated: 15/04/2021`).render(this))
                         draggable: true
                     })
                     .on("drag", (pointer: any, dragX: number, dragY: number) => {
-                        container.x = pointer.downX + dragX - this.gameobjects.screen.x;
-                        container.y = pointer.downY + dragY - this.gameobjects.screen.y;
-                        entities[entity.ID].x = container.x;
-                        entities[entity.ID].y = container.y;
+                        if (this.tools.selected.name === "Cursor") {
+                            container.x = pointer.downX + dragX - this.gameobjects.screen.x;
+                            container.y = pointer.downY + dragY - this.gameobjects.screen.y;
+                            entities[entity.ID].x = container.x;
+                            entities[entity.ID].y = container.y;
+                        }
                     }),
             ])
 
