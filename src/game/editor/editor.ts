@@ -3,7 +3,7 @@ import { entityData } from "../core/jsonmodule";
 import { Entity, Level, LevelData } from "../core/levelstructure";
 import { s_getLocalStorage, s_addSave, s_push, VERSION_NUMBER } from "../core/misc/dataidb";
 import Key from "../core/misc/key";
-import { chunkArray } from "../core/misc/other";
+import { chunkArray, create2DNumberArray } from "../core/misc/other";
 import { brushTool, cursorTool, eraserTool, fillTool, pencilTool, Point, selectTool, zoomTool } from "./tools";
 import Alert from "./ui/alert";
 import Bar from "./ui/bar";
@@ -42,6 +42,7 @@ class editorScene extends Phaser.Scene {
         screen: Screen
         entityContainer: Phaser.GameObjects.Container
         hoverContainer: Phaser.GameObjects.Container
+        grid: Phaser.GameObjects.Grid
 
         bookTalk: {
             book: Phaser.GameObjects.Image,
@@ -150,8 +151,12 @@ class editorScene extends Phaser.Scene {
             background: this.add.rectangle(0, 0, this.width, this.height, 0x333333).setOrigin(0, 0),
 
             screen: new Screen(Math.floor((this.width / 3) - 400), 125, this),
-            entityContainer: this.add.container(0, 0),
             hoverContainer: this.add.container(0, 0),
+            grid: this.add.grid(0, 0, 960, 540, 30, 30)
+                .setOrigin(0, 0)
+                .setBlendMode(Phaser.BlendModes.ADD)
+                .setOutlineStyle(0x444444, 0.25),
+            entityContainer: this.add.container(0, 0),
 
             toolbarBackground: this.add.rectangle(0, 0, this.width, 93, 0x444444, 64).setOrigin(0, 0),
 
@@ -236,7 +241,7 @@ class editorScene extends Phaser.Scene {
         const placeCoords = this.tools.selected.getCoords(screenPos, this.gameobjects.screen)
 
         if (insideScreen) {
-            this.gameobjects.bookTalk.text.setText(`Cursor: [${Math.floor(blockPos.x + 1)}, ${Math.floor(blockPos.y + 1)}] (x ${Math.floor(screenPosCopy.x)}, y ${Math.floor(screenPosCopy.y)})`)
+            this.gameobjects.bookTalk.text.setText(`${this.tools.selected.name}: [${Math.floor(blockPos.x + 1)}, ${Math.floor(blockPos.y + 1)}] (x ${Math.floor(screenPosCopy.x)}, y ${Math.floor(screenPosCopy.y)})`)
             this.renderHover(placeCoords);
 
             if (this.input.manager.activePointer.isDown) {
@@ -254,6 +259,7 @@ class editorScene extends Phaser.Scene {
         toolSelectedText.setText(`Tool Selected: ${this.tools.selected.name}`)
         this.gameobjects.entityContainer.setPosition(this.gameobjects.screen.x, this.gameobjects.screen.y)
         this.gameobjects.hoverContainer.setPosition(this.gameobjects.screen.x, this.gameobjects.screen.y)
+        this.gameobjects.grid.setPosition(this.gameobjects.screen.x, this.gameobjects.screen.y)
     }
 
     resizeUI(): void {
@@ -327,8 +333,33 @@ class editorScene extends Phaser.Scene {
         this.game.scale.resize(960, 540)
     }
 
-    changeLevels(): void {
-        this.gameobjects.screen.setData(this.currentLevel.data);
+    createLevel(): Level {
+        return {
+            name: "Untitled Level",
+            width: 32,
+            height: 18,
+            data: create2DNumberArray(32, 18),
+            entities: [
+                {
+                    name: "Book",
+                    type: "Character",
+                    x: 105,
+                    y: 0,
+                }
+            ],
+            background: 0
+        }
+    }
+
+    changeLevels(num: number): void {
+        if (this.level.levels[num] !== undefined) {
+            this.gameobjects.screen.setData(this.currentLevel.data)
+        } else {
+            if (confirm("This level has not been created. Would you like to create it?")) {
+                this.level.levels[num] = this.createLevel();
+                this.gameobjects.screen.setData(this.currentLevel.data)
+            } else return;
+        }
     }
 
     setupMenuBar(): void {
@@ -381,7 +412,7 @@ Made by Zelo101. Last Updated: 15/04/2021`).render(this))
 
         const levelsSelect = new NumInc(10, 114, 0, 99, this, (value) => {
             this.currentLevel = this.level.levels[value];
-            this.changeLevels();
+            this.changeLevels(value);
         })
 
         const charactersContainer = this.add.container(200, 34);
