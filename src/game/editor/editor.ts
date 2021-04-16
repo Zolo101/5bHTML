@@ -41,6 +41,7 @@ class editorScene extends Phaser.Scene {
 
         screen: Screen
         entityContainer: Phaser.GameObjects.Container
+        hoverContainer: Phaser.GameObjects.Container
 
         bookTalk: Phaser.GameObjects.Container
         bookTalkBackground: {
@@ -55,7 +56,6 @@ class editorScene extends Phaser.Scene {
         },
     }
 
-    hoverContainer!: Phaser.GameObjects.Container
     marker!: Phaser.GameObjects.Graphics
 
     tools!: ToolWidgetBar
@@ -148,6 +148,7 @@ class editorScene extends Phaser.Scene {
 
             screen: new Screen(Math.floor((this.width / 3) - 400), 125, this),
             entityContainer: this.add.container(0, 0),
+            hoverContainer: this.add.container(0, 0),
 
             toolbarBackground: this.add.rectangle(0, 0, this.width, 93, 0x444444, 64).setOrigin(0, 0),
 
@@ -171,9 +172,6 @@ class editorScene extends Phaser.Scene {
         }
 
         this.gameobjects.screen.updateMapPos()
-
-        this.hoverContainer = this.add.container(this.gameobjects.screen.x, this.gameobjects.screen.y)
-        this.gameobjects.entityContainer.setPosition(this.gameobjects.screen.x, this.gameobjects.screen.y)
 
         this.marker = this.add.graphics();
         this.marker.lineStyle(2, 0x000000);
@@ -250,6 +248,7 @@ class editorScene extends Phaser.Scene {
     updateUI(): void {
         toolSelectedText.setText(`Tool Selected: ${this.tools.selected.name}`)
         this.gameobjects.entityContainer.setPosition(this.gameobjects.screen.x, this.gameobjects.screen.y)
+        this.gameobjects.hoverContainer.setPosition(this.gameobjects.screen.x, this.gameobjects.screen.y)
     }
 
     resizeUI(): void {
@@ -356,7 +355,7 @@ class editorScene extends Phaser.Scene {
         help.add("About", new Key("empty"), () => new Alert("5bHTML-edit", `
 5bHTML-edit is a complete level editor made with the sole purpose of making 5bHTML levels.
 
-Made by Zelo101. Last Updated: 122/04/2021`).render(this))
+Made by Zelo101. Last Updated: 15/04/2021`).render(this))
 
         file.render(0, 0, this);
         // edit.render(120, 0, this);
@@ -524,25 +523,21 @@ Made by Zelo101. Last Updated: 122/04/2021`).render(this))
     }
 
     renderHover(pointarr: Point[]): void {
-        this.hoverContainer.removeAll(true);
+        this.gameobjects.hoverContainer.removeAll(true);
         // console.log(pointarr)
         const rects: Phaser.GameObjects.Rectangle[] = [];
         for (const point of pointarr) {
-            const screenReal = {
-                x: this.gameobjects.screen.x,
-                y: this.gameobjects.screen.y,
-            }
             const coords = this.gameobjects.screen.getRealXYFromCoord(
-                Math.floor(point.x) + 0.5 + (screenReal.x / 30),
-                Math.floor(point.y) + 0.5 + (screenReal.y / 30)
+                Math.floor(point.x) + 0.5,
+                Math.floor(point.y) + 0.5
             )
             rects.push(this.add.rectangle(
-                coords.x - 26,
-                coords.y - 125,
+                coords.x,
+                coords.y,
                 30, 30, 0x444488, 100
             ))
         }
-        this.hoverContainer.add(rects)
+        this.gameobjects.hoverContainer.add(rects)
     }
 
     renderEntities(entities: EditorEntity[]): void {
