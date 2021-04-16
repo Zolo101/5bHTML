@@ -155,7 +155,8 @@ class editorScene extends Phaser.Scene {
             grid: this.add.grid(0, 0, 960, 540, 30, 30)
                 .setOrigin(0, 0)
                 .setBlendMode(Phaser.BlendModes.ADD)
-                .setOutlineStyle(0x444444, 0.25),
+                .setOutlineStyle(0x444444, 0.4)
+                .setAlpha(0),
             entityContainer: this.add.container(0, 0),
 
             toolbarBackground: this.add.rectangle(0, 0, this.width, 93, 0x444444, 64).setOrigin(0, 0),
@@ -196,6 +197,9 @@ class editorScene extends Phaser.Scene {
 
         // Render Tools
         this.tools.render(0, 60, this)
+        this.tools.onChange = (tool) => {
+            this.gameobjects.grid.setAlpha((tool.name === "Cursor") ? 0 : 1)
+        }
 
         // Get local saves
         s_getLocalStorage();

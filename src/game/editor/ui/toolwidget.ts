@@ -6,6 +6,7 @@ import { Screen } from "./screen";
 export class ToolWidgetBar {
     selected!: ToolWidget
     tools: Map<string, ToolWidget>
+    onChange!: (tool: ToolWidget) => void
 
     constructor() {
         this.tools = new Map();
@@ -17,11 +18,12 @@ export class ToolWidgetBar {
     }
 
     select(name: string): void {
-        if (this.tools.get(name) === undefined) {
+        const tool = this.tools.get(name);
+        if (tool === undefined) {
             throw console.error("5bHTML-Edit Error: Tried to get an unknown ToolWidget name");
         }
-        const tool = this.tools.get(name);
-        this.selected = tool as ToolWidget;
+        this.selected = tool;
+        this.onChange(tool);
         console.log(this.selected)
     }
 
