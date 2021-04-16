@@ -3,7 +3,6 @@ import { Entity, Level, LevelData } from "../core/levelstructure";
 import { s_getLocalStorage, s_addSave, s_push, VERSION_NUMBER } from "../core/misc/dataidb";
 import Key from "../core/misc/key";
 import { chunkArray } from "../core/misc/other";
-import funnywords from "./funnywords";
 import { brushTool, cursorTool, eraserTool, fillTool, pencilTool, Point, selectTool, zoomTool } from "./tools";
 import Alert from "./ui/alert";
 import Bar from "./ui/bar";
@@ -43,7 +42,10 @@ class editorScene extends Phaser.Scene {
         entityContainer: Phaser.GameObjects.Container
         hoverContainer: Phaser.GameObjects.Container
 
-        bookTalk: Phaser.GameObjects.Container
+        bookTalk: {
+            book: Phaser.GameObjects.Image,
+            text: Phaser.GameObjects.Text
+        }
         bookTalkBackground: {
             white: Phaser.GameObjects.Rectangle
             green: Phaser.GameObjects.Rectangle
@@ -157,10 +159,11 @@ class editorScene extends Phaser.Scene {
                 green: this.add.rectangle(0, this.height - 209, this.width * 2, 225, 0x2b5937, 128).setOrigin(0, 0),
                 main: this.add.container(0, this.height - 209),
             },
-            bookTalk: this.add.container(10, this.height).add([
-                this.add.image(4, -222, "book").setScale(0.075),
-                this.add.text(18, -230, funnywords[Math.floor(Math.random() * funnywords.length)]).setColor("#000"),
-            ]),
+
+            bookTalk: {
+                book: this.add.image(14, this.height - 222, "book").setScale(0.075),
+                text: this.add.text(28, this.height - 230, "Welcome to 5bHTML-edit!").setColor("#000"),
+            },
 
             panel: {
                 background: this.add.rectangle(this.width - 250, 93, 250, this.height - 250 - 77, 0xffffff, 128)
@@ -222,6 +225,7 @@ class editorScene extends Phaser.Scene {
         const calcZoom = 30 * this.gameobjects.screen.zoom;
 
         const screenPos = activePointerBuffer.subtract(new Phaser.Math.Vector2(this.gameobjects.screen.x, this.gameobjects.screen.y))
+        const screenPosCopy: Point = { x: screenPos.x, y: screenPos.y };
 
         const blockPos = screenPos.divide({ x: calcZoom, y: calcZoom });
         const insideScreen = blockPos.x >= 0 && blockPos.y >= 0 && blockPos.x < 32 && blockPos.y < 18
@@ -231,7 +235,9 @@ class editorScene extends Phaser.Scene {
         const placeCoords = this.tools.selected.getCoords(screenPos, this.gameobjects.screen)
 
         if (insideScreen) {
+            this.gameobjects.bookTalk.text.setText(`Cursor: [${Math.floor(blockPos.x + 1)}, ${Math.floor(blockPos.y + 1)}] (x ${Math.floor(screenPosCopy.x)}, y ${Math.floor(screenPosCopy.y)})`)
             this.renderHover(placeCoords);
+
             if (this.input.manager.activePointer.isDown) {
                 for (const coord of placeCoords) {
                     // console.log(coord)
@@ -262,7 +268,8 @@ class editorScene extends Phaser.Scene {
         if (oldSize.height !== this.height) this.gameobjects.screen.y -= (oldSize.height - this.height) / 3;
         this.gameobjects.screen.updateMapPos();
 
-        this.gameobjects.bookTalk.setY(this.height);
+        this.gameobjects.bookTalk.book.setY(this.height - 222);
+        this.gameobjects.bookTalk.text.setY(this.height - 230);
 
         this.gameobjects.bookTalkBackground.white.setDisplaySize(this.width, 25);
         this.gameobjects.bookTalkBackground.white.setY(this.height - 234);
