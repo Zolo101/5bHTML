@@ -19,7 +19,7 @@ class saveScene extends Phaser.Scene {
         this.page = 0;
         this.add.text(10, 10, "LEVEL EDITOR", titleStyle).setFontStyle("bold")
 
-        new BaseButton(40, 465, "New levelpack", this, () => this.scene.start("editorScene"))
+        new BaseButton(40, 465, "New levelpack", this, () => this.scene.start("editorScene", {level: {name: undefined}}))
 
         const backButton = this.add.text(
             800, 475, "BACK", backStyle,
