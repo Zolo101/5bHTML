@@ -297,16 +297,6 @@ class editorScene extends Phaser.Scene {
     }
 
     saveLevel(): void {
-        this.currentLevel.data = this.gameobjects.screen.getData();
-        if (this.level.name === "Untitled Levelpack") {
-            this.level.name = prompt("Choose a name for your save:") || this.level.name
-        }
-        s_addSave(this.level)
-        s_push();
-    }
-
-    runLevel(): void {
-        this.resetChanges();
         this.currentLevel.entities.length = 0;
         this.currentLevel.data = this.gameobjects.screen.getData();
         for (const entity of this.screenEntities) {
@@ -318,10 +308,18 @@ class editorScene extends Phaser.Scene {
                 controllable: entity.controllable
             })
         }
-        this.scene.start("gameScene", {
-            from: this,
-            levelfile: this.level,
-        })
+
+        if (this.level.name === "Untitled Levelpack") {
+            this.level.name = prompt("Choose a name for your save:") || this.level.name
+        }
+        s_addSave(this.level)
+        s_push();
+    }
+
+    runLevel(): void {
+        this.saveLevel();
+        this.resetChanges();
+        this.scene.start("gameScene", {from: this, levelfile: this.level})
     }
 
     exit(): void {
