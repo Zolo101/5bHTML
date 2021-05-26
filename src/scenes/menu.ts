@@ -1,8 +1,7 @@
 import { BaseButton, textStyle } from "../game/core/buttons";
 import { levels } from "../game/core/jsonmodule";
 import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
-import Settings from "../game/settingsgame";
-const devdate = new Date(2021, 4, 16)
+import Settings, { LAST_UPDATE, VERSION_NAME } from "../game/settingsgame";
 
 class menuScene extends Phaser.Scene {
     hoverText!: Phaser.GameObjects.Text
@@ -62,15 +61,15 @@ class menuScene extends Phaser.Scene {
         this.add.text(824, 62, "Remake by Zelo101", textStyle).setFontSize(14);
 
         // Version
-        const versionText = this.add.text(831, 499, "v4 Alpha", textStyle)
+        const versionText = this.add.text(831, 499, VERSION_NAME, textStyle)
             .setBlendMode(Phaser.BlendModes.ADD)
-            .setColor(hexColourFromSeed(devdate.getTime()))
+            .setColor(hexColourFromSeed(LAST_UPDATE.getTime()))
             .setFontSize(28)
             .setFontStyle("bold");
 
         // Debug Version
         if (Settings.IS_DEBUG) {
-            versionText.setText("dev-21w15b")
+            versionText.setText(VERSION_NAME)
                 // .setFontFamily("cursive")
                 .setFontStyle("bold")
                 .setDisplaySize(150, 30)
