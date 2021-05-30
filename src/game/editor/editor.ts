@@ -1,4 +1,4 @@
-import { textStyle, titleStyle } from "../core/buttons";
+import { BaseButton, textStyle, titleStyle } from "../core/buttons";
 import { entityData } from "../core/jsonmodule";
 import { Entity, Level, LevelData } from "../core/levelstructure";
 import { s_getLocalStorage, s_addSave, s_push, VERSION_NUMBER } from "../core/misc/dataidb";
@@ -467,6 +467,16 @@ Made by Zelo101. Last Updated: 16/04/2021`).render(this))
                 .on("pointerdown", () => createEntity(name, "Entity"))
         })
 
+        const nameContainer = this.add.container(660, 134);
+        const nameLabel = this.add.text(0, 5, this.currentLevel.name, textStyle);
+        nameContainer.add([
+            nameLabel,
+            new BaseButton(0, 35, "Change level name", this, () => {
+                this.currentLevel.name = prompt("Enter new level name") || this.currentLevel.name;
+                nameLabel.setText(this.currentLevel.name);
+            }, true).gameObject
+        ])
+
         charactersContainer.add(characterImages);
         entitiesContainer.add(entityImages);
 
@@ -495,10 +505,13 @@ Made by Zelo101. Last Updated: 16/04/2021`).render(this))
                 .setFontSize(28),
             this.add.text(650, 4, "Blocks:", textStyle)
                 .setFontSize(28),
+            this.add.text(650, 104, "Name:", textStyle)
+                .setFontSize(28),
             backgroundsSelect.container,
             // levelsSelect.container,
             charactersContainer,
-            entitiesContainer
+            entitiesContainer,
+            nameContainer
         ])
     }
 
