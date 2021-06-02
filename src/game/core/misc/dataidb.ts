@@ -47,14 +47,16 @@ export const c_saves: C_APIOBJ = {
 // LOCAL SAVE
 //
 // local levels
-export function s_addSave(lvl: LevelData): LevelData {
+export function s_addSave(lvl: LevelData, push = true): LevelData {
     lvl.struct_version = VERSION_NUMBER;
     s_saves.set(lvl.name, lvl)
+    if (push) s_push()
     return lvl;
 }
 
-export function s_removeSave(name: string): void {
+export function s_removeSave(name: string, push = true): void {
     s_saves.delete(name)
+    if (push) s_push()
 }
 
 // NOT FROM LOCALSTORAGE
@@ -76,13 +78,13 @@ export function s_getLocalStorage(): void {
 
     const locsaves: LevelData[] = JSON.parse(locstore)
     for (const save of locsaves) {
-        s_addSave(save)
+        s_addSave(save, false)
     }
 }
 
 // Pushes to localstorage
 export function s_push(): void {
-    console.log(s_saves.values())
+    console.log("PUSHED TO LOCALSTORAGE", s_saves.values())
     localStorage.setItem(SAVE_NAME, JSON.stringify([...s_saves.values()]));
 }
 

@@ -7,6 +7,7 @@ export type GameOptions = {
     from: Phaser.Scene,
     levelfile: LevelData,
     levelnumber?: number,
+    extraData: Record<string, unknown>
 }
 
 let leftKey: Phaser.Input.Keyboard.Key;
@@ -21,12 +22,13 @@ class gameScene extends Phaser.Scene {
     // Core vars, do not touch
     levelnumber = 0
     blocksize = 30
-    levelfile!: LevelData
+    levelfile!: GameOptions["levelfile"]
     background!: Phaser.GameObjects.Image
 
     levelmanager!: LevelManager
 
     backScene!: string
+    extraData!: GameOptions["extraData"]
 
     constructor() { super("gameScene"); }
 
@@ -37,6 +39,7 @@ class gameScene extends Phaser.Scene {
         this.levelfile = lvl.levelfile;
 
         this.backScene = (lvl.from === undefined) ? "levelselectScene" : lvl.from.scene.key;
+        this.extraData = lvl.extraData ?? {};
     }
 
     create(): void {
@@ -61,7 +64,7 @@ class gameScene extends Phaser.Scene {
         this.levelmanager = new LevelManager(
             this.levelfile,
             BlockObject, this,
-            terrain, decorateterrain, this.backScene
+            terrain, decorateterrain, this.backScene, this.extraData
         );
 
         this.levelmanager.setLevel(this.levelnumber);

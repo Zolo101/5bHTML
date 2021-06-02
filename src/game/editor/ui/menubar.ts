@@ -17,7 +17,7 @@ export const barTextStyleItem = {
     fontSize: "14px",
     backgroundColor: "#ddd",
     color: "#000",
-    fixedWidth: 120,
+    fixedWidth: 260,
     padding: {
         y: 4,
         x: 4,

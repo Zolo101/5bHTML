@@ -1,7 +1,7 @@
 import { BaseButton, textStyle, titleStyle } from "../core/buttons";
 import { entityData } from "../core/jsonmodule";
 import { Entity, Level, LevelData } from "../core/levelstructure";
-import { s_getLocalStorage, s_addSave, s_push, VERSION_NUMBER } from "../core/misc/dataidb";
+import { s_getLocalStorage, s_addSave, s_push, VERSION_NUMBER, s_getCacheSave } from "../core/misc/dataidb";
 import Key from "../core/misc/key";
 import { chunkArray, create2DNumberArray } from "../core/misc/other";
 import { brushTool, cursorTool, eraserTool, fillTool, pencilTool, Point, selectTool, zoomTool } from "./tools";
@@ -23,11 +23,17 @@ type EditorEntity = Entity & {
     locked: boolean
 }
 
+type InitData = {
+    level: LevelData,
+    currentLevelNumber?: number
+}
+
 class editorScene extends Phaser.Scene {
     width!: number
     height!: number
     level!: LevelData;
     currentLevel!: Level;
+    currentLevelNumber!: number;
 
     menubar!: MenuBar;
     bottombar!: Bar;
@@ -60,22 +66,37 @@ class editorScene extends Phaser.Scene {
         },
     }
 
+    blocktilelayer!: Phaser.Tilemaps.TilemapLayer
+
     marker!: Phaser.GameObjects.Graphics
 
     tools!: ToolWidgetBar
 
     screenEntities!: EditorEntity[]
+    numincs!: {
+        background: NumInc,
+        level: NumInc
+    }
 
     selectedBlock!: number;
     selectedEntities!: EditorEntity[]
 
     new!: boolean
+    originalData!: Required<InitData>
+
     constructor() {
         super({ key: "editorScene" });
     }
 
-    init(level: LevelData): void {
-        this.level = (level.name !== undefined) ? level : {
+    init(data: InitData): void {
+        this.originalData = {
+            currentLevelNumber: data.currentLevelNumber ?? 0,
+            level: data.level,
+        }
+        // console.log("saveddata", data.level)
+
+        this.currentLevelNumber = this.originalData.currentLevelNumber;
+        this.level = (this.originalData.level.name !== undefined) ? this.originalData.level : {
             name: "Untitled Levelpack",
             author: "Guest",
             description: "",
@@ -128,7 +149,7 @@ class editorScene extends Phaser.Scene {
         this.keys = new Map();
 
         console.log(this.level)
-        this.currentLevel = this.level.levels[0];
+        this.currentLevel = this.level.levels[this.currentLevelNumber];
         this.selectedBlock = 6;
 
         // Init Tools
@@ -211,22 +232,25 @@ class editorScene extends Phaser.Scene {
         this.setupBottomBar();
         this.bottombar.render(10, 800, this);
 
-        this.screenEntities = [];
-        for (const entity of this.currentLevel.entities) {
-            this.screenEntities.push({
-                ID: this.screenEntities.length,
-                name: entity.name,
-                type: entity.type,
-                x: entity.x,
-                y: entity.y,
 
-                controllable: entity.controllable,
-                visible: true,
-                locked: false
-            })
-        }
-        this.renderEntities(this.screenEntities)
-        this.renderEntityPanel()
+        this.screenEntities = [];
+        // const book = this.level.levels[0].entities[0];
+        // this.screenEntities.push({
+        //     ID: this.screenEntities.length,
+        //     name: book.name,
+        //     type: book.type,
+        //     x: book.x,
+        //     y: book.y,
+
+        //     controllable: book.controllable,
+        //     visible: true,
+        //     locked: false
+        // })
+
+        this.numincs.level.value = this.currentLevelNumber;
+
+        // some werid issue about level data disappearing after running the level
+        // this.currentLevel.data = this.gameobjects.screen.getData();
     }
 
     update(): void {
@@ -253,7 +277,7 @@ class editorScene extends Phaser.Scene {
                 for (const coord of placeCoords) {
                     // console.log(coord)
                     // const apb = activePointerBuffer.subtract(coord)
-                    this.gameobjects.screen.placeTile((this.tools.selected.name === "Eraser") ? 99 : this.selectedBlock, Math.floor(coord.x), Math.floor(coord.y))
+                    this.gameobjects.screen.placeTile((this.tools.selected.name === "Eraser") ? -2 : this.selectedBlock, Math.floor(coord.x), Math.floor(coord.y))
                 }
                 this.currentLevel.data = this.gameobjects.screen.getData();
             }
@@ -287,7 +311,8 @@ class editorScene extends Phaser.Scene {
         this.gameobjects.bookTalkBackground.white.setY(this.height - 234);
         this.gameobjects.bookTalkBackground.green.setDisplaySize(this.width, this.height);
         this.gameobjects.bookTalkBackground.green.setY(this.height - 209);
-        this.gameobjects.bookTalkBackground.main.setY(this.height - 209)
+        this.gameobjects.bookTalkBackground.main.setY(this.height - 209);
+        this.blocktilelayer.setY(this.height - 175);
 
         this.gameobjects.panel.list.setX(this.width - 250);
         this.gameobjects.panel.background.setX(this.width - 250);
@@ -298,7 +323,10 @@ class editorScene extends Phaser.Scene {
 
     saveLevel(): void {
         this.currentLevel.entities.length = 0;
+        // console.log("s1", this.gameobjects.screen.getData())
         this.currentLevel.data = this.gameobjects.screen.getData();
+        this.level.levels[this.currentLevelNumber] = this.currentLevel;
+        // console.log("s2", this.level.levels[this.currentLevelNumber])
         for (const entity of this.screenEntities) {
             this.currentLevel.entities.push({
                 name: entity.name,
@@ -313,23 +341,34 @@ class editorScene extends Phaser.Scene {
             this.level.name = prompt("Choose a name for your save:") || this.level.name
         }
         s_addSave(this.level)
-        s_push();
+        s_push()
+        // console.log("s3", s_getCacheSave("volume"))
     }
 
-    runLevel(): void {
+    runLevel(num: number): void {
         this.saveLevel();
-        this.resetChanges();
-        this.scene.start("gameScene", {from: this, levelfile: this.level})
+        this.resetWindowChanges();
+        const modifiedLevel = this.level;
+        console.log("bruh", modifiedLevel.levels, num, modifiedLevel.levels[num])
+        // Get only the current level
+        modifiedLevel.levels = [modifiedLevel.levels[num]];
+        this.scene.start("gameScene", {
+            from: this,
+            levelfile: modifiedLevel,
+            extraData: {
+                currentLevelNumber: this.currentLevelNumber
+            }
+        })
     }
 
     exit(): void {
         if (confirm("Are you sure? Make sure you've saved before exiting!")) {
             this.scene.start("saveScene");
-            this.resetChanges();
+            this.resetWindowChanges();
         }
     }
 
-    resetChanges(): void {
+    resetWindowChanges(): void {
         window.removeEventListener("resize", eventResize);
         window.removeEventListener("keydown", eventKeydown);
         this.menubar.itemMap.clear()
@@ -354,15 +393,58 @@ class editorScene extends Phaser.Scene {
         }
     }
 
-    changeLevels(num: number): void {
-        if (this.level.levels[num] !== undefined) {
-            this.gameobjects.screen.setData(this.currentLevel.data)
+    changeLevels(num: number): boolean {
+        const sameLevel = (num === this.currentLevelNumber);
+        const oldLevel = this.level.levels[this.currentLevelNumber];
+        let newLevel = this.level.levels[num];
+
+        if (newLevel !== undefined) {
+            this.currentLevel = newLevel;
         } else {
             if (confirm("This level has not been created. Would you like to create it?")) {
-                this.level.levels[num] = this.createLevel();
-                this.gameobjects.screen.setData(this.currentLevel.data)
-            } else return;
+                newLevel = this.createLevel();
+                this.currentLevel = newLevel;
+                this.numincs.background.value = 0;
+            } else return false;
         }
+
+        // console.log("eee1", oldLevel.entities)
+        // Pack entities
+        if (!sameLevel) oldLevel.entities.length = 0
+        for (const entity of this.screenEntities) {
+            oldLevel.entities.push({
+                name: entity.name,
+                type: entity.type,
+                x: entity.x,
+                y: entity.y,
+                controllable: entity.controllable
+            })
+        }
+        this.screenEntities.length = 0;
+
+        // console.log("eee2", this.currentLevel.entities)
+        // Unpack new entities
+        for (const entity of this.currentLevel.entities) {
+            this.screenEntities.push({
+                ID: this.screenEntities.length,
+                name: entity.name,
+                type: entity.type,
+                x: entity.x,
+                y: entity.y,
+
+                controllable: entity.controllable,
+                visible: true,
+                locked: false
+            })
+        }
+
+
+        this.currentLevelNumber = num;
+        this.gameobjects.screen.setData(newLevel.data);
+        this.numincs.background.value = newLevel.background;
+        this.renderEntities(this.screenEntities);
+        this.renderEntityPanel();
+        return true;
     }
 
     setupMenuBar(): void {
@@ -374,11 +456,10 @@ class editorScene extends Phaser.Scene {
         const select = new subMenuBar("Select", this);
         this.menubar.add(select)
 
-        let i = 1;
-        for (const tool of this.tools.tools.values()) {
-            select.add(`Select ${tool.name}`, new Key(`Digit${i}`), () => this.tools.select(tool.name))
-            i += 1;
-        }
+        // toolbar hotkeys
+        Array.from(this.tools.tools.values()).forEach((tool, i) => {
+            select.add(`Select ${tool.name}`, new Key(`Digit${i + 1}`), () => this.tools.select(tool.name))
+        })
 
         // const edit = new subMenuBar("Edit", this);
         // this.menubar.add(edit);
@@ -399,7 +480,8 @@ class editorScene extends Phaser.Scene {
         view.add("Move Down", new Key("ArrowDown"), () => this.gameobjects.screen.y -= 30)
         const run = new subMenuBar("Run", this);
         this.menubar.add(run);
-        run.add("Run", new Key("Enter", true), () => this.runLevel())
+        run.add("Run", new Key("Enter", true), () => this.runLevel(this.currentLevelNumber))
+        // run.add("Run From Level", new Key("Enter", true), () => this.runLevel(this.currentLevelNumber))
         const help = new subMenuBar("Help", this);
         this.menubar.add(help);
         help.add("About", new Key("empty"), () => new Alert("5bHTML-edit", `5bHTML-edit is a complete level editor made with the sole purpose of making 5bHTML levels.
@@ -426,10 +508,21 @@ Made by Zelo101. Last Updated: 16/04/2021`).render(this))
             this.currentLevel.background = value;
         }, this.currentLevel.background);
 
-        // const levelsSelect = new NumInc(10, 114, 0, 99, this, (value) => {
-        //     this.currentLevel = this.level.levels[value];
-        //     this.changeLevels(value);
-        // })
+        const levelsSelect = new NumInc(10, 114, 0, 99, this, (value) => {
+            // why?
+            this.currentLevel.data = this.gameobjects.screen.getData();
+            // this.currentLevel.entities = this.screenEntities;
+
+            this.level.levels[this.currentLevelNumber] = this.currentLevel
+            const success = this.changeLevels(value);
+            if (!success) this.numincs.level.value = this.currentLevelNumber;
+            console.log(this.screenEntities)
+        })
+
+        this.numincs = {
+            background: backgroundsSelect,
+            level: levelsSelect
+        }
 
         const createEntity = (name: string, type: Entity["type"]) => {
             this.screenEntities.push({
@@ -487,18 +580,14 @@ Made by Zelo101. Last Updated: 16/04/2021`).render(this))
             tileHeight: 30,
         })
         const tiles = map.addTilesetImage("core_tileset", "core_tileset");
-        const layer = map.createLayer(0, tiles);
-        layer.setPosition(625, this.height - 170)
-        layer.setScale(1.25)
-        layer.setInteractive()
-        layer.on("pointerdown", (pointer: any) => {
-            this.selectedBlock = layer.getTileAtWorldXY(pointer.worldX, pointer.worldY).index
-            if (this.tools.selected.name === "Cursor") this.tools.select("Pencil");
-        })
+        this.blocktilelayer = map.createLayer(0, tiles);
+        this.blocktilelayer.setPosition(625, this.height - 175)
+        this.blocktilelayer.setScale(1.25)
+        this.blocktilelayer.setInteractive()
 
         this.gameobjects.bookTalkBackground.main.add([
-            this.add.text(10, 9, "Background for level", textStyle),
-            // this.add.text(10, 89, "Level", textStyle),
+            this.add.text(10, 9, "Background", textStyle),
+            this.add.text(10, 89, "Level", textStyle),
             this.add.text(200, 4, "Characters:", textStyle)
                 .setFontSize(28),
             this.add.text(200, 104, "Entities:", textStyle)
@@ -508,11 +597,16 @@ Made by Zelo101. Last Updated: 16/04/2021`).render(this))
             this.add.text(650, 104, "Name:", textStyle)
                 .setFontSize(28),
             backgroundsSelect.container,
-            // levelsSelect.container,
+            levelsSelect.container,
             charactersContainer,
             entitiesContainer,
             nameContainer
         ])
+
+        this.blocktilelayer.on("pointerdown", (pointer: any) => {
+            this.selectedBlock = this.blocktilelayer.getTileAtWorldXY(pointer.worldX, pointer.worldY).index
+            if (this.tools.selected.name === "Cursor") this.tools.select("Pencil");
+        })
     }
 
     renderEntityPanel(): void {
@@ -603,7 +697,6 @@ Made by Zelo101. Last Updated: 16/04/2021`).render(this))
 
         for (const entity of entities) {
             const spritedata = entityData.get(entity.name.toLowerCase())?.size ?? { x: 64, y: 64 };
-            console.log(spritedata)
             const container = this.add.container(entity.x,  entity.y)
             container.add([
                 this.add.image(0, 0, entity.name.toLowerCase())

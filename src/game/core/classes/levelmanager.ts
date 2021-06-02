@@ -10,6 +10,7 @@ import Settings from "../../settingsgame";
 import gameSceneType from "../gamestructure";
 import { BlockObject, BlockObjectType } from "../data/block_data";
 import { padStart } from "../misc/other";
+import { s_getCacheSave, s_getLocalStorage } from "../misc/dataidb";
 let level: LevelData
 
 export class LevelManager {
@@ -22,6 +23,7 @@ export class LevelManager {
     // shouldnt need to repeat this
     blocks: BlockObjectType
     scene: Phaser.Scene
+    extraData: Record<string, unknown> | undefined
 
     tilelayer!: Phaser.Tilemaps.TilemapLayer
     specialblocks!: Phaser.GameObjects.Group
@@ -45,13 +47,13 @@ export class LevelManager {
 
     constructor(
         levels: LevelData,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         blocks: BlockObjectType,
         scene: Phaser.Scene,
 
         terrain: Phaser.Physics.Arcade.StaticGroup,
         decorateTerrain: Phaser.Physics.Arcade.StaticGroup,
         backScene: string,
+        extraData?: Record<string, unknown>
     ) {
         this.levels = levels;
 
@@ -72,6 +74,8 @@ export class LevelManager {
         this.levelTextButton = this.scene.add.text(
             20, 480, "", levelnameStyle,
         ).setScrollFactor(0, 0).setDepth(1)
+
+        this.extraData = extraData;
     }
 
     setLevel(levelnum: number): void {
@@ -131,7 +135,17 @@ export class LevelManager {
         ).setInteractive().setAlpha(0.75).setScrollFactor(0, 0);
 
         backButton.on("pointerdown", () => {
-            this.scene.scene.start(this.backScene, this.levels);
+            if (this.backScene === "editorScene") {
+                // console.log("levelmanager<<", this.levels)
+                s_getLocalStorage();
+                // console.log("levelmanager2", s_getCacheSave(this.levels.name))
+                this.scene.scene.start(this.backScene, {
+                    level: s_getCacheSave(this.levels.name),
+                    currentLevelNumber: this.extraData!.currentLevelNumber
+                });
+            } else {
+                this.scene.scene.start(this.backScene, this.levels);
+            }
         });
     }
 

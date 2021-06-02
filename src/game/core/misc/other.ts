@@ -17,7 +17,7 @@ export function hexColourFromSeed(seed: number): string {
 }
 
 export function create2DNumberArray(width: number, height: number): number[][] {
-    const newArray = [...new Array(Math.floor(height))].map(() => new Array(Math.floor(width)).fill(-1))
+    const newArray = [...new Array(Math.floor(height))].map(() => new Array(Math.floor(width)).fill(-2))
     // console.log(newArray)
     return newArray;
 }

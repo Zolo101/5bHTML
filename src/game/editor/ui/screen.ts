@@ -46,7 +46,7 @@ export class Screen {
         })
         this.tiles = this.map.addTilesetImage("core_tileset", "core_tileset");
         this.layer = this.map.createLayer(0, this.tiles);
-        this.layer.fill(99);
+        this.layer.fill(-2);
     }
 
     setData(data: number[][]): void {
