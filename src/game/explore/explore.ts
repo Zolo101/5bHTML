@@ -82,6 +82,7 @@ class LevelItem {
             this.screen.setData(this.meta.levels[0].data);
             this.screen.zoom = 0.22;
             this.screen.setBackground(this.meta.levels[0].background)
+            // this.screen.setEntities(this.meta.levels[0].entities, scene)
             this.screen.updateMapPos();
         } catch (error) {
             console.error(error)
@@ -119,54 +120,51 @@ class exploreScene extends Phaser.Scene {
         ).setInteractive();
 
         backButton.on("pointerdown", () => {
-            document.body.style.backgroundColor = "initial";
             this.scene.start("menuScene");
         });
 
-        /*
-        const featuredbutton = this.add.text(
-            30, 50, "FEATURED", exploreButtonStyle,
-        );
 
-        const newbutton = this.add.text(
-            340, 50, "NEW", exploreButtonStyle,
-        );
+        // const featuredbutton = this.add.text(
+        //     30, 50, "FEATURED", exploreButtonStyle,
+        // );
 
-        const topbutton = this.add.text(
-            580, 50, "TOP", exploreButtonStyle,
-        ); */
+        // const newbutton = this.add.text(
+        //     340, 50, "NEWEST", exploreButtonStyle,
+        // );
 
-        //const helpbutton = this.add.text(
-        //    860, 50, "?", helpButtonStyle,
-        //).setFontSize(42);
+        // const oldbutton = this.add.text(
+        //     620, 50, "OLDEST", exploreButtonStyle,
+        // );
 
-        const refreshbutton = this.add.text(
-            30, 475, "REFRESH", helpButtonStyle,
-        ).setInteractive();
+        // const refreshbutton = this.add.text(
+        //     30, 475, "REFRESH", helpButtonStyle,
+        // ).setInteractive();
 
-        refreshbutton.on("pointerdown", () => {
-            c_clearEverything();
-            this.refreshPage();
-        });
+        // refreshbutton.on("pointerdown", () => {
+        //     c_clearEverything();
+        //     this.refreshPage();
+        // });
+
 
         infoText = this.add.text(30, 40, "", levelnameStyle);
+        infoText.setText("Online levels are disabled due to issues with servers.\nCheck back soon!")
 
-        new NumInc(370, 475, 0, 999, this, (value) => {
-            this.page = value;
-            this.renderPage();
-        })
+        // new NumInc(370, 475, 0, 999, this, (value) => {
+        //     this.page = value;
+        //     this.renderPage();
+        // })
 
-        // gets all the levels from the localstorage
-        c_getLocalStorage();
+        // // gets all the levels from the localstorage
+        // c_getLocalStorage();
 
-        // has it been 30 MINUTES since the last refresh?
-        if (Date.now() > c_saves.time + (1000 * 60 * 30) && c_saves.data.has(this.page)) {
-            this.refreshPage();
-        } else {
-            console.log("Using Cache")
-            this.levels = c_saves.data;
-            this.renderPage()
-        }
+        // // has it been 30 MINUTES since the last refresh?
+        // if (Date.now() > c_saves.time + (1000 * 60 * 30) && c_saves.data.has(this.page)) {
+        //     this.refreshPage();
+        // } else {
+        //     console.log("Using Cache")
+        //     this.levels = c_saves.data;
+        //     this.renderPage()
+        // }
 
     }
 

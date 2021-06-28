@@ -1,6 +1,7 @@
 import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
 import { s_addSave, s_push, s_removeSave, s_saves } from "../core/misc/dataidb";
+import Alert from "./ui/alert";
 import { Screen } from "./ui/screen";
 
 class editsaveScene extends Phaser.Scene {
@@ -37,14 +38,15 @@ class editsaveScene extends Phaser.Scene {
         })
         new BaseButton(80, 340, "Upload", this, async () => {
             console.log(this.save)
-            await fetch("https://5beam.zelo.dev/api/upload", {
-                method: "POST",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(this.save)
-            });
+            new Alert("Uploading is temporarily disabled", "Uploading is disabled due to issues with servers.\nCheck back soon!").render(this)
+            // await fetch("https://5beam.zelo.dev/api/upload", {
+            //     method: "POST",
+            //     mode: "cors",
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     },
+            //     body: JSON.stringify(this.save)
+            // });
         })
         new BaseButton(80, 420, "Delete", this, () => {
             if (confirm("Are you sure? This WILL irreversibly delete your save.")) {
