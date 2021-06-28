@@ -474,10 +474,10 @@ class editorScene extends Phaser.Scene {
         // view.add("Zoom In", new Key("Equal"), () => this.gameobjects.screen.zoom += 0.25)
         // view.add("Zoom Out", new Key("Minus"), () => this.gameobjects.screen.zoom -= 0.25)
         // view.add("100% Zoom", new Key("Numpad0", true), () => this.gameobjects.screen.zoom = 1)
-        view.add("Move Left", new Key("ArrowLeft"), () => this.gameobjects.screen.x += 30)
-        view.add("Move Right", new Key("ArrowRight"), () => this.gameobjects.screen.x -= 30)
-        view.add("Move Up", new Key("ArrowUp"), () => this.gameobjects.screen.y += 30)
-        view.add("Move Down", new Key("ArrowDown"), () => this.gameobjects.screen.y -= 30)
+        // view.add("Move Left", new Key("ArrowLeft"), () => this.gameobjects.screen.x += 30)
+        // view.add("Move Right", new Key("ArrowRight"), () => this.gameobjects.screen.x -= 30)
+        // view.add("Move Up", new Key("ArrowUp"), () => this.gameobjects.screen.y += 30)
+        // view.add("Move Down", new Key("ArrowDown"), () => this.gameobjects.screen.y -= 30)
         const run = new subMenuBar("Run", this);
         this.menubar.add(run);
         run.add("Run", new Key("Enter", true), () => this.runLevel(this.currentLevelNumber))
