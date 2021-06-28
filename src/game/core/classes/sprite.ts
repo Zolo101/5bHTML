@@ -2,7 +2,7 @@ import Settings from "../../settingsgame";
 import { Entity } from "../levelstructure";
 
 export class Sprite extends Phaser.GameObjects.Sprite {
-    body!: Phaser.Physics.Arcade.Body;
+    declare body: Phaser.Physics.Arcade.Body;
     name: string;
     type: string;
     grabbable = false;
