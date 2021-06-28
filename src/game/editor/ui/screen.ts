@@ -1,3 +1,5 @@
+import { entityData } from "../../core/jsonmodule"
+import { Entity } from "../../core/levelstructure"
 import { chunkArray, create2DNumberArray } from "../../core/misc/other"
 import { Point } from "../tools"
 
@@ -9,6 +11,7 @@ export class Screen {
     map: Phaser.Tilemaps.Tilemap
     tiles: Phaser.Tilemaps.Tileset
     layer: Phaser.Tilemaps.TilemapLayer
+    entitycontainer: Phaser.GameObjects.Container
     scene: Phaser.Scene
 
     get x(): number {return this._x}
@@ -47,6 +50,7 @@ export class Screen {
         this.tiles = this.map.addTilesetImage("core_tileset", "core_tileset");
         this.layer = this.map.createLayer(0, this.tiles);
         this.layer.fill(-2);
+        this.entitycontainer = this.scene.add.container(x, y);
     }
 
     setData(data: number[][]): void {
@@ -55,6 +59,25 @@ export class Screen {
 
     setBackground(num: number): void {
         this.background.setTexture(`background_${num}`)
+    }
+
+    /**
+     * Unfinished, do not use
+     */
+    setEntities(entities: Entity[], scene: Phaser.Scene): void {
+        this.entitycontainer.removeAll(true)
+        for (const entity of entities) {
+            const spritedata = entityData.get(entity.name.toLowerCase())?.size ?? { x: 64, y: 64 };
+            this.entitycontainer.add(
+                scene.add.image(0, 0, entity.name.toLowerCase())
+                    .setOrigin(0, 0)
+                    .setPosition(entity.x, entity.y)
+                    .setDisplaySize(spritedata.x, spritedata.y)
+                    .setScale(entity.type === "Character" ? 0.20 : 0.45)
+                    .setAlpha(0.85)
+            )
+        }
+
     }
 
     getData(): number[][] {
@@ -69,6 +92,7 @@ export class Screen {
     updateMapPos(): void {
         this.layer.setPosition(this._x, this._y);
         this.background.setPosition(this._x, this._y)
+        this.entitycontainer.setPosition(this._x, this._y)
     }
 
     getRealXYFromCoord(x: number, y: number): Point {

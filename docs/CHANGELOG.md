@@ -4,17 +4,15 @@ Emoji | meaning
 🟦| Latest *"Stable"* version
 
 
-# dev-21w15b 🟥 -- 16/04/2021
+# dev-21w26a 🟥 -- 28/06/2021
 
 **To be v4 Alpha.**
 
-## Things since v3 Alpha:
+## Major Changes
 
 - Menu redesign!
 
 - Level Editor! Create, Test, Share and Play your own custom levels!
-
-- Settings.
 
 - Character speed is now **8%** faster.
 
@@ -22,7 +20,9 @@ Emoji | meaning
 
 - Changed from Webpack to Snowpack
 
-- Phaser updated from `3.50.0` to `3.54.0`
+- Phaser updated from `3.50.0` to `3.55.2`
+
+- Typescript updated from `4.1.3` to `4.3.2`
 
 # v3 Alpha 🟦 -- 31/12/2020
 ## Major Changes

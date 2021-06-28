@@ -14,9 +14,12 @@ v2 Alpha -- Mid October 2020 :heavy_check_mark:
 <!-- v3 Alpha -- Late October 2020 :x: -->
 v3 Alpha -- Late December 2020 :heavy_check_mark:
 
-v4 Alpha -- April 2021 :heavy_plus_sign:
+<!-- v4 Alpha -- April 2021 :heavy_plus_sign: -->
+v4 Alpha -- June 2021 :heavy_check_mark:
 
-v5 Alpha -- May 2021 :x:
+v5 Alpha -- July 2021 :heavy_plus_sign:
+
+v6 Alpha -- July 2021 :x:
 
 *Dates shown are **NOT** final.*
 
