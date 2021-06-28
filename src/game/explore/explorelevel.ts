@@ -1,6 +1,7 @@
 import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
 import { s_saves, s_addSave, s_push } from "../core/misc/dataidb";
+import Alert from "../editor/ui/alert";
 import { Screen } from "../editor/ui/screen";
 
 class explorelevelScene extends Phaser.Scene {
@@ -25,7 +26,7 @@ class explorelevelScene extends Phaser.Scene {
         new BaseButton(80, 180, "Clone", this, () => {
             const newName = prompt("What name should the clone be called?") ?? "nil";
             if (newName !== "nil" && s_saves.has(newName)) {
-                alert("There is already a save with the same name!")
+                new Alert("Name in use", "There is already a save with the same name!").render(this)
             } else {
                 // Serialisation be like
                 const newSave = JSON.parse(JSON.stringify(this.save)) as LevelData;

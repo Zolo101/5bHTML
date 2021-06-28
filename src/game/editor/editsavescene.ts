@@ -27,7 +27,7 @@ class editsaveScene extends Phaser.Scene {
         new BaseButton(80, 260, "Clone", this, () => {
             const newName = prompt("What name should the new clone be called?") ?? "nil";
             if (newName !== "nil" && s_saves.has(newName)) {
-                alert("There is already a save with the same name!")
+                new Alert("Name in use", "There is already a save with the same name!").render(this)
             } else {
                 // Serialisation be like
                 const newSave = JSON.parse(JSON.stringify(this.save)) as LevelData;
