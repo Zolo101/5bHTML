@@ -40,6 +40,7 @@ class editrenameScene extends Phaser.Scene {
 
         backButton.on("pointerdown", () => {
             s_push();
+            s_saves.delete(nameBuffer);
             this.scene.start("saveScene");
         });
     }
