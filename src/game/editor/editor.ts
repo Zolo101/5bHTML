@@ -362,10 +362,13 @@ class editorScene extends Phaser.Scene {
     }
 
     exit(): void {
-        if (confirm("Are you sure? Make sure you've saved before exiting!")) {
-            this.scene.start("saveScene");
-            this.resetWindowChanges();
-        }
+        new Alert("Exit Editor", "Are you sure? Make sure you've saved before exiting!", "YESNO")
+            .render(this, (res) => {
+                if (res) {
+                    this.scene.start("saveScene");
+                    this.resetWindowChanges();
+                }
+            })
     }
 
     resetWindowChanges(): void {
@@ -401,11 +404,14 @@ class editorScene extends Phaser.Scene {
         if (newLevel !== undefined) {
             this.currentLevel = newLevel;
         } else {
-            if (confirm("This level has not been created. Would you like to create it?")) {
-                newLevel = this.createLevel();
-                this.currentLevel = newLevel;
-                this.numincs.background.value = 0;
-            } else return false;
+            new Alert("Uncreated Level", "This level has not been created. Would you like to create it?", "YESNO")
+                .render(this, (res) => {
+                    if (res) {
+                        newLevel = this.createLevel();
+                        this.currentLevel = newLevel;
+                        this.numincs.background.value = 0;
+                    } else return false;
+                })
         }
 
         // console.log("eee1", oldLevel.entities)

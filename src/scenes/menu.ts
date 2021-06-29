@@ -3,6 +3,7 @@ import { levels } from "../game/core/jsonmodule";
 import { hexColourFromSeed, openExternalLink } from "../game/core/misc/other";
 import Settings, { LAST_UPDATE, VERSION_NAME } from "../game/settingsgame";
 
+const randomBackground = () => `background_${Math.round(Math.random() * 11)}`;
 class menuScene extends Phaser.Scene {
     hoverText!: Phaser.GameObjects.Text
     constructor() { super("menuScene"); }
@@ -12,7 +13,7 @@ class menuScene extends Phaser.Scene {
         // this.scene.start("exploreScene", {level: {name: undefined}}); // go straight into gameplay
         // Background
         this.add.rectangle(0, 0, 960, 540, 0x6a7773).setOrigin(0, 0);
-        this.add.image(480, 270, `background_${Math.round(Math.random() * 11)}`)
+        this.add.image(480, 270, randomBackground())
             .setScale(0.6)
             .setAlpha(0.35)
 

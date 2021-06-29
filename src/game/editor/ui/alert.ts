@@ -1,20 +1,33 @@
-import { textStyle } from "../../core/buttons";
+import { font, textStyle } from "../../core/buttons";
+
+type AlertStyle = "FATAL" | "OK" | "YESNO" | undefined
+
+const AlertTextStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+    fontFamily: font,
+    color: "#fff",
+    backgroundColor: "#777777",
+    fontSize: "24px",
+    padding: {
+        x: 16,
+        y: 2
+    },
+}
 
 class Alert {
     title: string
     text: string
-    closeable: boolean
+    closeable: AlertStyle
 
-    constructor(title = "Untitled Alert", text = "Lorem Ipsum", closeable = true) {
+    constructor(title = "Untitled Alert", text = "Lorem Ipsum", closeable?: AlertStyle) {
         this.title = title;
         this.text = text;
         this.closeable = closeable;
     }
 
-    render(scene: Phaser.Scene): void {
+    render(scene: Phaser.Scene, result?: (res: boolean) => void): void {
         const alert = scene.add.container(scene.scale.width / 2, scene.scale.height / 2);
         // Background
-        alert.add(scene.add.rectangle(0, 0, 1e4, 1e4, 0x222222, 0.7))
+        alert.add(scene.add.rectangle(0, 0, 1e4, 1e4, 0x222222, 0.7).setInteractive())
         // Base
         const base = scene.add.rectangle(0, 0, 400, 300, 0x999999)
         let top = base.getTopCenter();
@@ -34,22 +47,38 @@ class Alert {
         alert.add(title)
         alert.add(text)
         // Close
-        if (this.closeable) {
-            alert.add(scene.add.text(base.getBottomCenter().x, base.getBottomCenter().y - 35, "Close", textStyle)
+        switch (this.closeable) {
+        case "FATAL":
+            break;
+
+        case "OK":
+        default:
+            alert.add(scene.add.text(base.getBottomCenter().x, base.getBottomCenter().y - 35, "Close", AlertTextStyle)
                 .setInteractive()
                 .setOrigin(0.5, 0)
-                .setFontSize(24)
-                .setPadding(5, 0)
-                .setBackgroundColor("#777777")
                 .on("pointerdown", () => alert.removeAll(true))
             )
+            break;
+
+        case "YESNO":
+            alert.add([
+                scene.add.text(base.getBottomCenter().x - 65, base.getBottomCenter().y - 35, "Yes", AlertTextStyle)
+                    .setInteractive()
+                    .setOrigin(0.5, 0)
+                    .on("pointerdown", () => {
+                        alert.removeAll(true)
+                        if (result !== undefined) result(true)
+                    }),
+                scene.add.text(base.getBottomCenter().x + 65, base.getBottomCenter().y - 35, "No", AlertTextStyle)
+                    .setInteractive()
+                    .setOrigin(0.5, 0)
+                    .on("pointerdown", () => {
+                        alert.removeAll(true)
+                        if (result !== undefined) result(false)
+                    })
+            ])
+            break;
         }
-        // alert.on("pointerdownoutside", () => console.log("e"))
-        // Exit
-        //alert.add(scene.add.text(base.getTopRight().x - 20, base.getTopRight().y, "X", textStyle)
-        //    .setFontSize(28)
-        //    .setBackgroundColor("#ff0000"))
-        //    .on("pointerdown", remove)
     }
 }
 

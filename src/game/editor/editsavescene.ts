@@ -49,11 +49,14 @@ class editsaveScene extends Phaser.Scene {
             // });
         })
         new BaseButton(80, 420, "Delete", this, () => {
-            if (confirm("Are you sure? This WILL irreversibly delete your save.")) {
-                s_removeSave(this.save.name);
-                s_push();
-                this.scene.start("saveScene");
-            }
+            new Alert("Delete save", "Are you sure? This WILL irreversibly delete your save.", "YESNO")
+                .render(this, (res) => {
+                    if (res) {
+                        s_removeSave(this.save.name);
+                        s_push();
+                        this.scene.start("saveScene");
+                    }
+                })
         })
 
         new BaseButton(740, 45, "Rename", this, () => {
