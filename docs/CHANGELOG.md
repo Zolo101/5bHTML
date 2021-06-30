@@ -1,31 +1,33 @@
 Emoji | meaning
 --- | ---
-🟥| Latest Dev version, these versions are hosted on [the dev site](https://5bdev.zelo.dev/).
 🟦| Latest *"Stable"* version
+🟥| Latest Dev version, these versions are hosted on [the dev site](https://5bdev.zelo.dev/).
 
 
-# dev-21w26a 🟥 -- 28/06/2021
+# v4 Alpha 🟦 -- 30/06/2021
+### Note: Online levels are disabled due to issues with servers. Check the discord server for updates on this.
+## Major changes
 
-**To be v4 Alpha.**
-
-## Major Changes
+- **Level Editor! Create, Test, Share and Play your own custom levels!**
 
 - Menu redesign!
 
-- Level Editor! Create, Test, Share and Play your own custom levels!
-
 - Character speed is now **8%** faster.
+
+- Fixed issues [#14](https://github.com/Zolo101/5bHTML/issues/14), [#20](https://github.com/Zolo101/5bHTML/issues/20), [#21](https://github.com/Zolo101/5bHTML/issues/21), [#22](https://github.com/Zolo101/5bHTML/issues/22) and [#24](https://github.com/Zolo101/5bHTML/issues/24)
 
 ## Dev changes
 
-- Changed from Webpack to Snowpack
+- The level structure is now on version 7
+
+- Changed bundler from Webpack to Snowpack
 
 - Phaser updated from `3.50.0` to `3.55.2`
 
 - Typescript updated from `4.1.3` to `4.3.2`
 
-# v3 Alpha 🟦 -- 31/12/2020
-## Major Changes
+# v3 Alpha -- 31/12/2020
+## Major changes
 
 - Transitions.
 

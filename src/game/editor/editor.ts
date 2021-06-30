@@ -497,7 +497,7 @@ To move the level screen, use arrow keys.
 
 
 
-Made by Zelo101. Last Updated: 16/04/2021`).render(this))
+Made by Zelo101. Last Updated: 30/06/2021`).render(this))
 
         file.render(0, 0, this);
         // edit.render(120, 0, this);
