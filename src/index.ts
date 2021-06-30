@@ -1,14 +1,22 @@
 import Phaser from "phaser";
+import Settings from "./game/settingsgame";
+import "./styles.css";
 
 import loadingScene from "./scenes/loading";
 import menuScene from "./scenes/menu";
 import levelselectScene from "./scenes/levelselect";
-// import settingScene from "./scenes/settingScene";
-import editorScene from "./scenes/editor";
+
+import editorScene from "./game/editor/editor";
+import saveScene from "./game/editor/savescene";
+import editsaveScene from "./game/editor/editsavescene";
+import editrenameScene from "./game/editor/editrenamescene";
+
+import exploreScene from "./game/explore/explore";
+import explorelevelScene from "./game/explore/explorelevel";
+
 import gameScene from "./scenes/game";
-import exploreScene from "./scenes/explore";
 import newScene from "./scenes/new";
-import Settings from "./game/settings";
+import settingsScene from "./scenes/settings";
 
 const config = {
     type: Phaser.AUTO,
@@ -30,10 +38,18 @@ const config = {
         loadingScene,
         menuScene,
         levelselectScene,
-        gameScene,
+
         editorScene,
+        saveScene,
+        editsaveScene,
+        editrenameScene,
+
         exploreScene,
+        explorelevelScene,
+
+        gameScene,
         newScene,
+        settingsScene,
     ],
 };
 

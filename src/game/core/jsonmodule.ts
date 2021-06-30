@@ -4,4 +4,4 @@ import spritefile from "./data/sprite_data"
 
 export const levels = levelfile;
 export const block = BlockObject;
-export const entities = spritefile;
+export const entityData = spritefile;

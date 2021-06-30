@@ -21,7 +21,7 @@ module.exports = {
         indent: ["error", 4],
         quotes: ["error", "double"],
         "no-console": 0, // ["warn", { allow: ["warn", "error"] }],
-        "max-classes-per-file": ["error", 2],
+        "max-classes-per-file": ["warn", 3],
         "no-trailing-spaces": 1,
         "no-unused-vars": 0,
         "@typescript-eslint/no-unused-vars": 1,

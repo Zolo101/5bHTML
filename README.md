@@ -2,28 +2,33 @@
 
 ## [Play here](https://5b.zelo.dev/)
 
-5bHTML is a remake of the htwins [5b flash game](https://bfdi.tv/5b/) thats based on [battle for dream island](https://www.youtube.com/user/jacknjellify). It's in alpha right now so not everything looks and feels the same, so please keep that in mind before playing.
+5bHTML is a remake of the [htwins 5b flash game](https://bfdi.tv/5b/) thats based on [battle for dream island](https://www.youtube.com/user/jacknjellify). It's in alpha right now so not everything looks and feels the same, so please keep that in mind before playing.
 
-Hosted version: **v3 Alpha**
+Hosted version: **v4 Alpha**
 
-Latest version: **v3 Alpha**
+Latest version: **v4 Alpha**
 
 Join the [5bHTML discord server!](https://discord.gg/um5KWabefm)
-
-Check the **Projects** tab for progress on the next update.
 
 Long-term Roadmap [here](docs/ROADMAP.md), Changelog [here](docs/CHANGELOG.md)
 
 ## Building & Running
 
-Make sure you have node & npm installed in your comupter before building.
+Prerequisites:
+- [nodejs/npm](https://nodejs.org/en/)
+- [git](https://git-scm.com/)
 
 To build 5bHTML, clone / download this repo.
 
-```
-git clone https://github.com/Zolo101/5bHTML.git
-cd 5bHTML
-```
+`git clone https://github.com/Zolo101/5bHTML.git`
+
+**(OPTIONAL)** If you want the dev version:
+
+`npm checkout dev`
+
+Goto the location of 5bHTML:
+
+`cd 5bHTML`
 
 Then, install the needed dependencies:
 

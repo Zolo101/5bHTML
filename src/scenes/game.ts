@@ -1,7 +1,14 @@
-import { LevelManager } from "../game/core/classes/levelmanger";
+import { LevelManager } from "../game/core/classes/levelmanager";
 import { BlockObject } from "../game/core/data/block_data";
 import { LevelData } from "../game/core/levelstructure";
 // System Variables (Engine)
+
+export type GameOptions = {
+    from: Phaser.Scene,
+    levelfile: LevelData,
+    levelnumber?: number,
+    extraData: Record<string, unknown>
+}
 
 let leftKey: Phaser.Input.Keyboard.Key;
 let upKey: Phaser.Input.Keyboard.Key;
@@ -15,19 +22,24 @@ class gameScene extends Phaser.Scene {
     // Core vars, do not touch
     levelnumber = 0
     blocksize = 30
-    levelfile!: LevelData
+    levelfile!: GameOptions["levelfile"]
     background!: Phaser.GameObjects.Image
 
     levelmanager!: LevelManager
 
+    backScene!: string
+    extraData!: GameOptions["extraData"]
+
     constructor() { super("gameScene"); }
 
-    init(lvl: { levelnumber: number, levelfile: LevelData }): void {
-        if (lvl.levelnumber === undefined) return;
-        this.levelnumber = lvl.levelnumber;
+    init(lvl: GameOptions): void {
+        this.levelnumber = lvl.levelnumber ?? 1;
 
-        if (lvl.levelfile === undefined) return;
+        if (lvl.levelfile === undefined) throw "Levelfile needed!";
         this.levelfile = lvl.levelfile;
+
+        this.backScene = (lvl.from === undefined) ? "levelselectScene" : lvl.from.scene.key;
+        this.extraData = lvl.extraData ?? {};
     }
 
     create(): void {
@@ -52,7 +64,7 @@ class gameScene extends Phaser.Scene {
         this.levelmanager = new LevelManager(
             this.levelfile,
             BlockObject, this,
-            terrain, decorateterrain,
+            terrain, decorateterrain, this.backScene, this.extraData
         );
 
         this.levelmanager.setLevel(this.levelnumber);
@@ -70,12 +82,12 @@ class gameScene extends Phaser.Scene {
 
             if (leftKey.isDown) {
                 cc.direction = false;
-                cc.body.setVelocityX(-250 * cc.speed);
+                cc.body.setVelocityX(-270 * cc.speed);
             }
 
             if (rightKey.isDown) {
                 cc.direction = true;
-                cc.body.setVelocityX(250 * cc.speed);
+                cc.body.setVelocityX(270 * cc.speed);
             }
             // console.log(cc.body.velocity.y)
         }

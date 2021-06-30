@@ -16,4 +16,24 @@ export function hexColourFromSeed(seed: number): string {
     return "#" + finalHex;
 }
 
+export function create2DNumberArray(width: number, height: number): number[][] {
+    const newArray = [...new Array(Math.floor(height))].map(() => new Array(Math.floor(width)).fill(-2))
+    // console.log(newArray)
+    return newArray;
+}
+
+export function padStart(num: number | string, amount: number, pad = "0"): string {
+    const str = num.toString();
+    return pad.repeat(amount - str.length) + str;
+}
+
+export function chunkArray<T>(arr: T[], size: number): T[][] {
+    const resultData: T[][] = [];
+    for (let i = 0; i < arr.length; i += size) {
+        resultData.push(arr.slice(i, i + size));
+    } // chunks
+
+    return resultData;
+}
+
 export default openExternalLink;

@@ -1,11 +1,33 @@
 Emoji | meaning
 --- | ---
-🟥| Latest Dev version, these versions will not be on the [github page](https://zolo101.github.io/5bHTML/dist/), so you'll have to build them yourself.
-🟦| Latest *""Stable""* version
+🟦| Latest *"Stable"* version
+🟥| Latest Dev version, these versions are hosted on [the dev site](https://5bdev.zelo.dev/).
 
 
-# v3 Alpha 🟦 -- 31/12/2020
-## Major Changes
+# v4 Alpha 🟦 -- 30/06/2021
+### Note: Online levels are disabled due to issues with servers. Check the discord server for updates on this.
+## Major changes
+
+- **Level Editor! Create, Test, Share and Play your own custom levels!**
+
+- Menu redesign!
+
+- Character speed is now **8%** faster.
+
+- Fixed issues [#14](https://github.com/Zolo101/5bHTML/issues/14), [#20](https://github.com/Zolo101/5bHTML/issues/20), [#21](https://github.com/Zolo101/5bHTML/issues/21), [#22](https://github.com/Zolo101/5bHTML/issues/22) and [#24](https://github.com/Zolo101/5bHTML/issues/24)
+
+## Dev changes
+
+- The level structure is now on version 7
+
+- Changed bundler from Webpack to Snowpack
+
+- Phaser updated from `3.50.0` to `3.55.2`
+
+- Typescript updated from `4.1.3` to `4.3.2`
+
+# v3 Alpha -- 31/12/2020
+## Major changes
 
 - Transitions.
 
@@ -35,7 +57,7 @@ Emoji | meaning
 
 - Phaser updated from `3.24.1` to `3.50.0`
 
-# v2.1 Alpha 🟦 -- 11/10/2020
+# v2.1 Alpha -- 11/10/2020
 
 - Fixed 5beam Explore intergration. Github was blocking the fetch requests because it was fetching a http url, which is unsecure. This has now been fixed as 5beam now uses https.
 

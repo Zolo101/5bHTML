@@ -5,10 +5,12 @@ import { levelnameStyle, backStyle } from "../buttons";
 import { Block, createSpecialBlock } from "./block";
 import { checkLevel } from "../checkLevel";
 import { Entity, LevelData } from "../levelstructure";
-import { entities } from "../jsonmodule";
-import Settings from "../../settings";
+import { entityData } from "../jsonmodule";
+import Settings from "../../settingsgame";
 import gameSceneType from "../gamestructure";
 import { BlockObject, BlockObjectType } from "../data/block_data";
+import { padStart } from "../misc/other";
+import { s_getCacheSave, s_getLocalStorage } from "../misc/dataidb";
 let level: LevelData
 
 export class LevelManager {
@@ -21,6 +23,7 @@ export class LevelManager {
     // shouldnt need to repeat this
     blocks: BlockObjectType
     scene: Phaser.Scene
+    extraData: Record<string, unknown> | undefined
 
     tilelayer!: Phaser.Tilemaps.TilemapLayer
     specialblocks!: Phaser.GameObjects.Group
@@ -37,17 +40,20 @@ export class LevelManager {
 
     levelTextButton!: Phaser.GameObjects.Text
 
+    backScene!: string
+
     // stop player from going past certain level
     hardlimitlevel = 5;
 
     constructor(
         levels: LevelData,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         blocks: BlockObjectType,
         scene: Phaser.Scene,
 
         terrain: Phaser.Physics.Arcade.StaticGroup,
         decorateTerrain: Phaser.Physics.Arcade.StaticGroup,
+        backScene: string,
+        extraData?: Record<string, unknown>
     ) {
         this.levels = levels;
 
@@ -63,9 +69,13 @@ export class LevelManager {
         this.terrain = terrain;
         this.decorateTerrain = decorateTerrain;
 
+        this.backScene = backScene;
+
         this.levelTextButton = this.scene.add.text(
             20, 480, "", levelnameStyle,
         ).setScrollFactor(0, 0).setDepth(1)
+
+        this.extraData = extraData;
     }
 
     setLevel(levelnum: number): void {
@@ -80,12 +90,12 @@ export class LevelManager {
 
         if (Settings.IS_DEBUG) console.log(level);
 
-        const levelWidth = level.levels[this.levelnumber][0].width;
-        const levelHeight = level.levels[this.levelnumber][0].height;
+        const levelWidth = level.levels[this.levelnumber].width;
+        const levelHeight = level.levels[this.levelnumber].height;
 
         // Set background
         this.setBackground(
-            this.levels.levels[this.levelnumber][0].background,
+            this.levels.levels[this.levelnumber].background,
             this.blocksize * levelWidth,
             this.blocksize * levelHeight,
         );
@@ -117,7 +127,7 @@ export class LevelManager {
 
         // Set levelname
         this.levelTextButton.setText(
-            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber][0].name}`
+            `${padStart(this.levelnumber + 1, 3)}. ${level.levels[this.levelnumber].name}`
         );
 
         const backButton = this.scene.add.text(
@@ -125,7 +135,17 @@ export class LevelManager {
         ).setInteractive().setAlpha(0.75).setScrollFactor(0, 0);
 
         backButton.on("pointerdown", () => {
-            this.scene.scene.start("levelselectScene");
+            if (this.backScene === "editorScene") {
+                // console.log("levelmanager<<", this.levels)
+                s_getLocalStorage();
+                // console.log("levelmanager2", s_getCacheSave(this.levels.name))
+                this.scene.scene.start(this.backScene, {
+                    level: s_getCacheSave(this.levels.name),
+                    currentLevelNumber: this.extraData!.currentLevelNumber
+                });
+            } else {
+                this.scene.scene.start(this.backScene, this.levels);
+            }
         });
     }
 
@@ -163,7 +183,7 @@ export class LevelManager {
     }
 
     generateSprites(levelnum: number): void {
-        level.levels[levelnum][1].objects.forEach((sprite: Entity) => {
+        level.levels[levelnum].entities.forEach((sprite: Entity) => {
             if (sprite.name === "Finish") {
                 const blockObject = this.blocks.map.get(2) as Block
                 const specialblock = createSpecialBlock(
@@ -174,11 +194,9 @@ export class LevelManager {
                 );
                 this.specialblocks.add(specialblock);
             } else {
-
                 let spr: Sprite;
 
-                // Maybe use maps instead?
-                const spriteProperties = entities.find((spt: SpriteType) => spt.name === sprite.name.toLowerCase())
+                const spriteProperties = entityData.get(sprite.name.toLowerCase());
                 if (!spriteProperties) return console.error("Couldn't find sprite!")
 
                 switch (spriteProperties.type) {
@@ -204,23 +222,26 @@ export class LevelManager {
     }
 
     generateTerrain(levelnum: number): void {
-        const currentLevel = level.levels[levelnum][0];
+        const currentLevel = level.levels[levelnum];
         const levelData = currentLevel.data;
         const levelDataprep: number[][] = [];
 
         console.log(this.blocks)
 
+        /*
         // Clone array, dont reference it
         const levelDataMapBuffer = [...levelData];
         levelDataMapBuffer.forEach((n: number, i) => levelDataMapBuffer[i] -= 1);
 
         for (let i = 0; i < currentLevel.height; i++) {
             levelDataprep[i] = levelDataMapBuffer.slice(currentLevel.width * i, currentLevel.width * (i + 1))
-        }
+        } */
+
+        console.log([...levelData])
 
         // Make tilemap
         const tilemap = this.scene.make.tilemap({
-            data: levelDataprep,
+            data: [...levelData],
             tileWidth: this.blocksize,
             tileHeight: this.blocksize,
         });
@@ -234,7 +255,7 @@ export class LevelManager {
         //    const prop = BlockObject.map.get(tile.index);
         //})
 
-        this.tilelayer = tilemap.createLayer(0, tileset, 0, 0);
+        this.tilelayer = tilemap.createLayer(0, tileset);
 
         this.tilelayer.setCollision(this.blocks.collisionIndexes);
 

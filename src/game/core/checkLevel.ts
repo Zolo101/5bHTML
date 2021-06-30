@@ -26,11 +26,11 @@ export function checkLevel(): void {
         console.warn("No description!");
         // falls through
 
-    case curlevel.version === undefined:
+    case curlevel.struct_version === undefined:
         console.error("No version specficied (This is required!)");
         // falls through
 
-    case curlevel.levelversion === undefined:
+    case curlevel.level_version === undefined:
         console.warn("No title!");
         // falls through
 
@@ -48,23 +48,23 @@ export function checkLevel(): void {
 
     curlevel.levels.forEach((level: Level, i: number) => {
         switch (true) {
-        case level[0].name === undefined:
+        case level.name === undefined:
             console.error(`No level name @ level number ${i}.`);
             // falls through
 
-        case level[0].width === undefined:
+        case level.width === undefined:
             console.error(`No level width @ level number ${i}.`);
             // falls through
 
-        case level[0].height === undefined:
+        case level.height === undefined:
             console.error(`No level height @ level number ${i}.`);
             // falls through
 
-        case level[0].background === undefined:
+        case level.background === undefined:
             console.error(`No level background @ level number ${i}.`);
             // falls through
 
-        case level[0].data === undefined:
+        case level.data === undefined:
             console.error(`No level data @ level number ${i}.`);
             // falls through
 
