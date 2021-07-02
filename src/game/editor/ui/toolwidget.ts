@@ -32,6 +32,7 @@ export class ToolWidgetBar {
         for (const tool of this.tools.values()) {
             scene.add.image(x + (64 * (i + 1)) - 32, y, tool.iconKey)
                 .setDisplaySize(64, 64)
+                .setScale(0.8)
                 .setInteractive()
                 .on("pointerdown", () => this.select(tool.name))
             i += 1;
@@ -45,7 +46,7 @@ export class ToolWidget {
     key: Key
     special: boolean
     options!: BaseOption
-    parent!: ToolWidgetBar | null
+    parent!: ToolWidgetBar | undefined
     getCoords!: (pos: Phaser.Math.Vector2, screen: Screen) => Point[]
 
     constructor(name: string, key: Key, iconKey = "toolwidget_example", special = false) {

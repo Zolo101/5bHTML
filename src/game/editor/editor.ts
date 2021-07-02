@@ -12,8 +12,6 @@ import NumInc from "./ui/numinc";
 import { Screen } from "./ui/screen";
 import { ToolWidgetBar } from "./ui/toolwidget";
 
-let toolSelectedText: Phaser.GameObjects.Text
-
 let eventResize: () => void;
 let eventKeydown: () => void;
 
@@ -42,6 +40,7 @@ class editorScene extends Phaser.Scene {
     keys!: Map<string, Key>;
 
     gameobjects!: {
+        levelpackName: Phaser.GameObjects.Text
         background: Phaser.GameObjects.Rectangle
         toolbarBackground: Phaser.GameObjects.Rectangle
 
@@ -197,7 +196,10 @@ class editorScene extends Phaser.Scene {
                 background: this.add.rectangle(this.width - 250, 93, 250, this.height - 250 - 77, 0xffffff, 128)
                     .setOrigin(0, 0),
                 list: this.add.container(this.width - 250, 93)
-            }
+            },
+
+            levelpackName: this.add.text(5, 3, "", textStyle)
+                .setFontSize(28)
         }
 
         this.gameobjects.screen.setBackground(this.currentLevel.background)
@@ -214,12 +216,17 @@ class editorScene extends Phaser.Scene {
         // Setup & Render Bar Keybinds
         this.setupMenuBar();
 
-        // Placeholder
-        toolSelectedText = this.add.text(457, 70, "Tool selected: ", textStyle);
-
+        const selectedRect = this.add.rectangle(0, 28, 64, 64, 0xeeeeee)
+            .setOrigin(0, 0);
         // Render Tools
         this.tools.render(0, 60, this)
         this.tools.onChange = (tool) => {
+            this.tweens.add({
+                targets: selectedRect,
+                ease: "Sine.easeInOut",
+                duration: 200,
+                x: Array.from(this.tools.tools.keys()).indexOf(tool.name) * 64
+            })
             this.gameobjects.grid.setAlpha((tool.name === "Cursor") ? 0 : 1)
         }
 
@@ -285,7 +292,6 @@ class editorScene extends Phaser.Scene {
     }
 
     updateUI(): void {
-        toolSelectedText.setText(`Tool Selected: ${this.tools.selected.name}`)
         this.gameobjects.entityContainer.setPosition(this.gameobjects.screen.x, this.gameobjects.screen.y)
         this.gameobjects.hoverContainer.setPosition(this.gameobjects.screen.x, this.gameobjects.screen.y)
         this.gameobjects.grid.setPosition(this.gameobjects.screen.x, this.gameobjects.screen.y)
@@ -454,12 +460,12 @@ class editorScene extends Phaser.Scene {
     }
 
     setupMenuBar(): void {
-        const file = new subMenuBar("File", this);
+        const file = new subMenuBar("File", this, this.menubar);
         this.menubar.add(file);
         file.add("Save", new Key("S", true), () => this.saveLevel())
         file.add("Exit", new Key("Escape"), () => this.exit())
 
-        const select = new subMenuBar("Select", this);
+        const select = new subMenuBar("Select", this, this.menubar);
         this.menubar.add(select)
 
         // toolbar hotkeys
@@ -475,7 +481,7 @@ class editorScene extends Phaser.Scene {
         // edit.add("Copy", new Key("C", true), () => console.log("Feature unfinished"))
         // edit.add("Paste", new Key("V", true), () => console.log("Feature unfinished"))
 
-        const view = new subMenuBar("View", this);
+        const view = new subMenuBar("View", this, this.menubar);
         this.menubar.add(view);
         // view.add("Zoom In", new Key("Equal"), () => this.gameobjects.screen.zoom += 0.25)
         // view.add("Zoom Out", new Key("Minus"), () => this.gameobjects.screen.zoom -= 0.25)
@@ -484,11 +490,11 @@ class editorScene extends Phaser.Scene {
         // view.add("Move Right", new Key("ArrowRight"), () => this.gameobjects.screen.x -= 30)
         // view.add("Move Up", new Key("ArrowUp"), () => this.gameobjects.screen.y += 30)
         // view.add("Move Down", new Key("ArrowDown"), () => this.gameobjects.screen.y -= 30)
-        const run = new subMenuBar("Run", this);
+        const run = new subMenuBar("Run", this, this.menubar);
         this.menubar.add(run);
         run.add("Run", new Key("Enter", true), () => this.runLevel(this.currentLevelNumber))
         // run.add("Run From Level", new Key("Enter", true), () => this.runLevel(this.currentLevelNumber))
-        const help = new subMenuBar("Help", this);
+        const help = new subMenuBar("Help", this, this.menubar);
         this.menubar.add(help);
         help.add("About", new Key("empty"), () => new Alert("5bHTML-edit", `5bHTML-edit is a complete level editor made with the sole purpose of making 5bHTML levels.
 
@@ -627,10 +633,10 @@ Made by Zelo101. Last Updated: 30/06/2021`).render(this))
                     this.add.text(5, 5, entity.name, textStyle)
                         .setColor("#000")
                         .setWordWrapWidth(225),
-                    this.add.text(220, 2, "X", textStyle)
+                    this.add.text(220, 2, "✕", textStyle)
                         .setFontSize(22)
                         .setFontStyle("bold")
-                        .setBackgroundColor("#000")
+                        .setColor("#666666")
                         .setInteractive()
                         .on("pointerdown", () => {
                             entities.splice(i, 1)

@@ -14,7 +14,7 @@
   },
   "keywords": [],
   "author": "Zelo101",
-  "license": "ISC",
+  "license": "MIT",
   "browserslist": [
     "supports es5"
   ],

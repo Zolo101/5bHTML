@@ -28,6 +28,7 @@ export class MenuBar {
     name: string
     itemMap: Map<string, subMenuBarItem>
     subMenuBars: subMenuBar[]
+    selected: subMenuBar | undefined
 
     constructor(name: string) {
         this.name = name;
@@ -58,15 +59,17 @@ export class MenuBar {
 
 export class subMenuBar {
     private _itemsGroup: Phaser.GameObjects.Group
+    parent: MenuBar
     text: string
     items: subMenuBarItem[]
     show: boolean
     open: boolean
 
-    constructor(text: string, scene: Phaser.Scene, show = true) {
+    constructor(text: string, scene: Phaser.Scene, parent: MenuBar, show = true) {
         this.text = text;
         this.items = [];
-        this._itemsGroup = scene.add.group()
+        this._itemsGroup = scene.add.group();
+        this.parent = parent;
         this.show = show;
         this.open = false;
     }
@@ -96,6 +99,13 @@ export class subMenuBar {
     }
 
     onOpen(x: number, y: number, scene: Phaser.Scene): void {
+        // close old submenu and point it to this one
+        if (this.parent.selected !== undefined) {
+            this.parent.selected.open = false;
+            this.parent.selected.onClose();
+        }
+        this.parent.selected = this;
+
         this.items.forEach((item, i) => {
             const text = (item.key.code === "empty") ? `${item.text}` : `${item.text}   (${item.key.getName()})`
             const menuBarItem = scene.add.text(x, (24 * (i + 1)) + 4, text, barTextStyleItem)

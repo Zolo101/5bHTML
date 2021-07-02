@@ -25,7 +25,6 @@ class NumInc {
         this.container.add([
             scene.add.text(0, 0, "◀︎", textStyle)
                 .setFontSize(32)
-                .setBackgroundColor("#222")
                 .setInteractive()
                 .on("pointerdown", () => {
                     if (this.value > this.min) this.value -= 1
@@ -33,7 +32,6 @@ class NumInc {
 
             scene.add.text(130, 0, "▶︎", textStyle)
                 .setFontSize(32)
-                .setBackgroundColor("#222")
                 .setInteractive()
                 .on("pointerdown", () => {
                     if (this.value < this.max) this.value += 1
