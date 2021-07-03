@@ -134,7 +134,6 @@ class gameScene extends Phaser.Scene {
         }
 
         if (Phaser.Input.Keyboard.JustDown(rKey)) { // RESET
-            this.levelmanager.scene.cameras.main.flash(400, 255, 255, 255);
             this.levelmanager.startLevel();
         }
     }

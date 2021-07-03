@@ -121,7 +121,7 @@ export class LevelManager {
         this.initSprites();
 
         // Generate Sprites and start level
-        this.startLevel();
+        this.startLevel(true);
 
         // Generate Dialogue
 
@@ -130,9 +130,10 @@ export class LevelManager {
             `${padStart(this.levelnumber + 1, 3)}. ${level.levels[this.levelnumber].name}`
         );
 
-        const backButton = this.scene.add.text(
-            800, 475, "MENU", backStyle,
-        ).setInteractive().setAlpha(0.75).setScrollFactor(0, 0);
+        const backButton = this.scene.add.text(800, 475, "MENU", backStyle)
+            .setInteractive()
+            .setAlpha(0.75)
+            .setScrollFactor(0);
 
         backButton.on("pointerdown", () => {
             if (this.backScene === "editorScene") {
@@ -149,15 +150,56 @@ export class LevelManager {
         });
     }
 
-    startLevel(): void {
-        // 5b reset shake animation here
-        this.scene.cameras.main.shake(400, 0.005);
+    startLevel(firstTime = false): void {
+        const shakeAmount = 16;
+        const time = 500;
+        if (firstTime) {
+            this.scene.cameras.main.flash(400, 255, 255, 255);
+            this.wipeSprites();
+            this.generateSprites(this.levelnumber);
 
-        this.wipeSprites();
-        this.generateSprites(this.levelnumber);
+            // Set Camera
+            this.scene.cameras.main.startFollow(this.currentcharacter);
 
-        // Set Camera
-        this.scene.cameras.main.startFollow(this.currentcharacter);
+            this.scene.tweens.addCounter({
+                from: shakeAmount,
+                to: 0,
+                duration: time,
+                ease: "Quad.easeIn",
+                onUpdate: (tween) => {
+                    this.scene.cameras.main.setPosition(Phaser.Math.Between(-tween.getValue(), tween.getValue()), Phaser.Math.Between(-tween.getValue(), tween.getValue()))
+                }
+            })
+        } else {
+            this.scene.tweens.addCounter({
+                from: 0,
+                to: shakeAmount,
+                duration: time,
+                ease: "Quad.easeIn",
+                onUpdate: (tween) => {
+                    this.scene.cameras.main.setPosition(Phaser.Math.Between(-tween.getValue(), tween.getValue()), Phaser.Math.Between(-tween.getValue(), tween.getValue()))
+                },
+                onComplete: () => {
+                    this.scene.cameras.main.flash(600);
+                    this.wipeSprites();
+                    this.generateSprites(this.levelnumber);
+
+                    // Set Camera
+                    this.scene.cameras.main.startFollow(this.currentcharacter);
+
+                    this.scene.tweens.addCounter({
+                        from: shakeAmount,
+                        to: 0,
+                        duration: time,
+                        ease: "Quad.easeIn",
+                        onUpdate: (tween) => {
+                            this.scene.cameras.main.setPosition(Phaser.Math.Between(-tween.getValue(), tween.getValue()), Phaser.Math.Between(-tween.getValue(), tween.getValue()))
+                        }
+                    })
+                }
+
+            })
+        }
     }
 
     initSprites(): void {
