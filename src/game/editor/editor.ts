@@ -72,6 +72,7 @@ class editorScene extends Phaser.Scene {
     tools!: ToolWidgetBar
 
     screenEntities!: EditorEntity[]
+    screenCamera!: Phaser.Cameras.Scene2D.Camera
     numincs!: {
         background: NumInc,
         level: NumInc
@@ -82,6 +83,8 @@ class editorScene extends Phaser.Scene {
 
     new!: boolean
     originalData!: Required<InitData>
+
+    controls!: Phaser.Cameras.Controls.SmoothedKeyControl
 
     constructor() {
         super({ key: "editorScene" });
@@ -179,7 +182,7 @@ class editorScene extends Phaser.Scene {
                 .setAlpha(0),
             entityContainer: this.add.container(0, 0),
 
-            toolbarBackground: this.add.rectangle(0, 0, this.width, 93, 0x444444, 64).setOrigin(0, 0),
+            toolbarBackground: this.add.rectangle(0, 0, this.width, 93, 0x777777, 64).setOrigin(0, 0),
 
             bookTalkBackground: {
                 white: this.add.rectangle(0, this.height - 234, this.width * 2, 25, 0xffffff, 16).setOrigin(0, 0),
@@ -209,7 +212,61 @@ class editorScene extends Phaser.Scene {
         this.marker.lineStyle(2, 0x000000);
         this.marker.strokeRect(0, 0, 30 * this.gameobjects.screen.zoom, 30 * this.gameobjects.screen.zoom)
 
-        this.cameras.main.setBounds(0, 0, this.gameobjects.screen.map.widthInPixels, this.gameobjects.screen.map.heightInPixels);
+        this.cameras.main.ignore([
+            // this.gameobjects.background,
+            this.gameobjects.screen.background,
+            this.gameobjects.screen.layer,
+            this.gameobjects.hoverContainer,
+            this.gameobjects.grid,
+            this.gameobjects.entityContainer,
+            // this.blocktilelayer,
+            // this.gameobjects.toolbarBackground,
+            // this.gameobjects.bookTalkBackground.white,
+            // this.gameobjects.bookTalkBackground.green,
+            // this.gameobjects.bookTalkBackground.main,
+            // this.gameobjects.bookTalk.book,
+            // this.gameobjects.bookTalk.text,
+            // this.gameobjects.panel.background,
+            // this.gameobjects.panel.list,
+            // this.gameobjects.levelpackName,
+        ])
+        this.screenCamera = this.cameras.add(0, 93, this.gameobjects.panel.list.x, this.gameobjects.bookTalkBackground.white.y - 93)
+        this.screenCamera.setBounds(this.gameobjects.screen.x, this.gameobjects.screen.y, 960, 540, true)
+        this.screenCamera.ignore([
+            this.gameobjects.background,
+            // this.gameobjects.screen,
+            // this.gameobjects.hoverContainer,
+            // this.gameobjects.grid,
+            // this.gameobjects.entityContainer,
+            this.gameobjects.toolbarBackground,
+            this.gameobjects.bookTalkBackground.white,
+            this.gameobjects.bookTalkBackground.green,
+            this.gameobjects.bookTalkBackground.main,
+            this.gameobjects.bookTalk.book,
+            this.gameobjects.bookTalk.text,
+            this.gameobjects.panel.background,
+            this.gameobjects.panel.list,
+            this.gameobjects.levelpackName,
+        ])
+
+        const cursors = this.input.keyboard.createCursorKeys();
+        this.controls = new Phaser.Cameras.Controls.SmoothedKeyControl({
+            camera: this.screenCamera,
+            left: cursors.left,
+            right: cursors.right,
+            up: cursors.up,
+            down: cursors.down,
+            zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+            zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+            minZoom: 1,
+            maxZoom: 5,
+            zoomSpeed: 0.03,
+            acceleration: 0.3,
+            // drag: 0.0005,
+            drag: 0.05,
+            maxSpeed: 5.0,
+        })
+        // this.cameras.main.setBounds(0, 0, this.gameobjects.screen.map.widthInPixels, this.gameobjects.screen.map.heightInPixels);
 
         this.menubar.updateItemMap();
 
@@ -260,10 +317,11 @@ class editorScene extends Phaser.Scene {
         // this.currentLevel.data = this.gameobjects.screen.getData();
     }
 
-    update(): void {
+    update(time: number, delta: number): void {
+        if (this.controls !== undefined) this.controls.update(delta);
         this.updateUI()
         const activePointerBuffer = new Phaser.Math.Vector2();
-        this.input.activePointer.positionToCamera(this.cameras.main, activePointerBuffer)
+        this.input.activePointer.positionToCamera(this.screenCamera, activePointerBuffer)
         const calcZoom = 30 * this.gameobjects.screen.zoom;
 
         const screenPos = activePointerBuffer.subtract(new Phaser.Math.Vector2(this.gameobjects.screen.x, this.gameobjects.screen.y))
@@ -325,6 +383,8 @@ class editorScene extends Phaser.Scene {
         this.gameobjects.panel.background.height = this.height - 250 - 77;
 
         this.bottombar.container.setY(this.height);
+
+        this.screenCamera.setSize(this.gameobjects.panel.list.x, this.gameobjects.bookTalkBackground.white.y - 93)
     }
 
     saveLevel(): void {
@@ -483,9 +543,9 @@ class editorScene extends Phaser.Scene {
 
         const view = new subMenuBar("View", this, this.menubar);
         this.menubar.add(view);
-        // view.add("Zoom In", new Key("Equal"), () => this.gameobjects.screen.zoom += 0.25)
-        // view.add("Zoom Out", new Key("Minus"), () => this.gameobjects.screen.zoom -= 0.25)
-        // view.add("100% Zoom", new Key("Numpad0", true), () => this.gameobjects.screen.zoom = 1)
+        // view.add("Zoom In", new Key("Q"), () => this.screenCamera.zoom += 0.25)
+        // view.add("Zoom Out", new Key("E"), () => this.screenCamera.zoom -= 0.25)
+        // view.add("100% Zoom", new Key("Numpad0", true), () => this.screenCamera.zoom = 1)
         // view.add("Move Left", new Key("ArrowLeft"), () => this.gameobjects.screen.x += 30)
         // view.add("Move Right", new Key("ArrowRight"), () => this.gameobjects.screen.x -= 30)
         // view.add("Move Up", new Key("ArrowUp"), () => this.gameobjects.screen.y += 30)
@@ -507,9 +567,9 @@ Made by Zelo101. Last Updated: 30/06/2021`).render(this))
 
         file.render(0, 0, this);
         // edit.render(120, 0, this);
-        // view.render(120, 0, this);
-        run.render(120, 0, this);
-        help.render(240, 0, this);
+        view.render(120, 0, this);
+        run.render(240, 0, this);
+        help.render(360, 0, this);
 
         this.menubar.updateItemMap();
     }

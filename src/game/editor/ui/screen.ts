@@ -81,7 +81,7 @@ export class Screen {
     }
 
     getData(): number[][] {
-        const indexData = this.layer.culledTiles.map((tile) => tile.index)
+        const indexData = this.layer.getTilesWithin().map((tile) => tile.index)
         return chunkArray(indexData, this.map.width);
     }
 
