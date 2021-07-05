@@ -427,14 +427,12 @@ class editorScene extends Phaser.Scene {
         })
     }
 
-    exit(): void {
-        new Alert("Exit Editor", "Are you sure? Make sure you've saved before exiting!", "YESNO")
-            .render(this, (res) => {
-                if (res) {
-                    this.scene.start("saveScene");
-                    this.resetWindowChanges();
-                }
-            })
+    async exit(): Promise<void> {
+        new Alert("Exit Editor", "Are you sure? Make sure you've saved before exiting!", "YESNO").render(this)
+            .then(() => {
+                this.scene.start("saveScene");
+                this.resetWindowChanges();
+            }, () => {return})
     }
 
     resetWindowChanges(): void {
@@ -462,23 +460,26 @@ class editorScene extends Phaser.Scene {
         }
     }
 
-    changeLevels(num: number): boolean {
+    async changeLevels(num: number): Promise<boolean> {
         const sameLevel = (num === this.currentLevelNumber);
         const oldLevel = this.level.levels[this.currentLevelNumber];
         let newLevel = this.level.levels[num];
+        let continuing = false;
 
         if (newLevel !== undefined) {
             this.currentLevel = newLevel;
+            continuing = true;
         } else {
-            new Alert("Uncreated Level", "This level has not been created. Would you like to create it?", "YESNO")
-                .render(this, (res) => {
-                    if (res) {
-                        newLevel = this.createLevel();
-                        this.currentLevel = newLevel;
-                        this.numincs.background.value = 0;
-                    } else return false;
-                })
+            await new Alert("Uncreated Level", "This level has not been created. Would you like to create it?", "YESNO")
+                .render(this).then(() => {
+                    newLevel = this.createLevel();
+                    this.currentLevel = newLevel;
+                    this.numincs.background.value = 0;
+                    continuing = true;
+                }, () => { return false })
         }
+
+        if (!continuing) return false;
 
         // console.log("eee1", oldLevel.entities)
         // Pack entities
@@ -580,14 +581,17 @@ Made by Zelo101. Last Updated: 30/06/2021`).render(this))
             this.currentLevel.background = value;
         }, this.currentLevel.background);
 
-        const levelsSelect = new NumInc(10, 114, 0, 99, this, (value) => {
+        const levelsSelect = new NumInc(10, 114, 0, 99, this, async (value, oldvalue) => {
+            if (value === this.currentLevelNumber) return;
             // why?
             this.currentLevel.data = this.gameobjects.screen.getData();
             // this.currentLevel.entities = this.screenEntities;
 
             this.level.levels[this.currentLevelNumber] = this.currentLevel
             const success = this.changeLevels(value);
-            if (!success) this.numincs.level.value = this.currentLevelNumber;
+            success.then((res) => {
+                if (!res) this.numincs.level.value = oldvalue
+            })
             console.log(this.screenEntities)
         })
 

@@ -24,7 +24,7 @@ class Alert {
         this.closeable = closeable;
     }
 
-    render(scene: Phaser.Scene, result?: (res: boolean) => void): void {
+    async render(scene: Phaser.Scene): Promise<boolean> {
         const alert = scene.add.container(scene.scale.width / 2, scene.scale.height / 2);
         // Background
         alert.add(scene.add.rectangle(0, 0, 1e4, 1e4, 0x222222, 0.7).setInteractive())
@@ -47,38 +47,44 @@ class Alert {
         alert.add(title)
         alert.add(text)
         // Close
-        switch (this.closeable) {
-        case "FATAL":
-            break;
+        return new Promise((resolve, reject) => {
+            switch (this.closeable) {
+            case "FATAL":
+                resolve(true);
+                break;
 
-        case "OK":
-        default:
-            alert.add(scene.add.text(base.getBottomCenter().x, base.getBottomCenter().y - 35, "Close", AlertTextStyle)
-                .setInteractive()
-                .setOrigin(0.5, 0)
-                .on("pointerdown", () => alert.removeAll(true))
-            )
-            break;
-
-        case "YESNO":
-            alert.add([
-                scene.add.text(base.getBottomCenter().x - 65, base.getBottomCenter().y - 35, "Yes", AlertTextStyle)
+            case "OK":
+            default:
+                alert.add(scene.add.text(base.getBottomCenter().x, base.getBottomCenter().y - 35, "Close", AlertTextStyle)
                     .setInteractive()
                     .setOrigin(0.5, 0)
                     .on("pointerdown", () => {
                         alert.removeAll(true)
-                        if (result !== undefined) result(true)
-                    }),
-                scene.add.text(base.getBottomCenter().x + 65, base.getBottomCenter().y - 35, "No", AlertTextStyle)
-                    .setInteractive()
-                    .setOrigin(0.5, 0)
-                    .on("pointerdown", () => {
-                        alert.removeAll(true)
-                        if (result !== undefined) result(false)
+                        resolve(true);
                     })
-            ])
-            break;
-        }
+                )
+                break;
+
+            case "YESNO":
+                alert.add([
+                    scene.add.text(base.getBottomCenter().x - 65, base.getBottomCenter().y - 35, "Yes", AlertTextStyle)
+                        .setInteractive()
+                        .setOrigin(0.5, 0)
+                        .on("pointerdown", () => {
+                            alert.removeAll(true)
+                            resolve(true);
+                        }),
+                    scene.add.text(base.getBottomCenter().x + 65, base.getBottomCenter().y - 35, "No", AlertTextStyle)
+                        .setInteractive()
+                        .setOrigin(0.5, 0)
+                        .on("pointerdown", () => {
+                            alert.removeAll(true)
+                            reject(false);
+                        })
+                ])
+                break;
+            }
+        })
     }
 }
 
