@@ -1,4 +1,4 @@
-import { BaseButton, textStyle, titleStyle } from "../core/buttons";
+import { BaseButton, buttonStyle, miniButtonStyle, textStyle, titleStyle } from "../core/buttons";
 import { entityData } from "../core/jsonmodule";
 import { Entity, Level, LevelData } from "../core/levelstructure";
 import { s_getLocalStorage, s_addSave, s_push, VERSION_NUMBER, s_getCacheSave } from "../core/misc/dataidb";
@@ -32,6 +32,7 @@ class editorScene extends Phaser.Scene {
     level!: LevelData;
     currentLevel!: Level;
     currentLevelNumber!: number;
+    locked!: boolean
 
     menubar!: MenuBar;
     bottombar!: Bar;
@@ -41,6 +42,7 @@ class editorScene extends Phaser.Scene {
 
     gameobjects!: {
         levelpackName: Phaser.GameObjects.Text
+        levelName: Phaser.GameObjects.Text
         background: Phaser.GameObjects.Rectangle
         toolbarBackground: Phaser.GameObjects.Rectangle
 
@@ -48,6 +50,8 @@ class editorScene extends Phaser.Scene {
         entityContainer: Phaser.GameObjects.Container
         hoverContainer: Phaser.GameObjects.Container
         grid: Phaser.GameObjects.Grid
+
+        lockButton: Phaser.GameObjects.Text
 
         bookTalk: {
             book: Phaser.GameObjects.Image,
@@ -165,7 +169,6 @@ class editorScene extends Phaser.Scene {
         // this.tools.add(zoomTool);
         this.tools.selected = cursorTool;
 
-        eventResize();
         eventKeydown();
 
         // Init UI
@@ -173,13 +176,14 @@ class editorScene extends Phaser.Scene {
         this.gameobjects = {
             background: this.add.rectangle(0, 0, this.width, this.height, 0x333333).setOrigin(0, 0),
 
-            screen: new Screen(Math.floor((this.width / 3) - 400), 125, this),
+            screen: new Screen(Math.floor((this.width / 2) - 400), 125, this),
             hoverContainer: this.add.container(0, 0),
             grid: this.add.grid(0, 0, 960, 540, 30, 30)
                 .setOrigin(0, 0)
                 .setBlendMode(Phaser.BlendModes.ADD)
                 .setOutlineStyle(0x444444, 0.4)
                 .setAlpha(0),
+
             entityContainer: this.add.container(0, 0),
 
             toolbarBackground: this.add.rectangle(0, 0, this.width, 93, 0x777777, 64).setOrigin(0, 0),
@@ -196,15 +200,26 @@ class editorScene extends Phaser.Scene {
             },
 
             panel: {
-                background: this.add.rectangle(this.width - 250, 93, 250, this.height - 250 - 77, 0xffffff, 128)
+                background: this.add.rectangle(this.width - 250, 93, 250, this.height - 327, 0xffffff, 128)
                     .setOrigin(0, 0),
                 list: this.add.container(this.width - 250, 93)
             },
 
+            lockButton: this.add.text(14, this.height - 46, "Generate level", miniButtonStyle)
+                .setOrigin(0, 0)
+                .setVisible(false)
+                .setInteractive()
+                .on("pointerdown", () => {
+                    this.numincs.level.onChange(this.numincs.level.value, this.currentLevelNumber);
+                }),
+
             levelpackName: this.add.text(5, 3, "", textStyle)
-                .setFontSize(28)
+                .setFontSize(28),
+
+            levelName: this.add.text(0, 5, this.currentLevel.name, textStyle)
         }
 
+        this.locked = false
         this.gameobjects.screen.setBackground(this.currentLevel.background)
         this.gameobjects.screen.updateMapPos()
 
@@ -318,6 +333,14 @@ class editorScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number): void {
+        // Check for window resize
+        if (this.width !== window.innerWidth || this.height !== window.innerHeight) {
+            this.width = window.innerWidth;
+            this.height = window.innerHeight;
+            this.resizeUI();
+            this.game.scale.resize(Math.floor(this.width), Math.floor(this.height));
+        }
+
         if (this.controls !== undefined) this.controls.update(delta);
         this.updateUI()
         const activePointerBuffer = new Phaser.Math.Vector2();
@@ -333,8 +356,7 @@ class editorScene extends Phaser.Scene {
         screenPos.x = Math.min(screenPos.x, 31);
         screenPos.y = Math.min(screenPos.y, 17);
         const placeCoords = this.tools.selected.getCoords(screenPos, this.gameobjects.screen)
-
-        if (insideScreen) {
+        if (insideScreen && !this.locked) {
             this.gameobjects.bookTalk.text.setText(`${this.tools.selected.name}: [${Math.floor(blockPos.x + 1)}, ${Math.floor(blockPos.y + 1)}] (x ${Math.floor(screenPosCopy.x)}, y ${Math.floor(screenPosCopy.y)})`)
             this.renderHover(placeCoords);
 
@@ -460,26 +482,20 @@ class editorScene extends Phaser.Scene {
         }
     }
 
-    async changeLevels(num: number): Promise<boolean> {
+    changeLevels(num: number): boolean {
         const sameLevel = (num === this.currentLevelNumber);
         const oldLevel = this.level.levels[this.currentLevelNumber];
         let newLevel = this.level.levels[num];
-        let continuing = false;
 
         if (newLevel !== undefined) {
             this.currentLevel = newLevel;
-            continuing = true;
         } else {
-            await new Alert("Uncreated Level", "This level has not been created. Would you like to create it?", "YESNO")
-                .render(this).then(() => {
-                    newLevel = this.createLevel();
-                    this.currentLevel = newLevel;
-                    this.numincs.background.value = 0;
-                    continuing = true;
-                }, () => { return false })
+            if (confirm("This level has not been created. Would you like to create it?")) {
+                newLevel = this.createLevel();
+                this.currentLevel = newLevel;
+                this.numincs.background.value = 0;
+            } else return false;
         }
-
-        if (!continuing) return false;
 
         // console.log("eee1", oldLevel.entities)
         // Pack entities
@@ -515,6 +531,7 @@ class editorScene extends Phaser.Scene {
         this.currentLevelNumber = num;
         this.gameobjects.screen.setData(newLevel.data);
         this.numincs.background.value = newLevel.background;
+        this.gameobjects.levelName.setText(newLevel.name);
         this.renderEntities(this.screenEntities);
         this.renderEntityPanel();
         return true;
@@ -581,18 +598,13 @@ Made by Zelo101. Last Updated: 30/06/2021`).render(this))
             this.currentLevel.background = value;
         }, this.currentLevel.background);
 
-        const levelsSelect = new NumInc(10, 114, 0, 99, this, async (value, oldvalue) => {
-            if (value === this.currentLevelNumber) return;
-            // why?
+        const levelsSelect = new NumInc(10, 114, 0, 99, this, (value) => {
             this.currentLevel.data = this.gameobjects.screen.getData();
             // this.currentLevel.entities = this.screenEntities;
 
             this.level.levels[this.currentLevelNumber] = this.currentLevel
-            const success = this.changeLevels(value);
-            success.then((res) => {
-                if (!res) this.numincs.level.value = oldvalue
-            })
-            console.log(this.screenEntities)
+            const changed = this.changeLevels(value);
+            this.setLock(!changed);
         })
 
         this.numincs = {
@@ -637,12 +649,12 @@ Made by Zelo101. Last Updated: 30/06/2021`).render(this))
         })
 
         const nameContainer = this.add.container(660, 134);
-        const nameLabel = this.add.text(0, 5, this.currentLevel.name, textStyle);
+        this.gameobjects.levelName = this.add.text(0, 5, this.currentLevel.name, textStyle);
         nameContainer.add([
-            nameLabel,
+            this.gameobjects.levelName,
             new BaseButton(0, 35, "Change level name", this, () => {
                 this.currentLevel.name = prompt("Enter new level name") || this.currentLevel.name;
-                nameLabel.setText(this.currentLevel.name);
+                this.gameobjects.levelName.setText(this.currentLevel.name);
             }, true).gameObject
         ])
 
@@ -798,15 +810,18 @@ Made by Zelo101. Last Updated: 30/06/2021`).render(this))
         }
     }
 
-    addListeners(): void {
-        eventResize = () => window.addEventListener("resize", () => {
-            this.resizeUI();
-            this.width = window.innerWidth;
-            this.height = window.innerHeight;
-            this.game.scale.resize(Math.floor(this.width), Math.floor(this.height));
-            // console.log(width, height)
-        })
+    setLock(lock: boolean): void {
+        this.screenCamera.setVisible(!lock)
+        this.gameobjects.panel.background.setVisible(!lock)
+        this.gameobjects.panel.list.setVisible(!lock)
+        this.gameobjects.bookTalk.book.setVisible(!lock)
+        this.gameobjects.bookTalk.text.setVisible(!lock)
+        this.gameobjects.bookTalkBackground.white.setVisible(!lock)
+        this.gameobjects.lockButton.setVisible(lock)
+        this.locked = lock
+    }
 
+    addListeners(): void {
         eventKeydown = () => window.addEventListener("keydown", (event) => {
             this.key.change(event.code, event.ctrlKey, event.shiftKey, event.altKey)
             const item = this.menubar.itemMap.get(this.key.getName());

@@ -9,13 +9,13 @@ class NumInc {
     max: number
     public get value(): number {return this._value}
     public set value(v: number) {
+        this.onChange(v, this._value);
         this._value = v;
-        this.onChange(this._value);
         this._textObject.setText((this._value + 1).toString());
     }
-    onChange: (newValue: number) => void
+    onChange: (newValue: number, oldValue: number) => void
 
-    constructor(x: number, y: number, min: number, max: number, scene: Phaser.Scene, onChange: (newValue: number) => void, value = 0) {
+    constructor(x: number, y: number, min: number, max: number, scene: Phaser.Scene, onChange: NumInc["onChange"], value = 0) {
         this.min = min;
         this.max = max;
         this._value = value;
@@ -41,6 +41,12 @@ class NumInc {
         this._textObject = scene.add.text(70, 0, (this.value + 1).toString(), levelnameStyle)
             .setAlign("center");
         this.container.add(this._textObject)
+    }
+
+    setValueWithoutOnChange(newValue: number): void {
+        // for when you dont want the side-effect
+        this._value = newValue;
+        this._textObject.setText((this._value + 1).toString());
     }
 }
 
