@@ -328,7 +328,7 @@ class editorScene extends Phaser.Scene {
 
         this.numincs.level.value = this.currentLevelNumber;
 
-        // some werid issue about level data disappearing after running the level
+        // some werid issue about level data disappearing after testing the level
         // this.currentLevel.data = this.gameobjects.screen.getData();
     }
 
@@ -433,7 +433,7 @@ class editorScene extends Phaser.Scene {
         // console.log("s3", s_getCacheSave("volume"))
     }
 
-    runLevel(num: number): void {
+    testLevel(num: number): void {
         this.saveLevel();
 
         const modifiedLevel = this.level;
@@ -443,7 +443,7 @@ class editorScene extends Phaser.Scene {
 
         // Check for stuff
         if (modifiedLevel.levels[0].entities.find((entity) => entity.name === "Book") === undefined) {
-            new Alert("No Character", "You need at least one character in order to run this level.").render(this)
+            new Alert("No Character", "You need at least one character in order to test this level.").render(this)
             return
         }
 
@@ -576,10 +576,10 @@ class editorScene extends Phaser.Scene {
         // view.add("Move Right", new Key("ArrowRight"), () => this.gameobjects.screen.x -= 30)
         // view.add("Move Up", new Key("ArrowUp"), () => this.gameobjects.screen.y += 30)
         // view.add("Move Down", new Key("ArrowDown"), () => this.gameobjects.screen.y -= 30)
-        const run = new subMenuBar("Run", this, this.menubar);
-        this.menubar.add(run);
-        run.add("Run", new Key("Enter", true), () => this.runLevel(this.currentLevelNumber))
-        // run.add("Run From Level", new Key("Enter", true), () => this.runLevel(this.currentLevelNumber))
+        const test = new subMenuBar("Test", this, this.menubar);
+        this.menubar.add(test);
+        test.add("Test Level", new Key("Enter", true), () => this.testLevel(this.currentLevelNumber))
+        // test.add("Test From Level", new Key("Enter", true), () => this.testLevel(this.currentLevelNumber))
         const help = new subMenuBar("Help", this, this.menubar);
         this.menubar.add(help);
         help.add("About", new Key("empty"), () => new Alert("5bHTML-edit", `5bHTML-edit is a complete level editor made with the sole purpose of making 5bHTML levels.
@@ -594,7 +594,7 @@ Made by Zelo101. Last Updated: 30/06/2021`).render(this))
         file.render(0, 0, this);
         // edit.render(120, 0, this);
         view.render(120, 0, this);
-        run.render(240, 0, this);
+        test.render(240, 0, this);
         help.render(360, 0, this);
 
         this.menubar.updateItemMap();
