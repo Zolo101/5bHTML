@@ -52,6 +52,7 @@ class editorScene extends Phaser.Scene {
         grid: Phaser.GameObjects.Grid
 
         lockButton: Phaser.GameObjects.Text
+        saveText: Phaser.GameObjects.Text
 
         bookTalk: {
             book: Phaser.GameObjects.Image,
@@ -212,6 +213,13 @@ class editorScene extends Phaser.Scene {
                 .on("pointerdown", () => {
                     this.numincs.level.onChange(this.numincs.level.value, this.currentLevelNumber);
                 }),
+
+            saveText: this.add.text(this.width - 210, 15, "Saved!", textStyle)
+                .setFontStyle("BOLD")
+                .setFontSize(48)
+                .setBackgroundColor("#00aa00")
+                .setPadding(4)
+                .setAlpha(0),
 
             levelpackName: this.add.text(5, 3, "", textStyle)
                 .setFontSize(28),
@@ -430,6 +438,16 @@ class editorScene extends Phaser.Scene {
         }
         s_addSave(this.level)
         s_push()
+
+        // Tell user that the level has been saved
+        this.tweens.add({
+            targets: this.gameobjects.saveText,
+            duration: 3000,
+            yoyo: true,
+            ease: "Cubic.easeOut",
+            alpha: 1
+        })
+        // this.gameobjects.bookTalkBackground.white
         // console.log("s3", s_getCacheSave("volume"))
     }
 
