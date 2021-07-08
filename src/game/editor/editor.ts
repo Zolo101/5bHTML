@@ -435,11 +435,19 @@ class editorScene extends Phaser.Scene {
 
     runLevel(num: number): void {
         this.saveLevel();
-        this.resetWindowChanges();
+
         const modifiedLevel = this.level;
         console.log("bruh", modifiedLevel.levels, num, modifiedLevel.levels[num])
         // Get only the current level
         modifiedLevel.levels = [modifiedLevel.levels[num]];
+
+        // Check for stuff
+        if (modifiedLevel.levels[0].entities.find((entity) => entity.name === "Book") === undefined) {
+            new Alert("No Character", "You need at least one character in order to run this level.").render(this)
+            return
+        }
+
+        this.resetWindowChanges();
         this.scene.start("gameScene", {
             from: this,
             levelfile: modifiedLevel,
