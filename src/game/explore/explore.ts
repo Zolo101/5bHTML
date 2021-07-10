@@ -1,10 +1,11 @@
 import { textStyle, backStyle, levelnameStyle, titleStyle } from "../core/buttons";
 import { APIData, APIResponse, c_addSaves, c_clear, c_clearEverything, c_getLocalStorage, c_push, c_saves } from "../core/misc/dataidb";
+import { truncate } from "../core/misc/other";
+import Alert from "../editor/ui/alert";
 import NumInc from "../editor/ui/numinc";
 import { Screen } from "../editor/ui/screen";
+import { EXPLORE_SEVRER_URL } from "../settingsgame";
 
-const SERVER_NAME = "https://5beam.zelo.dev";
-// const SERVER_NAME = "http://localhost:3000";
 const levelelements: LevelItem[] = [];
 let epochtimetext: Phaser.GameObjects.Text;
 let infoText: Phaser.GameObjects.Text;
@@ -66,7 +67,7 @@ class LevelItem {
         );
         // TITLE
         this.tile.add(
-            new Phaser.GameObjects.Text(scene, x + 4, y + 125, meta.name, textStyle)
+            new Phaser.GameObjects.Text(scene, x + 4, y + 125, truncate(meta.name, 26), textStyle)
                 .setFontStyle("bold")
         );
         // AUTHOR
@@ -136,35 +137,34 @@ class exploreScene extends Phaser.Scene {
         //     620, 50, "OLDEST", exploreButtonStyle,
         // );
 
-        // const refreshbutton = this.add.text(
-        //     30, 475, "REFRESH", helpButtonStyle,
-        // ).setInteractive();
+        const refreshbutton = this.add.text(
+            30, 475, "REFRESH", helpButtonStyle,
+        ).setInteractive();
 
-        // refreshbutton.on("pointerdown", () => {
-        //     c_clearEverything();
-        //     this.refreshPage();
-        // });
+        refreshbutton.on("pointerdown", () => {
+            c_clearEverything();
+            this.refreshPage();
+        });
 
 
         infoText = this.add.text(30, 40, "", levelnameStyle);
-        infoText.setText("Online levels are disabled due to issues with servers.\nCheck back soon!")
 
-        // new NumInc(370, 475, 0, 999, this, (value) => {
-        //     this.page = value;
-        //     this.renderPage();
-        // })
+        new NumInc(370, 475, 0, 999, this, (value) => {
+            this.page = value;
+            this.renderPage();
+        })
 
-        // // gets all the levels from the localstorage
-        // c_getLocalStorage();
+        // gets all the levels from the localstorage
+        c_getLocalStorage();
 
-        // // has it been 30 MINUTES since the last refresh?
-        // if (Date.now() > c_saves.time + (1000 * 60 * 30) && c_saves.data.has(this.page)) {
-        //     this.refreshPage();
-        // } else {
-        //     console.log("Using Cache")
-        //     this.levels = c_saves.data;
-        //     this.renderPage()
-        // }
+        // has it been 30 MINUTES since the last refresh?
+        if (Date.now() > c_saves.time + (1000 * 60 * 30) && c_saves.data.has(this.page)) {
+            this.refreshPage();
+        } else {
+            console.log("Using Cache")
+            this.levels = c_saves.data;
+            this.renderPage()
+        }
 
     }
 
@@ -193,7 +193,7 @@ class exploreScene extends Phaser.Scene {
             c_addSaves(this.page, pageResponse.data);
             c_push();
         } catch (error) {
-            infoText.setText(`Error while fetching:\n${error}`)
+            await new Alert("Unable to download levelpack", `Failed to download levelpacks from the 5beam database.\n\nError Info:\n${error}`).render(this)
             console.error(error)
         }
         console.log("Using API")
@@ -233,26 +233,26 @@ class exploreScene extends Phaser.Scene {
 }
 
 async function getAPIRequest(url: string): Promise<APIResponse> {
-    infoText.setText("Fetching data...")
+    infoText.setText("Downloading...")
     const response = await fetch(url)
     infoText.setText("")
     return await response.json()
 }
 
 async function fetchAllLevels(): Promise<APIResponse> {
-    return await getAPIRequest(`${SERVER_NAME}/api/all`)
+    return await getAPIRequest(`${EXPLORE_SEVRER_URL}/api/all`)
 }
 
 async function fetchPage(number: number): Promise<APIResponse> {
-    return await getAPIRequest(`${SERVER_NAME}/api/level/page/${number}`)
+    return await getAPIRequest(`${EXPLORE_SEVRER_URL}/api/level/page/${number}`)
 }
 
 async function fetchLevel(id: number): Promise<APIResponse> {
-    return await getAPIRequest(`${SERVER_NAME}/api/level/${id}`)
+    return await getAPIRequest(`${EXPLORE_SEVRER_URL}/api/level/${id}`)
 }
 
 async function fetchLevelData(id: number): Promise<APIResponse> {
-    return await getAPIRequest(`${SERVER_NAME}/api/level/get/${id}`)
+    return await getAPIRequest(`${EXPLORE_SEVRER_URL}/api/level/get/${id}`)
 }
 
 export default exploreScene;

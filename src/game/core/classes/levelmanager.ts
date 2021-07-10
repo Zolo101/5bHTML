@@ -20,6 +20,10 @@ export class LevelManager {
 
     levels: LevelData
 
+    // stop player from going past certain level
+    hardlimitlevel: number;
+    finishedLevelpack: boolean;
+
     // shouldnt need to repeat this
     blocks: BlockObjectType
     scene: Phaser.Scene
@@ -42,9 +46,6 @@ export class LevelManager {
 
     backScene!: string
 
-    // stop player from going past certain level
-    hardlimitlevel = 5;
-
     constructor(
         levels: LevelData,
         blocks: BlockObjectType,
@@ -58,6 +59,7 @@ export class LevelManager {
         this.levels = levels;
 
         this.hardlimitlevel = this.levels.levels.length;
+        this.finishedLevelpack = false;
 
         this.blocks = blocks; // i dont like this
         this.scene = scene;
@@ -206,7 +208,7 @@ export class LevelManager {
         // Character with Sprite collision
         this.scene.physics.add.collider(this.characters, this.sprites, undefined, (sp1) => {
             // console.log(sp1.body.velocity.y)
-            return (sp1.body.velocity.y > 84) ? true : false
+            return (sp1.body.velocity.y > 84)
         });
 
         // Collide with self

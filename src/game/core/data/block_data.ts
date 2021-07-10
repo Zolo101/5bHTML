@@ -1,3 +1,4 @@
+import Alert from "../../editor/ui/alert";
 import { Block } from "../classes/block";
 
 export type BlockObjectType = {
@@ -7,10 +8,10 @@ export type BlockObjectType = {
     specialIndexes: number[],
 }
 export const BlockObject: BlockObjectType = {
-    map: new Map<number, Block>(),
-    collisionIndexes: [] as number[],
-    killIndexes: [] as number[],
-    specialIndexes: [] as number[],
+    map: new Map(),
+    collisionIndexes: [],
+    killIndexes: [],
+    specialIndexes: [],
 }
 
 // in order of appearance
@@ -21,9 +22,25 @@ BlockObject.map.set(2, new Block(2, false, true, false, true, false) // Finish b
     .setOffset(30, 0)
     .setTextureName("finish")
     .setCollisionCallback((lm) => {
-        if ((lm.levelnumber + 1 < lm.hardlimitlevel) && lm.currentcharacter.active) {
-            lm.levelnumber += 1;
-            lm.setLevel(lm.levelnumber + 1);
+        if (lm.currentcharacter.active) {
+            if (lm.levelnumber + 1 === lm.hardlimitlevel && lm.backScene === "explorelevelScene" && !lm.finishedLevelpack) {
+                lm.finishedLevelpack = true
+                // const fade = lm.scene.add.rectangle(0, 0, 960, 540, 0xffffff, 0)
+                //     .setBlendMode(Phaser.BlendModes.MULTIPLY)
+                //     .setOrigin(0, 0)
+                // lm.scene.tweens.add({
+                //     targets: fade,
+                //     duration: 2000,
+                //     alpha: 1
+                // })
+                new Alert("Levelpack complete!", "Congrats on finishing this levelpack!").render(lm.scene)
+                    .then(() => lm.scene.scene.start(lm.backScene, lm.levels))
+                return
+            }
+            if (lm.levelnumber + 1 < lm.hardlimitlevel) {
+                lm.levelnumber += 1;
+                lm.setLevel(lm.levelnumber + 1);
+            }
         }
     })
 )

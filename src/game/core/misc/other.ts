@@ -36,4 +36,12 @@ export function chunkArray<T>(arr: T[], size: number): T[][] {
     return resultData;
 }
 
+export function truncate(str: string, max: number): string {
+    if (str.length > max) {
+        return `${str.substring(0, max).trimEnd()}...`
+    } else {
+        return str
+    }
+}
+
 export default openExternalLink;
