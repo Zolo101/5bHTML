@@ -44,4 +44,29 @@ export function truncate(str: string, max: number): string {
     }
 }
 
+export function downloadFile(data: unknown): void {
+    const blobedData = new Blob([JSON.stringify(data)], {type: "application/json"})
+    const blobURL = window.URL.createObjectURL(blobedData)
+    const a = document.createElement("a")
+    a.href = blobURL;
+    a.download = "5bhtml-levelpack.json"
+    a.click()
+    window.URL.revokeObjectURL(blobURL)
+    a.remove()
+}
+
+export function uploadFile(): Promise<FileList | null> {
+    const input = document.createElement("input")
+    input.type = "file"
+    input.accept = "application/json"
+    input.multiple = false;
+    input.click()
+    return new Promise((res) => {
+        input.addEventListener("change", () => {
+            res(input.files)
+            input.remove()
+        })
+    })
+}
+
 export default openExternalLink;

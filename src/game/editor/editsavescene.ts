@@ -28,7 +28,7 @@ class editsaveScene extends Phaser.Scene {
         new BaseButton(80, 260, "Clone", this, () => {
             const newName = prompt("What name should the new clone be called?") ?? "nil";
             if (newName !== "nil" && s_saves.has(newName)) {
-                new Alert("Name in use", "There is already a save with the same name!").render(this)
+                new Alert("Name in use", "There is already a save with that name!").render(this)
             } else {
                 // Serialisation be like
                 const newSave = JSON.parse(JSON.stringify(this.save)) as LevelData;
@@ -43,7 +43,7 @@ class editsaveScene extends Phaser.Scene {
             this.uploadSave().then(() => {
                 new Alert("Upload Successful", "Your levelpack has been successfully uploaded!").render(this)
             }).catch((err) => {
-                new Alert("Upload Failed", `Your levelpack upload has failed. Error message: '${err}'`).render(this)
+                new Alert("Upload Failed", `Your levelpack upload has failed.\nError message: '${err}'`).render(this)
             })
         })
         new BaseButton(80, 420, "Delete", this, () => {
