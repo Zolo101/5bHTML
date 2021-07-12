@@ -120,7 +120,7 @@ class editorScene extends Phaser.Scene {
                             name: "Book",
                             type: "Character",
                             x: 105,
-                            y: 0,
+                            y: 105,
                         }
                     ],
                     background: 0
@@ -137,17 +137,6 @@ class editorScene extends Phaser.Scene {
 
         // Add Keybind Listeners
         this.addListeners();
-
-        // this.input.on("wheel", (pointer: never, gameObject: never, deltaX: number, deltaY: number) => {
-        // console.log(this.key)
-        // if (this.key.shift) {
-        // this.gameobjects.screen.x += deltaY * 0.2;
-        // } else if (this.key.crtl) {
-        // this.gameobjects.screen.zoom += -Math.sign(deltaY) / 10;
-        // } else {
-        // this.gameobjects.screen.y -= deltaY * 0.2;
-        // }
-        // })
 
         this.menubar = new MenuBar("Main");
         this.bottombar = new Bar("Bottom");
@@ -173,7 +162,6 @@ class editorScene extends Phaser.Scene {
         eventKeydown();
 
         // Init UI
-
         this.gameobjects = {
             background: this.add.rectangle(0, 0, this.width, this.height, 0x333333).setOrigin(0, 0),
 
@@ -255,6 +243,7 @@ class editorScene extends Phaser.Scene {
             // this.gameobjects.levelpackName,
         ])
         this.screenCamera = this.cameras.add(0, 93, this.gameobjects.panel.list.x, this.gameobjects.bookTalkBackground.white.y - 93)
+        this.screenCamera.setZoom(Math.min(this.width, this.height) / (30 * 30))
         this.screenCamera.setBounds(this.gameobjects.screen.x, this.gameobjects.screen.y, 960, 540, true)
         this.screenCamera.ignore([
             this.gameobjects.background,
@@ -320,25 +309,9 @@ class editorScene extends Phaser.Scene {
         this.setupBottomBar();
         this.bottombar.render(10, 800, this);
 
-
         this.screenEntities = [];
-        // const book = this.level.levels[0].entities[0];
-        // this.screenEntities.push({
-        //     ID: this.screenEntities.length,
-        //     name: book.name,
-        //     type: book.type,
-        //     x: book.x,
-        //     y: book.y,
-
-        //     controllable: book.controllable,
-        //     visible: true,
-        //     locked: false
-        // })
 
         this.numincs.level.value = this.currentLevelNumber;
-
-        // some werid issue about level data disappearing after testing the level
-        // this.currentLevel.data = this.gameobjects.screen.getData();
     }
 
     update(time: number, delta: number): void {
@@ -395,8 +368,8 @@ class editorScene extends Phaser.Scene {
         this.gameobjects.toolbarBackground.setDisplaySize(this.width, 93);
 
         // console.log(this.gameobjects.background.width, this.width)
-        if (oldSize.width !== this.width) this.gameobjects.screen.x -= (oldSize.width - this.width) / 2;
-        if (oldSize.height !== this.height) this.gameobjects.screen.y -= (oldSize.height - this.height) / 3;
+        // if (oldSize.width !== this.width) this.screenCamera.x -= (oldSize.width - this.width) / 2;
+        // if (oldSize.height !== this.height) this.screenCamera.y -= (oldSize.height - this.height) / 3;
         this.gameobjects.screen.updateMapPos();
 
         this.gameobjects.bookTalk.book.setY(this.height - 222);
