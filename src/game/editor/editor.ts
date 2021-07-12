@@ -177,7 +177,8 @@ class editorScene extends Phaser.Scene {
         this.gameobjects = {
             background: this.add.rectangle(0, 0, this.width, this.height, 0x333333).setOrigin(0, 0),
 
-            screen: new Screen(Math.floor((this.width / 2) - 400), 125, this),
+            // screen: new Screen(Math.floor((this.width / 2) - 400), 125, this),
+            screen: new Screen(0, 93, this),
             hoverContainer: this.add.container(0, 0),
             grid: this.add.grid(0, 0, 960, 540, 30, 30)
                 .setOrigin(0, 0)
@@ -476,7 +477,7 @@ class editorScene extends Phaser.Scene {
     }
 
     async exit(): Promise<void> {
-        new Alert("Exit Editor", "Are you sure? Make sure you've saved before exiting!", "YESNO").render(this)
+        await new Alert("Exit Editor", "Are you sure? Make sure you've saved before exiting!", "YESNO").render(this)
             .then(() => {
                 this.scene.start("saveScene");
                 this.resetWindowChanges();
@@ -602,12 +603,12 @@ class editorScene extends Phaser.Scene {
         this.menubar.add(help);
         help.add("About", new Key("empty"), () => new Alert("5bHTML-edit", `5bHTML-edit is a complete level editor made with the sole purpose of making 5bHTML levels.
 
-To move the level screen, use arrow keys.
+To move the level screen, use arrow keys. To zoom, use Q and E.
 
 
 
 
-Made by Zelo101. Last Updated: 30/06/2021`).render(this))
+Made by Zelo101. Last Updated: 11/07/2021`).render(this))
 
         file.render(0, 0, this);
         // edit.render(120, 0, this);
@@ -640,7 +641,7 @@ Made by Zelo101. Last Updated: 30/06/2021`).render(this))
 
         const createEntity = (name: string, type: Entity["type"]) => {
             this.screenEntities.push({
-                ID: this.screenEntities.length,
+                ID: this.screenEntities[this.screenEntities.length - 1].ID + 1,
                 visible: true,
                 locked: false,
                 name: name,
@@ -732,7 +733,7 @@ Made by Zelo101. Last Updated: 30/06/2021`).render(this))
                 this.add.container(0, (31 * i), [
                     this.add.rectangle(0, 0, 250, 30, 0xeeeeee)
                         .setOrigin(0, 0),
-                    this.add.text(5, 5, entity.name, textStyle)
+                    this.add.text(5, 5, `${entity.name} (${entity.ID})`, textStyle)
                         .setColor("#000")
                         .setWordWrapWidth(225),
                     this.add.text(220, 2, "✕", textStyle)
@@ -811,25 +812,35 @@ Made by Zelo101. Last Updated: 30/06/2021`).render(this))
 
         for (const entity of entities) {
             const spritedata = entityData.get(entity.name.toLowerCase())?.size ?? { x: 64, y: 64 };
+            console.log(spritedata)
             const container = this.add.container(entity.x,  entity.y)
             container.add([
                 this.add.image(0, 0, entity.name.toLowerCase())
                     .setOrigin(0, 0)
                     .setDisplaySize(spritedata.x, spritedata.y)
-                    .setScale(entity.type === "Character" ? 0.20 : 0.45)
                     .setAlpha(0.85)
                     .setInteractive({
                         pixelPerfect: true,
                         draggable: true
                     })
-                    .on("drag", (pointer: any, dragX: number, dragY: number) => {
+                    .on("drag", () => {
                         if (this.tools.selected.name === "Cursor") {
-                            container.x = pointer.downX + dragX - this.gameobjects.screen.x;
-                            container.y = pointer.downY + dragY - this.gameobjects.screen.y;
-                            entities[entity.ID].x = container.x;
-                            entities[entity.ID].y = container.y;
+                            const activePointerBuffer = new Phaser.Math.Vector2();
+                            this.input.activePointer.positionToCamera(this.screenCamera, activePointerBuffer)
+                            container.x = activePointerBuffer.x - this.gameobjects.screen.background.x;
+                            container.y = activePointerBuffer.y - this.gameobjects.screen.background.y;
+                            entity.x = container.x;
+                            entity.y = container.y;
                         }
                     }),
+                this.add.rectangle(0, 0, spritedata.x, spritedata.y, 0xcffc03, 0.1)
+                    .setOrigin(0, 0)
+                    .setStrokeStyle(2, 0xcffc03, 0.55)
+                    .setDisplaySize(spritedata.x, spritedata.y),
+                this.add.text(1, -15, `${entity.name} (${entity.ID})`, textStyle)
+                    .setColor("#cffc03")
+                    .setFontSize(60)
+                    .setScale(0.2)
             ])
 
             this.gameobjects.entityContainer.add(container);

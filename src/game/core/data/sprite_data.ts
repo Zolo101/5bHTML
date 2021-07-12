@@ -6,8 +6,8 @@ spritedata.set("book", {
     type: "character",
     friction: 2.8,
     size: {
-        x: 128,
-        y: 128
+        x: 55.42,
+        y: 62.22
     }
 })
 
@@ -34,8 +34,8 @@ spritedata.set("crate", {
     type: "sprite",
     mass: 5,
     size: {
-        x: 128,
-        y: 128
+        x: 42,
+        y: 42
     }
 })
 
@@ -44,8 +44,8 @@ spritedata.set("metal", {
     type: "sprite",
     mass: 6.5,
     size: {
-        x: 128,
-        y: 128
+        x: 53,
+        y: 53
     }
 })
 
@@ -54,8 +54,18 @@ spritedata.set("parcel", {
     type: "sprite",
     mass: 4,
     size: {
-        x: 256,
-        y: 128
+        x: 56,
+        y: 33
+    }
+})
+
+spritedata.set("finish", {
+    name: "finish",
+    type: "sprite",
+    mass: -1,
+    size: {
+        x: 62,
+        y: 121
     }
 })
 
