@@ -38,8 +38,8 @@ class NumInc {
                 })
         ])
 
-        this._textObject = scene.add.text(70, 0, (this.value + 1).toString(), levelnameStyle)
-            .setAlign("center");
+        this._textObject = scene.add.text(80, 0, (this.value + 1).toString(), levelnameStyle)
+            .setOrigin(0.5, 0);
         this.container.add(this._textObject)
     }
 
