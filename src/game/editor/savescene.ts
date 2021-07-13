@@ -2,6 +2,7 @@ import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
 import s_saves, { s_addSave, s_getCacheAll, s_getLocalStorage, s_push } from "../core/misc/dataidb";
 import { downloadFile, uploadFile } from "../core/misc/other";
+import validateLevelpack from "../core/misc/validate";
 import Alert from "./ui/alert";
 import NumInc from "./ui/numinc";
 import { Screen } from "./ui/screen";
@@ -46,7 +47,7 @@ class saveScene extends Phaser.Scene {
             let valid = true
             for (const levelpack of importFilesJSON) {
                 // once the function returns false, valid will always be false
-                valid &&= this.validateLevelpack(levelpack)
+                valid &&= validateLevelpack(levelpack)
             }
             if (valid) {
                 const levelpacksNames = importFilesJSON.map((levelpack) => levelpack.name).join("\n")
@@ -95,9 +96,10 @@ class saveScene extends Phaser.Scene {
         const offset = 6 * this.page;
         for (let i = 0; i < Math.min(6, saves.length - offset); i++) {
             const save = saves[offset + i];
+            const valid = validateLevelpack(save);
 
             this.pagecontainer.add(this.add.container(0, 60 * (i + 1), [
-                this.add.rectangle(300, 0, 600, 40, 0xaaaaaa)
+                this.add.rectangle(300, 0, 600, 40, valid ? 0xaaaaaa : 0xff7621)
                     .setInteractive()
                     .on("pointerdown", () => this.scene.start("editsaveScene", save))
                     .on("pointerover", () => {
@@ -115,40 +117,16 @@ class saveScene extends Phaser.Scene {
                 // Structure version
                 this.add.text(450, -5, `Structure version: ${save.struct_version}`, textStyle)
             ]));
-        }
-    }
 
-    validateLevelpack(levelpack: LevelData): boolean {
-        if (levelpack.author === undefined) return false;
-        if (levelpack.description === undefined) return false;
-        if (levelpack.level_version === undefined) return false;
-        if (!Array.isArray(levelpack.levels)) return false;
-        if (levelpack.name === undefined) return false;
-        if (!Number.isInteger(levelpack.struct_version)) return false;
-
-        for (const level of levelpack.levels) {
-            if (!Number.isInteger(level.background)) return false;
-            if (!Array.isArray(level.data)) return false;
-            if (!Array.isArray(level.entities)) return false;
-            if (!Number.isInteger(level.height)) return false;
-            if (level.name === undefined) return false;
-            if (!Number.isInteger(level.width)) return false;
-
-            for (const dataLine of level.data) {
-                if (!Array.isArray(dataLine)) return false;
-                for (const number of dataLine) {
-                    if (!Number.isInteger(number)) return false;
-                }
-            }
-
-            for (const entity of level.entities) {
-                if (entity.name === undefined) return false;
-                if (entity.type !== "Character" && entity.type !== "Entity") return false;
-                if (Number.isNaN(entity.x)) return false;
-                if (Number.isNaN(entity.y)) return false;
+            if (!valid) {
+                this.pagecontainer.add([
+                    this.add.text(325, (60 * (i + 1)) - 15, "Invalid", textStyle)
+                        .setColor("#ffcccc")
+                        .setFontSize(28)
+                        .setFontStyle("BOLD")
+                ])
             }
         }
-        return true;
     }
 }
 

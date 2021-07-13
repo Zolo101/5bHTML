@@ -148,6 +148,7 @@ class exploreScene extends Phaser.Scene {
 
 
         infoText = this.add.text(30, 40, "", levelnameStyle);
+        infoText.setText("Downloading...")
 
         new NumInc(370, 475, 0, 999, this, (value) => {
             this.page = value;
@@ -180,6 +181,7 @@ class exploreScene extends Phaser.Scene {
         this.refreshing = true;
 
         try {
+            infoText.setText("Downloading...")
             const pageResponse = await fetchPage(this.page);
             if (pageResponse.status !== "success") throw pageResponse.status
             for (const level of pageResponse.data) {
@@ -193,12 +195,13 @@ class exploreScene extends Phaser.Scene {
             c_addSaves(this.page, pageResponse.data);
             c_push();
         } catch (error) {
-            await new Alert("Unable to download levelpack", `Failed to download levelpacks from the 5beam database.\n\nError Info:\n${error}`).render(this)
+            await new Alert("Unable to access 5beam", `Failed to download levelpacks from the 5beam database.\n\nError Info:\n${error}`).render(this)
             console.error(error)
         }
         console.log("Using API")
 
         this.refreshing = false;
+        infoText.setText("")
         this.renderPage();
     }
 

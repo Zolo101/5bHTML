@@ -1,6 +1,7 @@
 import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
 import { s_addSave, s_push, s_removeSave, s_saves } from "../core/misc/dataidb";
+import validateLevelpack from "../core/misc/validate";
 import { EXPLORE_SEVRER_URL } from "../settingsgame";
 import Alert from "./ui/alert";
 import { Screen } from "./ui/screen";
@@ -19,6 +20,7 @@ class editsaveScene extends Phaser.Scene {
         // this.scene.start("editorScene")
         this.add.rectangle(0, 0, 960, 540, 0x334433).setOrigin(0, 0);
         this.add.text(20, 10, this.save.name, titleStyle).setFontStyle("bold")
+        const validSave = validateLevelpack(this.save)
 
         new BaseButton(80, 100, "Play", this, () => this.scene.start("gameScene", {
             from: this,
@@ -39,6 +41,10 @@ class editsaveScene extends Phaser.Scene {
         })
         new BaseButton(80, 340, "Upload", this, async () => {
             console.log("Upload attempt:", this.save)
+            if (!validSave) {
+                new Alert("Disabled", "Uploading is disabled for invalid / corrupted levelpacks.").render(this)
+                return
+            }
             // new Alert("Uploading is temporarily disabled", "Uploading is disabled due to issues with servers.\nCheck back soon!").render(this)
             this.uploadSave().then(() => {
                 new Alert("Upload Successful", "Your levelpack has been successfully uploaded!").render(this)
@@ -75,6 +81,14 @@ class editsaveScene extends Phaser.Scene {
         backButton.on("pointerdown", () => {
             this.scene.start("saveScene");
         });
+
+        if (!validSave) {
+            this.add.text(10, 500, "INVALID", textStyle)
+                .setColor("#ff0000")
+                .setFontSize(28)
+                .setFontStyle("BOLD")
+            new Alert("Invalid Levelpack", "This save is invalid / corrupted, meaning that it cannot be uploaded, and you may get crashes while playing or editing.").render(this)
+        }
     }
 
     async uploadSave(): Promise<void> {
