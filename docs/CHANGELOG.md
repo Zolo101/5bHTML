@@ -3,9 +3,38 @@ Emoji | meaning
 🟦| Latest *"Stable"* version
 🟥| Latest Dev version, these versions are hosted on [the dev site](https://5bdev.zelo.dev/).
 
+# v4.1 Alpha 🟦 -- 13/07/2021
 
-# v4 Alpha 🟦 -- 30/06/2021
-### Note: Online levels are disabled due to issues with servers. Check the discord server for updates on this.
+## Main changes
+
+- Re-enabled online levelpacks.
+
+- 5bHTML is on MIT License.
+
+- You can now export and import your levelpack library.
+
+- "Invalid" Levelpacks. If 5bHTML thinks a levelpack is invalid or corrupted, it will warn you about it, and you wont be able to upload the levelpack to the 5beam database.
+
+## Editor changes
+
+- You can now zoom and move around in the level editor.
+
+- The editor will now show you what entities are what.
+
+- The editor will tell you when a levelpack has been saved.
+
+- The `Run` tab has been renamed to `Test`.
+
+## Other changes
+
+- The game will congratulate you upon beating an online levelpack.
+
+- The game restarts are more 5b-like.
+
+- Fixed issues [#26](https://github.com/Zolo101/5bHTML/issues/26), [#27](https://github.com/Zolo101/5bHTML/issues/27), [#28](https://github.com/Zolo101/5bHTML/issues/28)
+
+# v4 Alpha -- 30/06/2021
+### Note: This version had online levels disabled due to issues with servers. This is no longer the case in v4.1 Alpha.
 ## Major changes
 
 - **Level Editor! Create, Test, Share and Play your own custom levels!**
@@ -82,7 +111,7 @@ Emoji | meaning
 
 ## Minor changes
 
-- Changed `WATCH BFDIA 5a` button to `WATCH BFDIA 5A.
+- Changed `WATCH BFDIA 5a` button to `WATCH BFDIA 5A`.
 
 - The Level Select screen now has a background similar to 5b.
 
