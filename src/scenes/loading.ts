@@ -36,6 +36,7 @@ class loadingScene extends Phaser.Scene {
         this.loadAsset("5b_people", "5b_people.svg", "svg");
 
         this.loadAsset("core_tileset", "tileset.png");
+        this.loadAsset("outline_tileset", "outline_tileset.png");
 
         this.loadAsset("background_0", "backgrounds/0.png");
         this.loadAsset("background_1", "backgrounds/1.png");
@@ -85,15 +86,15 @@ class loadingScene extends Phaser.Scene {
 
     loadAsset(key: string, url: string, type?: string): void {
         switch (type) {
-        case "svg":
-            this.load.svg(key, url);
-            this.addAssetLine(url);
-            break;
+            case "svg":
+                this.load.svg(key, url);
+                this.addAssetLine(url);
+                break;
 
-        default:
-        case "png":
-            this.load.image(key, url);
-            this.addAssetLine(url);
+            default:
+            case "png":
+                this.load.image(key, url);
+                this.addAssetLine(url);
         }
     }
 

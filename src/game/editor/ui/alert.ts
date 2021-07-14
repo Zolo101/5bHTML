@@ -49,40 +49,40 @@ class Alert {
         // Close
         return new Promise((resolve, reject) => {
             switch (this.closeable) {
-            case "FATAL":
-                resolve(true);
-                break;
+                case "FATAL":
+                    resolve(true);
+                    break;
 
-            case "OK":
-            default:
-                alert.add(scene.add.text(base.getBottomCenter().x, base.getBottomCenter().y - 35, "Close", AlertTextStyle)
-                    .setInteractive()
-                    .setOrigin(0.5, 0)
-                    .on("pointerdown", () => {
-                        alert.removeAll(true)
-                        resolve(true);
-                    })
-                )
-                break;
-
-            case "YESNO":
-                alert.add([
-                    scene.add.text(base.getBottomCenter().x - 65, base.getBottomCenter().y - 35, "Yes", AlertTextStyle)
+                case "OK":
+                default:
+                    alert.add(scene.add.text(base.getBottomCenter().x, base.getBottomCenter().y - 35, "Close", AlertTextStyle)
                         .setInteractive()
                         .setOrigin(0.5, 0)
                         .on("pointerdown", () => {
                             alert.removeAll(true)
                             resolve(true);
-                        }),
-                    scene.add.text(base.getBottomCenter().x + 65, base.getBottomCenter().y - 35, "No", AlertTextStyle)
-                        .setInteractive()
-                        .setOrigin(0.5, 0)
-                        .on("pointerdown", () => {
-                            alert.removeAll(true)
-                            reject(false);
                         })
-                ])
-                break;
+                    )
+                    break;
+
+                case "YESNO":
+                    alert.add([
+                        scene.add.text(base.getBottomCenter().x - 65, base.getBottomCenter().y - 35, "Yes", AlertTextStyle)
+                            .setInteractive()
+                            .setOrigin(0.5, 0)
+                            .on("pointerdown", () => {
+                                alert.removeAll(true)
+                                resolve(true);
+                            }),
+                        scene.add.text(base.getBottomCenter().x + 65, base.getBottomCenter().y - 35, "No", AlertTextStyle)
+                            .setInteractive()
+                            .setOrigin(0.5, 0)
+                            .on("pointerdown", () => {
+                                alert.removeAll(true)
+                                reject(false);
+                            })
+                    ])
+                    break;
             }
         })
     }

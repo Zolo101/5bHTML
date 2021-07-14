@@ -244,22 +244,22 @@ export class LevelManager {
                 if (!spriteProperties) return console.error("Couldn't find sprite!")
 
                 switch (spriteProperties.type) {
-                case "character":
-                    spr = makeCharacterFromString(this.scene, sprite, spriteProperties, this.tilelayer);
-                    spr.type = "Character";
-                    this.characters.add(spr as Character);
-                    this.currentcharacter = spr as Character;
-                    break;
+                    case "character":
+                        spr = makeCharacterFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                        spr.type = "Character";
+                        this.characters.add(spr as Character);
+                        this.currentcharacter = spr as Character;
+                        break;
 
-                case "sprite":
-                    spr = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
-                    this.sprites.add(spr);
-                    // console.log(spr.mass)
-                    break;
+                    case "sprite":
+                        spr = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                        this.sprites.add(spr);
+                        // console.log(spr.mass)
+                        break;
 
-                default:
-                    console.error("Unknown or unsupported sprite!");
-                    break;
+                    default:
+                        console.error("Unknown or unsupported sprite!");
+                        break;
                 }
             }
         });
@@ -311,24 +311,24 @@ export class LevelManager {
                 let velX = 0;
                 let velY = 0;
                 switch (se.index) {
-                case 11:
-                    velY = 50;
-                    break;
+                    case 11:
+                        velY = 50;
+                        break;
 
-                case 12:
-                    velY = -50;
-                    break;
+                    case 12:
+                        velY = -50;
+                        break;
 
-                case 13:
-                    velX = 50;
-                    break;
+                    case 13:
+                        velX = 50;
+                        break;
 
-                case 14:
-                    velX = -50;
-                    break;
+                    case 14:
+                        velX = -50;
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
                 }
 
                 sp.body.stop();
