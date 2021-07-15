@@ -52,6 +52,7 @@ BlockObject.map.set(7, new Block(7, false, true, false, false, false)) // Wintok
 BlockObject.map.set(15, new Block(15, false, true, false, false, false))
 
 // grey spikes
+BlockObject.map.set(8, new Block(8, false, true, true, false, false)) // center
 BlockObject.map.set(11, new Block(11, false, true, true, false, false)
     .setSides(true, true, true, true))
 BlockObject.map.set(12, new Block(12, false, true, true, false, false)

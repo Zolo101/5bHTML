@@ -11,6 +11,7 @@ class menuScene extends Phaser.Scene {
     create(): void {
         // this.scene.start("editorScene", {level: {name: undefined}}); // go straight into gameplay
         // this.scene.start("exploreScene", {level: {name: undefined}}); // go straight into gameplay
+        // this.scene.start("gameScene", {levelfile: levels, levelnumber: 5})
         // Background
         this.add.rectangle(0, 0, 960, 540, 0x6a7773).setOrigin(0, 0);
         this.add.image(480, 270, randomBackground())
@@ -106,7 +107,7 @@ class MenuButton extends BaseButton {
                 scene.hoverText.setText(this.hoverText);
             })
             .on("pointerout", () => {
-                this.gameObject.setBackgroundColor("#fff");
+                this.gameObject.setBackgroundColor("#ffffff");
                 scene.hoverText.setText("");
             })
             .on("pointerdown", onClick);

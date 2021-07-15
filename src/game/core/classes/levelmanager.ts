@@ -9,8 +9,8 @@ import { entityData } from "../jsonmodule";
 import Settings from "../../settingsgame";
 import gameSceneType from "../gamestructure";
 import { BlockObject, BlockObjectType } from "../data/block_data";
-import { padStart } from "../misc/other";
 import { s_getCacheSave, s_getLocalStorage } from "../misc/dataidb";
+import calculateOutline from "../calculateoutline";
 let level: LevelData
 
 export class LevelManager {
@@ -129,7 +129,7 @@ export class LevelManager {
 
         // Set levelname
         this.levelTextButton.setText(
-            `${padStart(this.levelnumber + 1, 3)}. ${level.levels[this.levelnumber].name}`
+            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber].name}`
         );
 
         const backButton = this.scene.add.text(800, 475, "MENU", backStyle)
@@ -281,25 +281,29 @@ export class LevelManager {
             levelDataprep[i] = levelDataMapBuffer.slice(currentLevel.width * i, currentLevel.width * (i + 1))
         } */
 
-        console.log([...levelData])
+        console.log(levelData)
 
         // Make tilemap
         const tilemap = this.scene.make.tilemap({
-            data: [...levelData],
+            data: levelData,
             tileWidth: this.blocksize,
             tileHeight: this.blocksize,
         });
 
-        const tileset = tilemap.addTilesetImage(
-            "core_tileset",
-            "core_tileset",
-        );
-
+        const tileset = tilemap.addTilesetImage("core_tileset", "core_tileset");
+        // console.log(calculateOutline(levelData))
+        const outlineTilemap = this.scene.make.tilemap({
+            data: calculateOutline(levelData),
+            tileWidth: this.blocksize,
+            tileHeight: this.blocksize,
+        });
+        const outlineTileset = tilemap.addTilesetImage("outline_tileset", "outline_tileset");
         //tilemap.forEachTile((tile) => {
         //    const prop = BlockObject.map.get(tile.index);
         //})
 
         this.tilelayer = tilemap.createLayer(0, tileset);
+        outlineTilemap.createLayer(0, outlineTileset)
 
         this.tilelayer.setCollision(this.blocks.collisionIndexes);
 
