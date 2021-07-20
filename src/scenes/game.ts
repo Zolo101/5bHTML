@@ -1,4 +1,5 @@
 import { LevelManager } from "../game/core/classes/levelmanager";
+import Sprite from "../game/core/classes/sprite";
 import { BlockObject } from "../game/core/data/block_data";
 import { LevelData } from "../game/core/levelstructure";
 // System Variables (Engine)
@@ -68,32 +69,92 @@ class gameScene extends Phaser.Scene {
         );
 
         this.levelmanager.setLevel(this.levelnumber);
+
+        // same colour as 5b flash
+        this.cameras.main.setBackgroundColor(0x8f8f5f);
     }
 
     update(): void {
         const alive = this.levelmanager.currentcharacter.active;
         const cc = this.levelmanager.currentcharacter;
-
         if (alive) {
-            // TODO: Change once multiple characters become a thing
-            if (spaceKey.isDown && (cc.body.blocked.down || cc.body.touching.down)) {
-                cc.body.setVelocityY(-710 * cc.speed);
+            const isStanding = cc.body.blocked.down || cc.body.touching.down;
+            const isIdle = isStanding && (!spaceKey.isDown && !leftKey.isDown && !rightKey.isDown)
+
+            if (cc.grabbing) {
+                cc.direction ? cc.visual.anims.play("grabbingR", true) : cc.visual.anims.play("grabbingL", true)
+            }
+            if (isIdle) {
+                if (!cc.grabbing) {
+                    if (cc.direction) {
+                        cc.visual.anims.play("idleR", true)
+                        cc.visual.setFlipX(false)
+                    } else {
+                        cc.visual.anims.play("idleL", true)
+                        cc.visual.setFlipX(false)
+                    }
+                }
+                cc.Lleg.anims.play("idle", true)
+                cc.Rleg.anims.play("idle", true)
+            }
+
+            if (spaceKey.isDown) {
+                if (cc.direction) {
+                    cc.visual.anims.play("jumpR")
+                    cc.visual.setFlipX(false)
+
+                } else {
+                    cc.visual.anims.play("jumpL")
+                    cc.visual.setFlipX(false)
+                }
+                if (isStanding) {
+                    cc.Lleg.anims.play("jump", true)
+                    cc.Rleg.anims.play("jump", true)
+                    cc.body.setVelocityY(-710 * cc.speed);
+                }
             }
 
             if (leftKey.isDown) {
                 cc.direction = false;
                 cc.body.setVelocityX(-270 * cc.speed);
+
+                if (isStanding && spaceKey.isUp) {
+                    cc.visual.anims.play("walkL", true)
+                    cc.Lleg.anims.play("walk", true)
+                    cc.Rleg.anims.play("walk", true)
+                }
+                cc.visual.setFlipX(false)
+                if (cc.grabbing) {
+                    cc.visual.anims.play("grabbingL", true)
+                    cc.visual.setFlipX(false)
+                }
             }
 
             if (rightKey.isDown) {
                 cc.direction = true;
                 cc.body.setVelocityX(270 * cc.speed);
+
+                if (isStanding && spaceKey.isUp) {
+                    cc.visual.anims.play("walkR", true)
+                    cc.Lleg.anims.play("walk", true)
+                    cc.Rleg.anims.play("walk", true)
+                    cc.visual.setFlipX(true)
+                }
+                if (!isStanding && !spaceKey.isUp) {
+                    cc.visual.setFlipX(false)
+                }
+                if (cc.grabbing) {
+                    cc.visual.anims.play("grabbingR", true)
+                    cc.visual.setFlipX(false)
+                }
             }
             // console.log(cc.body.velocity.y)
         }
 
         // Flip the character based on direction
-        cc.setFlipX(!cc.direction);
+        // cc.visual.setFlipX(cc.direction)
+        cc.Lleg.setFlipX(!cc.direction)
+        cc.Rleg.setFlipX(!cc.direction)
 
         this.levelmanager.characters.children.entries.forEach((ch: any) => {
             ch.grabbable = false;
@@ -104,10 +165,10 @@ class gameScene extends Phaser.Scene {
         // If UP key is pressed, grab overlapped sprite
         if (Phaser.Input.Keyboard.JustDown(upKey)) {
             if (cc.grabbing === undefined) {
-                this.levelmanager.sprites.children.entries.forEach((ch: any) => {
-                    // This is bad!
-                    cc.attemptGrab(ch);
-                });
+                // very inefficient
+                for (const entity of this.levelmanager.sprites.children.entries) {
+                    cc.attemptGrab(entity as Sprite)
+                }
             } else {
                 cc.releaseGrab(true);
             }
@@ -134,8 +195,12 @@ class gameScene extends Phaser.Scene {
         }
 
         if (Phaser.Input.Keyboard.JustDown(rKey)) { // RESET
-            this.levelmanager.startLevel();
+            this.levelmanager.startLevelSetup();
         }
+
+        // cc.visual.setPosition(cc.x, cc.y)
+        // cc.Lleg.setPosition(cc.getBottomCenter().x - 8, cc.getBottomCenter().y - 10)
+        // cc.Rleg.setPosition(cc.getBottomCenter().x + 10, cc.getBottomCenter().y - 10)
     }
 }
 

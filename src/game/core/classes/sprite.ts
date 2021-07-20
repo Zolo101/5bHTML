@@ -1,64 +1,107 @@
 import Settings from "../../settingsgame";
 import { Entity } from "../levelstructure";
 
-export class Sprite extends Phaser.GameObjects.Sprite {
-    declare body: Phaser.Physics.Arcade.Body;
-    name: string;
-    type: string;
-    grabbable = false;
-    grabbed = false;
-    active = true;
+export class Sprite extends Phaser.GameObjects.Container {
+    declare body: Phaser.Physics.Arcade.Body
+    visual: Phaser.GameObjects.Sprite
+
+    name: string
+    type: "Character" | "Sprite"
+    mass: number
+    friction: number
+
+    grabbable: boolean
+    grabbed: boolean
+    active: boolean
     constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
         key: string,
+        frame: number,
         tilemap: Phaser.Tilemaps.TilemapLayer,
-        public mass = 2,
-        public friction = 1.15,
-        topcollide = false,
-        dontmove = false,
+        sprite: SpriteType,
+        options: Pick<Partial<Sprite>, "type" | "mass" | "friction" | "grabbable" | "grabbed" | "active">
     ) {
-        super(scene, x, y, key);
+        super(scene, x, y);
         this.scene = scene;
         this.name = key;
-        this.type = "Sprite";
+        this.type = options.type ?? "Sprite";
+        this.mass = options.mass ?? 2;
+        this.friction = options.friction ?? 1.15;
+
+        this.grabbable = options.grabbable ?? false
+        this.grabbed = options.grabbed ?? false
+        this.active = options.active ?? true
+
+        if (this.type === "Sprite") {
+            this.setSize(sprite.size.x, sprite.size.y)
+        }
+
+        this.visual = this.scene.add.sprite(0, 0, key, frame)
+            .setDisplaySize(sprite.size.x, sprite.size.y)
+
+        this.add(this.visual)
 
         this.scene.physics.world.enable(this);
         this.scene.add.existing(this);
         this.scene.physics.add.collider(this, tilemap);
 
-        this.body.setDragX(friction * 700);
-        this.body.setMass(mass);
+        // WARNING THIS BLANKS THE GAME
+        // this.setDisplaySize(sprite.size.x, sprite.size.y);
 
-        //if (topcollide) {
-        //    this.body.checkCollision.left = false;
-        //    this.body.checkCollision.right = false;
-        //}
-
-        if (dontmove) this.body.immovable = true;
-
+        this.body.setDragX(this.friction * 700);
+        this.body.setMass(this.mass);
         this.body.setCollideWorldBounds(true);
     }
 }
 
 export class Character extends Sprite {
+    Lleg: Phaser.GameObjects.Sprite
+    Rleg: Phaser.GameObjects.Sprite
+
     speed = 1; // Speed of character
     direction = true; // Direction of character, true = right, false = left
+
     grabbing!: Sprite | Character | undefined; // Whats the character grabbing?
     grabbable = true; // Is the character grabbable
 
-    attemptGrab(sp: Sprite): void {
+    constructor(scene: Phaser.Scene, x: number, y: number, frame: number, tilemap: Phaser.Tilemaps.TilemapLayer, sprite: SpriteType,
+        options: Pick<Partial<Sprite>, "type" | "mass" | "friction" | "grabbable" | "grabbed" | "active">,
+    ) {
+        super(scene, x, y, "book_general", frame, tilemap, sprite, options)
+        // this.setVisible(false)
+        this.visual.setTexture("book_general")
+            .setOrigin(0, 0)
+            .setScale(0.45)
+        // this.setDisplaySize(sprite.size.x, sprite.size.y + 10).;//setOrigin(0.5, 0.4);
+        this.body.setOffset(12, 1)
+        this.body.setSize(sprite.size.x, sprite.size.y + 10);
+        this.Lleg = this.scene.add.sprite(25, 53, "legs_walk", 1)
+            .setScale(0.22)
+        this.Rleg = this.scene.add.sprite(45, 53, "legs_walk", 1)
+            .setScale(0.22)
+
+        this.add([this.Lleg, this.Rleg])
+
+        this.scene.physics.add.collider(this, tilemap);
+        this.setupAnimations()
+
+        this.visual.anims.play("idle")
+        this.bringToTop(this.visual)
+    }
+
+    attemptGrab(sp: Sprite): boolean {
         // Stop if sprite is dead
-        if (!this.active) return;
+        if (!this.active) return false;
 
         const characterBounds = this.getBounds();
         const cbWidth = characterBounds.width * 2.25
         const cbHeight = characterBounds.height
-        const spriteCoord = sp.getCenter();
+        const spriteCoord = sp.body.center;
         const weirdOffset = 58; // Fix the werid offset
 
-        characterBounds.setPosition(this.getCenter().x - weirdOffset, this.getCenter().y - 15);
+        characterBounds.setPosition(this.body.center.x - weirdOffset, this.body.center.y - 15);
         characterBounds.setSize(cbWidth, cbHeight);
 
         if (Settings.IS_DEBUG) {
@@ -77,6 +120,9 @@ export class Character extends Sprite {
             // console.log(sp.mass)
             this.speed = 1 / Math.sqrt(sp.mass / 4);
             // sp.body.enable = false;
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -104,15 +150,55 @@ export class Character extends Sprite {
     }
 
     die(): void {
-        // Drop any grabbed sprite
-        if (this.grabbing !== undefined) {
-            this.grabbing.grabbed = false;
-            this.grabbing.body.enable = true;
-            this.grabbing = undefined;
-        }
+        if (this.active) {
+            this.visual.anims.play("die")
+            this.body.moves = false
+            this.body.setImmovable(true)
+            this.Lleg.anims.stop()
+            this.Rleg.anims.stop()
+            this.scene.tweens.addCounter({
+                from: 0,
+                to: 8,
+                ease: "linear",
+                duration: 300,
+                onUpdate: (tween) => {this.setVisible(Math.floor(tween.getValue() % 2) === 0)},
+                onComplete: () => {
+                    // Drop any grabbed sprite
+                    if (this.grabbing !== undefined) {
+                        this.grabbing.grabbed = false;
+                        this.grabbing.body.enable = true;
+                        this.grabbing = undefined;
+                    }
 
-        this.active = false;
-        this.destroy();
+                    this.active = false;
+                    this.destroy();
+                }
+            })
+        }
+    }
+
+    setupAnimations(): void {
+        this.visual.anims.create({ key: "idleL", frames: this.visual.anims.generateFrameNames("book_general", { start: 2, end: 2, suffix: ".png" }) })
+        this.visual.anims.create({ key: "idleR", frames: this.visual.anims.generateFrameNames("book_general", { start: 4, end: 4, suffix: ".png" }) })
+        this.visual.anims.create({ key: "walkL", frames: this.visual.anims.generateFrameNames("book_walkL", { start: 1, end: 27, suffix: ".png" }), frameRate: 60, repeat: -1 })
+        this.visual.anims.create({ key: "walkR", frames: this.visual.anims.generateFrameNames("book_walkR", { start: 1, end: 27, suffix: ".png" }), frameRate: 60, repeat: -1 })
+        this.visual.anims.create({ key: "grabbingL", frames: this.visual.anims.generateFrameNames("book_general", { start: 7, end: 7, suffix: ".png" }) })
+        this.visual.anims.create({ key: "grabbingR", frames: this.visual.anims.generateFrameNames("book_general", { start: 8, end: 8, suffix: ".png" }) })
+        this.visual.anims.create({ key: "jumpL", frames: this.visual.anims.generateFrameNames("book_general", { start: 5, end: 5, suffix: ".png" }) })
+        this.visual.anims.create({ key: "jumpR", frames: this.visual.anims.generateFrameNames("book_general", { start: 6, end: 6, suffix: ".png" }) })
+        this.visual.anims.create({ key: "die", frames: this.visual.anims.generateFrameNames("book_general", { start: 9, end: 9, suffix: ".png" }) })
+
+        this.Lleg.anims.create({ key: "jump", frames: this.visual.anims.generateFrameNames("legs_walk", { start: 11, end: 11, suffix: ".png" }) })
+        this.Rleg.anims.create({ key: "jump", frames: this.visual.anims.generateFrameNames("legs_walk", { start: 11, end: 11, suffix: ".png" }) })
+        this.Lleg.anims.create({ key: "idle", frames: this.visual.anims.generateFrameNames("legs_walk", { start: 1, end: 1, suffix: ".png" }) })
+        this.Rleg.anims.create({ key: "idle", frames: this.visual.anims.generateFrameNames("legs_walk", { start: 1, end: 1, suffix: ".png" }) })
+        this.Lleg.anims.create({ key: "walk", frames: this.visual.anims.generateFrameNames("legs_walk", { start: 1, end: 27, suffix: ".png" }), frameRate: 60, repeat: -1 })
+        this.Rleg.anims.create({ key: "walk", frames: this.visual.anims.generateFrameNames("legs_walk", { frames: Array.from(Array(28).keys()).map((num) => (num + 13) % 27), suffix: ".png" }), frameRate: 60, repeat: -1 })
+
+        // walkR sticks out for some reason so this is a temporary hacky fix
+        this.visual.on("animationstart", (animation: Phaser.Animations.Animation) => {
+            this.visual.setOrigin((animation.key === "walkR") ? -0.125 : 0, 0)
+        })
     }
 }
 
@@ -129,32 +215,29 @@ export type SpriteType = {
 }
 
 export function makeCharacterFromString(
-    sceneReference: Phaser.Scene,
+    scene: Phaser.Scene,
     entity: Entity,
     sprite: SpriteType, // property
     tilelayer: Phaser.Tilemaps.TilemapLayer,
 ): Character {
-    return new Character(
-        sceneReference, entity.x, entity.y, sprite.name,
-        tilelayer, sprite.mass, sprite.friction
-    ).setScale(0.2);
+    const newChar = new Character(
+        scene, entity.x, entity.y, 3, tilelayer, sprite,
+        { mass: sprite.mass, friction: sprite.friction, type: "Character" }
+    );
+    return newChar
 }
 
 export function makeSpriteFromString(
-    sceneReference: Phaser.Scene,
+    scene: Phaser.Scene,
     entity: Entity,
     sprite: SpriteType, // property
     tilelayer: Phaser.Tilemaps.TilemapLayer,
 ): Sprite {
     const newSprite = new Sprite(
-        sceneReference, entity.x + 15, entity.y, sprite.name,
-        tilelayer, sprite.mass, undefined, true, true,
+        scene, entity.x + 15, entity.y, sprite.name, 3,
+        tilelayer, sprite, { mass: sprite.mass },
     );
-    newSprite.setDisplaySize(sprite.size.x, sprite.size.y);
-    newSprite.setScale(0.45);
-    return newSprite;
+    return newSprite
 }
-
-export type PhaserBlock = Phaser.GameObjects.Sprite | Phaser.GameObjects.Image
 
 export default Sprite;

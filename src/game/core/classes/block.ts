@@ -1,7 +1,13 @@
 import { BlockObject } from "../data/block_data";
 import gameSceneType from "../gamestructure";
+import { Entity } from "../levelstructure";
 import LevelManager from "./levelmanager";
-export class Block implements BlockType {
+
+export type LevelPhysicsCallback = (
+    levelmanager: LevelManager,
+) => void;
+
+export class Block {
     // defaults
     size!: { x: number; y: number; };
     offset = { x: 0, y: 0 };
@@ -104,32 +110,21 @@ export type SpecialBlock = SimpleBlock & {
     }
 }
 
-export type LevelPhysicsCallback = (
-    levelmanager: LevelManager,
-) => void;
-
-export type BlockType = SpecialBlock // | SimpleBlockInterface
-
-const bcoord = (blocksize: number, x: number) => blocksize * x + (blocksize / 2);
-
 export function createSpecialBlock(
     scene: gameSceneType,
-    blockinfo: SpecialBlock,
-    x: number, y: number,
-    sx: number = blockinfo.size.x, sy: number = blockinfo.size.x,
-    ox: number = blockinfo.offset.x, oy: number = blockinfo.offset.y,
+    block: Block,
+    sprite: Entity,
     collisionCallback: LevelPhysicsCallback,
     collisionGroup: Phaser.GameObjects.Group,
 ): Phaser.GameObjects.Sprite {
     // console.log(y)
-    const specialblock = scene.physics.add.sprite(
-        x, y, blockinfo.texturename
-    );
+    const specialblock = scene.physics.add.sprite(sprite.x, sprite.y, block.texturename)
+        .setImmovable()
 
     // quick maths
-    specialblock.setY(specialblock.y - (sy / 2) + (sy / 2));
-    specialblock.setDisplaySize(sx, sy);
-    specialblock.setPosition(specialblock.x + ox, specialblock.y + oy);
+    specialblock.setY(specialblock.y - (block.size.y / 2) + (block.size.y / 2));
+    specialblock.setDisplaySize(block.size.x, block.size.y);
+    specialblock.setPosition(specialblock.x + block.offset.x, specialblock.y + block.offset.y);
 
     if (collisionCallback !== undefined) {
         scene.physics.add.collider(specialblock, collisionGroup, () => { collisionCallback(scene.levelmanager) });

@@ -6,8 +6,8 @@ spritedata.set("book", {
     type: "character",
     friction: 2.8,
     size: {
-        x: 55.42,
-        y: 62.22
+        x: 47,
+        y: 49
     }
 })
 

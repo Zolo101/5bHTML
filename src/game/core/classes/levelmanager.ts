@@ -123,7 +123,7 @@ export class LevelManager {
         this.initSprites();
 
         // Generate Sprites and start level
-        this.startLevel(true);
+        this.startLevelSetup(true);
 
         // Generate Dialogue
 
@@ -152,26 +152,12 @@ export class LevelManager {
         });
     }
 
-    startLevel(firstTime = false): void {
+    startLevelSetup(firstTime = false): void {
         const shakeAmount = 16;
         const time = 500;
         if (firstTime) {
             this.scene.cameras.main.flash(400, 255, 255, 255);
-            this.wipeSprites();
-            this.generateSprites(this.levelnumber);
-
-            // Set Camera
-            this.scene.cameras.main.startFollow(this.currentcharacter);
-
-            this.scene.tweens.addCounter({
-                from: shakeAmount,
-                to: 0,
-                duration: time,
-                ease: "Quad.easeIn",
-                onUpdate: (tween) => {
-                    this.scene.cameras.main.setPosition(Phaser.Math.Between(-tween.getValue(), tween.getValue()), Phaser.Math.Between(-tween.getValue(), tween.getValue()))
-                }
-            })
+            this.startLevel(shakeAmount, time)
         } else {
             this.scene.tweens.addCounter({
                 from: 0,
@@ -183,25 +169,30 @@ export class LevelManager {
                 },
                 onComplete: () => {
                     this.scene.cameras.main.flash(600);
-                    this.wipeSprites();
-                    this.generateSprites(this.levelnumber);
-
-                    // Set Camera
-                    this.scene.cameras.main.startFollow(this.currentcharacter);
-
-                    this.scene.tweens.addCounter({
-                        from: shakeAmount,
-                        to: 0,
-                        duration: time,
-                        ease: "Quad.easeIn",
-                        onUpdate: (tween) => {
-                            this.scene.cameras.main.setPosition(Phaser.Math.Between(-tween.getValue(), tween.getValue()), Phaser.Math.Between(-tween.getValue(), tween.getValue()))
-                        }
-                    })
+                    this.startLevel(shakeAmount, time)
                 }
 
             })
         }
+    }
+
+    startLevel(shakeAmount: number, time: number): void {
+        this.wipeSprites();
+        this.generateSprites(this.levelnumber);
+        this.currentcharacter = this.characters.getChildren()[0] as Character;
+
+        // Set Camera
+        this.scene.cameras.main.startFollow(this.currentcharacter);
+
+        this.scene.tweens.addCounter({
+            from: shakeAmount,
+            to: 0,
+            duration: time,
+            ease: "Quad.easeIn",
+            onUpdate: (tween) => {
+                this.scene.cameras.main.setPosition(Phaser.Math.Between(-tween.getValue(), tween.getValue()), Phaser.Math.Between(-tween.getValue(), tween.getValue()))
+            }
+        })
     }
 
     initSprites(): void {
@@ -227,42 +218,37 @@ export class LevelManager {
     }
 
     generateSprites(levelnum: number): void {
-        level.levels[levelnum].entities.forEach((sprite: Entity) => {
-            if (sprite.name === "Finish") {
-                const blockObject = this.blocks.map.get(2) as Block
-                const specialblock = createSpecialBlock(
-                    this.scene as gameSceneType,
-                    blockObject, sprite.x, sprite.y,
-                    blockObject.size.x, blockObject.size.y,
-                    blockObject.offset.x, blockObject.offset.y, blockObject.onCollide, this.characters,
-                );
-                this.specialblocks.add(specialblock);
-            } else {
-                let spr: Sprite;
+        for (const sprite of level.levels[levelnum].entities) {
+            const spriteProperties = entityData.get(sprite.name.toLowerCase());
+            if (!spriteProperties) return console.error("Couldn't find sprite!")
+            let newChar: Character
 
-                const spriteProperties = entityData.get(sprite.name.toLowerCase());
-                if (!spriteProperties) return console.error("Couldn't find sprite!")
+            switch (sprite.type) {
+                case "Character":
+                    newChar = makeCharacterFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                    newChar.type = "Character";
+                    this.characters.add(newChar);
+                    break;
 
-                switch (spriteProperties.type) {
-                    case "character":
-                        spr = makeCharacterFromString(this.scene, sprite, spriteProperties, this.tilelayer);
-                        spr.type = "Character";
-                        this.characters.add(spr as Character);
-                        this.currentcharacter = spr as Character;
-                        break;
+                case "Entity":
+                    if (sprite.name === "Finish") {
+                        const blockObject = this.blocks.map.get(2)!
+                        const specialblock = createSpecialBlock(
+                            this.scene as gameSceneType,
+                            blockObject, sprite, blockObject.onCollide, this.characters,
+                        );
+                        this.specialblocks.add(specialblock);
+                    } else {
+                        const newSprite = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                        this.sprites.add(newSprite);
+                    }
+                    break;
 
-                    case "sprite":
-                        spr = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
-                        this.sprites.add(spr);
-                        // console.log(spr.mass)
-                        break;
-
-                    default:
-                        console.error("Unknown or unsupported sprite!");
-                        break;
-                }
+                default:
+                    console.error("Unknown or unsupported sprite!");
+                    break;
             }
-        });
+        }
     }
 
     generateTerrain(levelnum: number): void {

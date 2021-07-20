@@ -87,6 +87,15 @@ export function truncate(str: string, max: number): string {
 }
 
 /**
+ * Converts a degree angle to a radian.
+ * @param degrees Degree to convert
+ * @returns Radian angle
+ */
+export function degToRad(degrees: number): number {
+    return degrees * (Math.PI / 180)
+}
+
+/**
  * Download data into file
  * @param data Data to download
  */
