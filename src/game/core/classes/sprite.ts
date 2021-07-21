@@ -234,7 +234,7 @@ export function makeSpriteFromString(
     tilelayer: Phaser.Tilemaps.TilemapLayer,
 ): Sprite {
     const newSprite = new Sprite(
-        scene, entity.x + 15, entity.y, sprite.name, 3,
+        scene, entity.x, entity.y, sprite.name, 3,
         tilelayer, sprite, { mass: sprite.mass },
     );
     return newSprite

@@ -135,7 +135,8 @@ export class LevelManager {
         const backButton = this.scene.add.text(800, 475, "MENU", backStyle)
             .setInteractive()
             .setAlpha(0.75)
-            .setScrollFactor(0);
+            .setScrollFactor(0)
+            .setDepth(1);
 
         backButton.on("pointerdown", () => {
             if (this.backScene === "editorScene") {
