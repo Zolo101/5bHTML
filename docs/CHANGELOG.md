@@ -3,7 +3,21 @@ Emoji | meaning
 🟦| Latest *"Stable"* version
 🟥| Latest Dev version, these versions are hosted on [the dev site](https://5bdev.zelo.dev/).
 
-# v4.1 Alpha 🟦 -- 13/07/2021
+# v5 Alpha 🟦 -- 21/07/2021
+
+## Main changes
+
+- Character animations!
+
+- Edge and shadow textures!
+
+## Other changes
+
+- Character jump power is now relative to the mass of the grabbed sprite, instead of the speed.
+
+- (@meisels) Fixed an oversight where buttons that opened a url would open twice.
+
+# v4.1 Alpha -- 13/07/2021
 
 ## Main changes
 
