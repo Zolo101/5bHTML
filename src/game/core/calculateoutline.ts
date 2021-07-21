@@ -220,11 +220,11 @@ function calculateOutline(data: number[][]): number[][] {
                 const rightNum  = data[i    ][j + 1] ?? shadowTileNum;
                 const downNum   = (data[i + 1] !== undefined) ? data[i + 1][j    ] : shadowTileNum;
                 const leftNum = data[i][j - 1] ?? shadowTileNum;
-                console.log(upNum, rightNum, downNum, leftNum)
-                if (!neighbourData[i][j].checkDirection("right", right) && rightNum !== centerNum && rightNum !== 99) shadowTexID += "0"
-                if (!neighbourData[i][j].checkDirection("down", down) && downNum !== centerNum && downNum !== 99) shadowTexID += "1"
-                if (!neighbourData[i][j].checkDirection("left", left) && leftNum !== centerNum && leftNum !== 99) shadowTexID += "2"
-                if (!neighbourData[i][j].checkDirection("up", up) && upNum !== centerNum && upNum !== 99) shadowTexID += "3"
+                // console.log(upNum, rightNum, downNum, leftNum)
+                if (!neighbourData[i][j].checkDirection("right", right) && rightNum !== centerNum && rightNum !== -2) shadowTexID += "0"
+                if (!neighbourData[i][j].checkDirection("down", down) && downNum !== centerNum && downNum !== -2) shadowTexID += "1"
+                if (!neighbourData[i][j].checkDirection("left", left) && leftNum !== centerNum && leftNum !== -2) shadowTexID += "2"
+                if (!neighbourData[i][j].checkDirection("up", up) && upNum !== centerNum && upNum !== -2) shadowTexID += "3"
 
                 switch (shadowTexID) {
                     case "0":

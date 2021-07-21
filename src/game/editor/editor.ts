@@ -581,7 +581,7 @@ To move the level screen, use arrow keys. To zoom, use Q and E.
 
 
 
-Made by Zelo101. Last Updated: 11/07/2021`).render(this))
+Made by Zelo101. Last Updated: 21/07/2021`).render(this))
 
         file.render(0, 0, this);
         // edit.render(120, 0, this);
@@ -631,7 +631,7 @@ Made by Zelo101. Last Updated: 11/07/2021`).render(this))
         const charactersContainer = this.add.container(200, 34);
         const characterImageNames = ["Book"];
         const characterImages = characterImageNames.map((name, i) => {
-            return this.add.image(100 * i, 0, name.toLowerCase())
+            return this.add.image(100 * i, 0, `${name.toLowerCase()}_editor`)
                 .setDisplaySize(64, 64)
                 .setOrigin(0, 0)
                 .setInteractive()
@@ -786,9 +786,9 @@ Made by Zelo101. Last Updated: 11/07/2021`).render(this))
         for (const entity of entities) {
             const spritedata = entityData.get(entity.name.toLowerCase())?.size ?? { x: 64, y: 64 };
             console.log(spritedata)
-            const container = this.add.container(entity.x,  entity.y)
+            const container = this.add.container(entity.x, entity.y)
             container.add([
-                this.add.image(0, 0, entity.name.toLowerCase())
+                this.add.image(0, 0, `${entity.name.toLowerCase()}_editor`)
                     .setOrigin(0, 0)
                     .setDisplaySize(spritedata.x, spritedata.y)
                     .setAlpha(0.85)
