@@ -109,7 +109,7 @@ class MenuButton extends BaseButton {
                 this.gameObject.setBackgroundColor("#fff");
                 scene.hoverText.setText("");
             })
-            .on("pointerdown", onClick);
+            .on("pointerrelease", onClick);
     }
 }
 
