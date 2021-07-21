@@ -18,7 +18,7 @@ module.exports = {
     ],
     rules: {
         "linebreak-style": ["error", "windows"],
-        indent: ["error", 4],
+        indent: ["error", 4, { SwitchCase: 1 }],
         quotes: ["error", "double"],
         "no-console": 0, // ["warn", { allow: ["warn", "error"] }],
         "max-classes-per-file": ["warn", 3],

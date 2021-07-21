@@ -2,8 +2,8 @@
 // @ts-ignore
 const nodeEnv = (import.meta.env.NODE_ENV === "development")
 const settingsBuffer = localStorage.getItem("settings");
-export const VERSION_NAME = nodeEnv ? "dev-21w28a" : "v4.1 Alpha";
-export const LAST_UPDATE = new Date(2021, 7, 13);
+export const VERSION_NAME = nodeEnv ? "dev-21w29a" : "v5 Alpha";
+export const LAST_UPDATE = new Date(2021, 7, 21);
 export const EXPLORE_SEVRER_URL = nodeEnv ? "http://localhost:3000" : "https://5beam.zelo.dev"
 
 let Settings = {

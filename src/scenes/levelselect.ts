@@ -1,6 +1,5 @@
-import { levelbuttonStyle, backStyle, textStyle } from "../game/core/buttons";
+import { backStyle, textStyle } from "../game/core/buttons";
 import { levels } from "../game/core/jsonmodule";
-import { padStart } from "../game/core/misc/other";
 
 const buttonlist: Phaser.GameObjects.Rectangle[] = [];
 
@@ -21,7 +20,7 @@ class levelselectScene extends Phaser.Scene {
             .fillRect(0, 0, 960, 540)
 
         // too much? :)
-        const textNums = Array(8).fill(0).map((num, i) => Array.from(Array(7).keys()).map((num) => padStart(1 + (num * 7) + i, 3)))
+        const textNums = Array(8).fill(0).map((num, i) => Array.from(Array(7).keys()).map((num) => (1 + (num * 7) + i).toString().padStart(3, "0")))
         console.log(textNums)
 
         for (let i = 0; i < 8; i++) {

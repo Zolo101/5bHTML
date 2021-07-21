@@ -14,33 +14,33 @@ export function checkLevel(): void {
     // console.log(levels);
 
     switch (true) {
-    case curlevel.name === undefined:
-        console.warn("No title!");
-        // falls through
+        case curlevel.name === undefined:
+            console.warn("No title!");
+            // falls through
 
-    case curlevel.author === undefined:
-        console.warn("No author!");
-        // falls through
+        case curlevel.author === undefined:
+            console.warn("No author!");
+            // falls through
 
-    case curlevel.description === undefined:
-        console.warn("No description!");
-        // falls through
+        case curlevel.description === undefined:
+            console.warn("No description!");
+            // falls through
 
-    case curlevel.struct_version === undefined:
-        console.error("No version specficied (This is required!)");
-        // falls through
+        case curlevel.struct_version === undefined:
+            console.error("No version specficied (This is required!)");
+            // falls through
 
-    case curlevel.level_version === undefined:
-        console.warn("No title!");
-        // falls through
+        case curlevel.level_version === undefined:
+            console.warn("No title!");
+            // falls through
 
-    case curlevel.levels === undefined:
-        console.error("No levels...?");
-        levelsExist = false;
-        // falls through
+        case curlevel.levels === undefined:
+            console.error("No levels...?");
+            levelsExist = false;
+            // falls through
 
-    default:
-        break;
+        default:
+            break;
     }
 
     // No levels
@@ -48,32 +48,32 @@ export function checkLevel(): void {
 
     curlevel.levels.forEach((level: Level, i: number) => {
         switch (true) {
-        case level.name === undefined:
-            console.error(`No level name @ level number ${i}.`);
-            // falls through
+            case level.name === undefined:
+                console.error(`No level name @ level number ${i}.`);
+                // falls through
 
-        case level.width === undefined:
-            console.error(`No level width @ level number ${i}.`);
-            // falls through
+            case level.width === undefined:
+                console.error(`No level width @ level number ${i}.`);
+                // falls through
 
-        case level.height === undefined:
-            console.error(`No level height @ level number ${i}.`);
-            // falls through
+            case level.height === undefined:
+                console.error(`No level height @ level number ${i}.`);
+                // falls through
 
-        case level.background === undefined:
-            console.error(`No level background @ level number ${i}.`);
-            // falls through
+            case level.background === undefined:
+                console.error(`No level background @ level number ${i}.`);
+                // falls through
 
-        case level.data === undefined:
-            console.error(`No level data @ level number ${i}.`);
-            // falls through
+            case level.data === undefined:
+                console.error(`No level data @ level number ${i}.`);
+                // falls through
 
-            //case level[0].entity === undefined:
-            //    console.warn(`No level entities @ level number ${i}.`);
-            // falls through
+                //case level[0].entity === undefined:
+                //    console.warn(`No level entities @ level number ${i}.`);
+                // falls through
 
-        default:
-            break;
+            default:
+                break;
         }
     });
     /*

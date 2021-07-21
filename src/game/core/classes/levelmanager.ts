@@ -9,8 +9,8 @@ import { entityData } from "../jsonmodule";
 import Settings from "../../settingsgame";
 import gameSceneType from "../gamestructure";
 import { BlockObject, BlockObjectType } from "../data/block_data";
-import { padStart } from "../misc/other";
 import { s_getCacheSave, s_getLocalStorage } from "../misc/dataidb";
+import calculateOutline from "../calculateoutline";
 let level: LevelData
 
 export class LevelManager {
@@ -123,19 +123,20 @@ export class LevelManager {
         this.initSprites();
 
         // Generate Sprites and start level
-        this.startLevel(true);
+        this.startLevelSetup(true);
 
         // Generate Dialogue
 
         // Set levelname
         this.levelTextButton.setText(
-            `${padStart(this.levelnumber + 1, 3)}. ${level.levels[this.levelnumber].name}`
+            `${(this.levelnumber + 1).toString().padStart(3, "0")}. ${level.levels[this.levelnumber].name}`
         );
 
         const backButton = this.scene.add.text(800, 475, "MENU", backStyle)
             .setInteractive()
             .setAlpha(0.75)
-            .setScrollFactor(0);
+            .setScrollFactor(0)
+            .setDepth(1);
 
         backButton.on("pointerdown", () => {
             if (this.backScene === "editorScene") {
@@ -152,26 +153,12 @@ export class LevelManager {
         });
     }
 
-    startLevel(firstTime = false): void {
+    startLevelSetup(firstTime = false): void {
         const shakeAmount = 16;
         const time = 500;
         if (firstTime) {
             this.scene.cameras.main.flash(400, 255, 255, 255);
-            this.wipeSprites();
-            this.generateSprites(this.levelnumber);
-
-            // Set Camera
-            this.scene.cameras.main.startFollow(this.currentcharacter);
-
-            this.scene.tweens.addCounter({
-                from: shakeAmount,
-                to: 0,
-                duration: time,
-                ease: "Quad.easeIn",
-                onUpdate: (tween) => {
-                    this.scene.cameras.main.setPosition(Phaser.Math.Between(-tween.getValue(), tween.getValue()), Phaser.Math.Between(-tween.getValue(), tween.getValue()))
-                }
-            })
+            this.startLevel(shakeAmount, time)
         } else {
             this.scene.tweens.addCounter({
                 from: 0,
@@ -183,25 +170,30 @@ export class LevelManager {
                 },
                 onComplete: () => {
                     this.scene.cameras.main.flash(600);
-                    this.wipeSprites();
-                    this.generateSprites(this.levelnumber);
-
-                    // Set Camera
-                    this.scene.cameras.main.startFollow(this.currentcharacter);
-
-                    this.scene.tweens.addCounter({
-                        from: shakeAmount,
-                        to: 0,
-                        duration: time,
-                        ease: "Quad.easeIn",
-                        onUpdate: (tween) => {
-                            this.scene.cameras.main.setPosition(Phaser.Math.Between(-tween.getValue(), tween.getValue()), Phaser.Math.Between(-tween.getValue(), tween.getValue()))
-                        }
-                    })
+                    this.startLevel(shakeAmount, time)
                 }
 
             })
         }
+    }
+
+    startLevel(shakeAmount: number, time: number): void {
+        this.wipeSprites();
+        this.generateSprites(this.levelnumber);
+        this.currentcharacter = this.characters.getChildren()[0] as Character;
+
+        // Set Camera
+        this.scene.cameras.main.startFollow(this.currentcharacter);
+
+        this.scene.tweens.addCounter({
+            from: shakeAmount,
+            to: 0,
+            duration: time,
+            ease: "Quad.easeIn",
+            onUpdate: (tween) => {
+                this.scene.cameras.main.setPosition(Phaser.Math.Between(-tween.getValue(), tween.getValue()), Phaser.Math.Between(-tween.getValue(), tween.getValue()))
+            }
+        })
     }
 
     initSprites(): void {
@@ -227,42 +219,37 @@ export class LevelManager {
     }
 
     generateSprites(levelnum: number): void {
-        level.levels[levelnum].entities.forEach((sprite: Entity) => {
-            if (sprite.name === "Finish") {
-                const blockObject = this.blocks.map.get(2) as Block
-                const specialblock = createSpecialBlock(
-                    this.scene as gameSceneType,
-                    blockObject, sprite.x, sprite.y,
-                    blockObject.size.x, blockObject.size.y,
-                    blockObject.offset.x, blockObject.offset.y, blockObject.onCollide, this.characters,
-                );
-                this.specialblocks.add(specialblock);
-            } else {
-                let spr: Sprite;
+        for (const sprite of level.levels[levelnum].entities) {
+            const spriteProperties = entityData.get(sprite.name.toLowerCase());
+            if (!spriteProperties) return console.error("Couldn't find sprite!")
+            let newChar: Character
 
-                const spriteProperties = entityData.get(sprite.name.toLowerCase());
-                if (!spriteProperties) return console.error("Couldn't find sprite!")
-
-                switch (spriteProperties.type) {
-                case "character":
-                    spr = makeCharacterFromString(this.scene, sprite, spriteProperties, this.tilelayer);
-                    spr.type = "Character";
-                    this.characters.add(spr as Character);
-                    this.currentcharacter = spr as Character;
+            switch (sprite.type) {
+                case "Character":
+                    newChar = makeCharacterFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                    newChar.type = "Character";
+                    this.characters.add(newChar);
                     break;
 
-                case "sprite":
-                    spr = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
-                    this.sprites.add(spr);
-                    // console.log(spr.mass)
+                case "Entity":
+                    if (sprite.name === "Finish") {
+                        const blockObject = this.blocks.map.get(2)!
+                        const specialblock = createSpecialBlock(
+                            this.scene as gameSceneType,
+                            blockObject, sprite, blockObject.onCollide, this.characters,
+                        );
+                        this.specialblocks.add(specialblock);
+                    } else {
+                        const newSprite = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                        this.sprites.add(newSprite);
+                    }
                     break;
 
                 default:
                     console.error("Unknown or unsupported sprite!");
                     break;
-                }
             }
-        });
+        }
     }
 
     generateTerrain(levelnum: number): void {
@@ -281,25 +268,29 @@ export class LevelManager {
             levelDataprep[i] = levelDataMapBuffer.slice(currentLevel.width * i, currentLevel.width * (i + 1))
         } */
 
-        console.log([...levelData])
+        console.log(levelData)
 
         // Make tilemap
         const tilemap = this.scene.make.tilemap({
-            data: [...levelData],
+            data: levelData,
             tileWidth: this.blocksize,
             tileHeight: this.blocksize,
         });
 
-        const tileset = tilemap.addTilesetImage(
-            "core_tileset",
-            "core_tileset",
-        );
-
+        const tileset = tilemap.addTilesetImage("core_tileset", "core_tileset");
+        // console.log(calculateOutline(levelData))
+        const outlineTilemap = this.scene.make.tilemap({
+            data: calculateOutline(levelData),
+            tileWidth: this.blocksize,
+            tileHeight: this.blocksize,
+        });
+        const outlineTileset = tilemap.addTilesetImage("outline_tileset", "outline_tileset");
         //tilemap.forEachTile((tile) => {
         //    const prop = BlockObject.map.get(tile.index);
         //})
 
         this.tilelayer = tilemap.createLayer(0, tileset);
+        outlineTilemap.createLayer(0, outlineTileset)
 
         this.tilelayer.setCollision(this.blocks.collisionIndexes);
 
@@ -311,24 +302,24 @@ export class LevelManager {
                 let velX = 0;
                 let velY = 0;
                 switch (se.index) {
-                case 11:
-                    velY = 50;
-                    break;
+                    case 11:
+                        velY = 50;
+                        break;
 
-                case 12:
-                    velY = -50;
-                    break;
+                    case 12:
+                        velY = -50;
+                        break;
 
-                case 13:
-                    velX = 50;
-                    break;
+                    case 13:
+                        velX = 50;
+                        break;
 
-                case 14:
-                    velX = -50;
-                    break;
+                    case 14:
+                        velX = -50;
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
                 }
 
                 sp.body.stop();
