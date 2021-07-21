@@ -61,10 +61,11 @@ export class Character extends Sprite {
     Rleg: Phaser.GameObjects.Sprite
 
     speed = 1; // Speed of character
+    jumpPower = 1; // Power of characters jump
     direction = true; // Direction of character, true = right, false = left
 
-    grabbing!: Sprite | Character | undefined; // Whats the character grabbing?
-    grabbable = true; // Is the character grabbable
+    grabbing: Sprite | Character | null; // Whats the character grabbing?
+    grabbable = true; // Is the character grabbable?
 
     constructor(scene: Phaser.Scene, x: number, y: number, frame: number, tilemap: Phaser.Tilemaps.TilemapLayer, sprite: SpriteType,
         options: Pick<Partial<Sprite>, "type" | "mass" | "friction" | "grabbable" | "grabbed" | "active">,
@@ -89,6 +90,8 @@ export class Character extends Sprite {
 
         this.visual.anims.play("idle")
         this.bringToTop(this.visual)
+
+        this.grabbing = null;
     }
 
     attemptGrab(sp: Sprite): boolean {
@@ -113,40 +116,41 @@ export class Character extends Sprite {
             ).setStrokeStyle(2, 0xa2ff00, 0.2)
         }
 
-        if (characterBounds.contains(spriteCoord.x, spriteCoord.y)) {
+        const spriteInBounds = characterBounds.contains(spriteCoord.x, spriteCoord.y);
+
+        if (spriteInBounds) {
             // console.log(sp.name);
             this.grabbing = sp; // a reference
             sp.grabbed = true;
+            this.jumpPower = 1 / Math.sqrt(sp.mass / 4);
             // console.log(sp.mass)
-            this.speed = 1 / Math.sqrt(sp.mass / 4);
             // sp.body.enable = false;
-            return true;
-        } else {
-            return false;
         }
+        return spriteInBounds;
     }
 
     releaseGrab(throwsprite = false): void {
-        if (this.grabbing === undefined) {
+        if (this.grabbing === null) {
             console.warn("Character tried releasing nothing!");
             return;
         }
 
         const gsprite = this.grabbing;
-        const throwpower = 400 * this.speed;
+        const throwpower = 300 * this.speed;
         const resultVelocityX = (Math.abs(this.body.velocity.x) > 140)
-            ? this.body.velocity.x * 2 : (this.direction)
+            ? this.body.velocity.x * 1.7 : (this.direction)
                 ? throwpower : -throwpower
 
         if (throwsprite) {
             gsprite.body.velocity = new Phaser.Math.Vector2(
-                resultVelocityX, -throwpower * 1.5,
+                resultVelocityX, -throwpower * 1.7,
             );
         }
         gsprite.grabbed = false;
         gsprite.body.enable = true;
         this.speed = 1;
-        this.grabbing = undefined;
+        this.jumpPower = 1;
+        this.grabbing = null;
     }
 
     die(): void {
@@ -164,10 +168,10 @@ export class Character extends Sprite {
                 onUpdate: (tween) => {this.setVisible(Math.floor(tween.getValue() % 2) === 0)},
                 onComplete: () => {
                     // Drop any grabbed sprite
-                    if (this.grabbing !== undefined) {
+                    if (this.grabbing !== null) {
                         this.grabbing.grabbed = false;
                         this.grabbing.body.enable = true;
-                        this.grabbing = undefined;
+                        this.grabbing = null;
                     }
 
                     this.active = false;

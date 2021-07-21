@@ -110,7 +110,7 @@ class gameScene extends Phaser.Scene {
                 if (isStanding) {
                     cc.Lleg.anims.play("jump", true)
                     cc.Rleg.anims.play("jump", true)
-                    cc.body.setVelocityY(-710 * cc.speed);
+                    cc.body.setVelocityY(-710 * cc.jumpPower);
                 }
             }
 
@@ -164,7 +164,7 @@ class gameScene extends Phaser.Scene {
 
         // If UP key is pressed, grab overlapped sprite
         if (Phaser.Input.Keyboard.JustDown(upKey)) {
-            if (cc.grabbing === undefined) {
+            if (cc.grabbing === null) {
                 // very inefficient
                 for (const entity of this.levelmanager.sprites.children.entries) {
                     cc.attemptGrab(entity as Sprite)
@@ -175,7 +175,7 @@ class gameScene extends Phaser.Scene {
         }
 
         // Make character hold sprite while grabbing
-        if (cc.grabbing !== undefined && alive) {
+        if (cc.grabbing !== null && alive) {
             cc.grabbing.body.velocity.set(cc.body.velocity.x, 0);
             if (cc.direction) {
                 cc.grabbing.body.position.set(
