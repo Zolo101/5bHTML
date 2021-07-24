@@ -78,9 +78,9 @@ export class Character extends Sprite {
         // this.setDisplaySize(sprite.size.x, sprite.size.y + 10).;//setOrigin(0.5, 0.4);
         this.body.setOffset(12, 1)
         this.body.setSize(sprite.size.x, sprite.size.y + 10);
-        this.Lleg = this.scene.add.sprite(25, 53, "legs_walk", 1)
+        this.Lleg = this.scene.add.sprite(28, 53, "legs_walk", 1)
             .setScale(0.22)
-        this.Rleg = this.scene.add.sprite(45, 53, "legs_walk", 1)
+        this.Rleg = this.scene.add.sprite(42, 53, "legs_walk", 1)
             .setScale(0.22)
 
         this.add([this.Lleg, this.Rleg])
