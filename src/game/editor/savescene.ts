@@ -1,4 +1,4 @@
-import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
+import { BaseButton, createBackButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
 import s_saves, { s_addSave, s_getCacheAll, s_getLocalStorage, s_push } from "../core/misc/dataidb";
 import { downloadFile, uploadFile } from "../core/misc/other";
@@ -64,14 +64,7 @@ class saveScene extends Phaser.Scene {
             return
         }, true);
 
-        const backButton = this.add.text(
-            800, 475, "BACK", backStyle,
-        ).setInteractive();
-
-        backButton.on("pointerdown", () => {
-            document.body.style.backgroundColor = "initial";
-            this.scene.start("menuScene");
-        });
+        createBackButton(this, "menuScene")
 
         this.screen = new Screen(655, 70, this);
         this.screen.zoom = 0.3;

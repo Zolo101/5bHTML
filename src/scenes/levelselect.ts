@@ -1,4 +1,4 @@
-import { backStyle, textStyle } from "../game/core/buttons";
+import { createBackButton, textStyle } from "../game/core/buttons";
 import { levels } from "../game/core/jsonmodule";
 
 const buttonlist: Phaser.GameObjects.Rectangle[] = [];
@@ -33,10 +33,7 @@ class levelselectScene extends Phaser.Scene {
                 .setFontStyle("bold")
         }
 
-        const backButton = this.add.text(
-            800, 475, "BACK", backStyle,
-        ).setInteractive();
-        backButton.on("pointerdown", () => this.scene.start("menuScene"));
+        createBackButton(this, "menuScene")
 
         buttonlist.forEach((btn) => {
             const btncolour = btn.fillColor;

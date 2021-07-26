@@ -1,4 +1,4 @@
-import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
+import { BaseButton, createBackButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
 import { s_saves, s_addSave, s_push } from "../core/misc/dataidb";
 import Alert from "../editor/ui/alert";
@@ -45,14 +45,7 @@ class explorelevelScene extends Phaser.Scene {
         screen.setBackground(this.save.levels[0].background)
         screen.updateMapPos();
 
-        const backButton = this.add.text(
-            800, 475, "BACK", backStyle,
-        ).setInteractive();
-
-        backButton.on("pointerdown", () => {
-            document.body.style.backgroundColor = "initial";
-            this.scene.start("exploreScene");
-        });
+        createBackButton(this, "exploreScene")
     }
 }
 

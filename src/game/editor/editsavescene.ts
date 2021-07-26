@@ -1,4 +1,4 @@
-import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
+import { BaseButton, createBackButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
 import { s_addSave, s_push, s_removeSave, s_saves } from "../core/misc/dataidb";
 import validateLevelpack from "../core/misc/validate";
@@ -74,13 +74,7 @@ class editsaveScene extends Phaser.Scene {
         screen.setBackground(this.save.levels[0].background)
         screen.updateMapPos();
 
-        const backButton = this.add.text(
-            800, 475, "BACK", backStyle,
-        ).setInteractive();
-
-        backButton.on("pointerdown", () => {
-            this.scene.start("saveScene");
-        });
+        createBackButton(this, "saveScene")
 
         if (!validSave) {
             this.add.text(10, 500, "INVALID", textStyle)

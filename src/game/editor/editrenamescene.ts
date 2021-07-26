@@ -1,4 +1,4 @@
-import { backStyle, BaseButton, textStyle, titleStyle } from "../core/buttons";
+import { BaseButton, createBackButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
 import s_saves, { s_push } from "../core/misc/dataidb";
 
@@ -35,15 +35,10 @@ class editrenameScene extends Phaser.Scene {
             descriptionText.setText(this.save.description)
         })
 
-        const backButton = this.add.text(
-            800, 475, "BACK", backStyle,
-        ).setInteractive();
-
-        backButton.on("pointerdown", () => {
+        createBackButton(this, "saveScene", () => {
             s_push();
             s_saves.delete(nameBuffer);
-            this.scene.start("saveScene");
-        });
+        })
     }
 }
 

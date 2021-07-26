@@ -41,7 +41,6 @@ export const backStyle = {
     align: "center",
     fixedWidth: 135,
     fixedHeight: 50,
-    backgroundColor: "#ddd",
     color: "#fff",
     padding: {
         y: 4,
@@ -77,10 +76,18 @@ export const buttonStyle = {
     },
 };
 
-export const backButton = (scene: Phaser.Scene, start = "menuScene"): void => {
-    new Phaser.GameObjects.Text(
-        scene, 800, 475, "BACK", backStyle,
-    ).setInteractive().setAlpha(0.75).on("pointerdown", () => scene.scene.start(start));
+export const createBackButton = (scene: Phaser.Scene, start: string, func?: () => void): void => {
+    const rect = scene.add.rectangle(0, 0, 135, 50, 0xffffff)
+        .setOrigin(0, 0)
+        .setAlpha(0.5);
+    const text = scene.add.text(0, 0, "BACK", backStyle);
+
+    scene.add.container(800, 475, [rect, text])
+        .setInteractive(new Phaser.Geom.Rectangle(0, 0, 135, 50), Phaser.Geom.Rectangle.Contains)
+        .on("pointerdown", () => {
+            if (func !== undefined) func()
+            scene.scene.start(start)
+        });
 };
 
 export class BaseButton {

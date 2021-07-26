@@ -1,4 +1,4 @@
-import { backStyle, BaseButton, titleStyle } from "../game/core/buttons";
+import { createBackButton, titleStyle } from "../game/core/buttons";
 // import { BooleanOption, DropDownOption } from "../game/editor/ui/option";
 // import Tab from "../game/editor/ui/tab";
 import Settings from "../game/settingsgame";
@@ -28,15 +28,9 @@ class settingsScene extends Phaser.Scene {
         ))
         tab.render(100, 80, this); */
 
-        const backButton = this.add.text(
-            800, 475, "BACK", backStyle,
-        ).setInteractive();
-
-        backButton.on("pointerdown", () => {
-            document.body.style.backgroundColor = "initial";
+        createBackButton(this, "menuScene", () => {
             localStorage.setItem("settings", JSON.stringify(Settings))
-            this.scene.start("menuScene");
-        });
+        })
     }
 }
 

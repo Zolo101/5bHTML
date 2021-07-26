@@ -1,4 +1,4 @@
-import { backStyle, textStyle } from "../game/core/buttons";
+import { createBackButton, textStyle } from "../game/core/buttons";
 
 class newScene extends Phaser.Scene {
     constructor() { super({ key: "newScene" }); }
@@ -20,14 +20,7 @@ Things you should know:
             textStyle
         ).setFontSize(24)
 
-        const backButton = this.add.text(
-            800, 475, "BACK", backStyle,
-        ).setInteractive();
-
-        backButton.on("pointerdown", () => {
-            document.body.style.backgroundColor = "initial";
-            this.scene.start("menuScene");
-        });
+        createBackButton(this, "menuScene")
     }
 }
 

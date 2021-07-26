@@ -1,4 +1,4 @@
-import { textStyle, backStyle, levelnameStyle, titleStyle } from "../core/buttons";
+import { textStyle, levelnameStyle, titleStyle, createBackButton } from "../core/buttons";
 import { APIData, APIResponse, c_addSaves, c_clear, c_clearEverything, c_getLocalStorage, c_push, c_saves } from "../core/misc/dataidb";
 import { truncate } from "../core/misc/other";
 import Alert from "../editor/ui/alert";
@@ -116,13 +116,7 @@ class exploreScene extends Phaser.Scene {
             .setFontStyle("bold")
             .setColor("#507860");
 
-        const backButton = this.add.text(
-            800, 475, "BACK", backStyle,
-        ).setInteractive();
-
-        backButton.on("pointerdown", () => {
-            this.scene.start("menuScene");
-        });
+        createBackButton(this, "menuScene")
 
 
         // const featuredbutton = this.add.text(

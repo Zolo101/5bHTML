@@ -74,7 +74,7 @@ export class LevelManager {
         this.backScene = backScene;
 
         this.levelTextButton = this.scene.add.text(
-            20, 480, "", levelnameStyle,
+            15, 492, "", levelnameStyle,
         ).setScrollFactor(0, 0).setDepth(1)
 
         this.extraData = extraData;
@@ -134,7 +134,7 @@ export class LevelManager {
 
         const backButton = this.scene.add.text(800, 475, "MENU", backStyle)
             .setInteractive()
-            .setAlpha(0.75)
+            .setAlpha(0.6)
             .setScrollFactor(0)
             .setDepth(1);
 
