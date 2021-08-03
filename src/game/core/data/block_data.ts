@@ -53,14 +53,14 @@ BlockObject.map.set(15, new Block(15, false, true, false, false, false))
 
 // grey spikes
 BlockObject.map.set(8, new Block(8, false, true, true, false, false)) // center
-BlockObject.map.set(11, new Block(11, false, true, true, false, false)
-    .setSides(true, true, true, true))
-BlockObject.map.set(12, new Block(12, false, true, true, false, false)
-    .setSides(true, true, true, true))
-BlockObject.map.set(13, new Block(13, false, true, true, false, false)
-    .setSides(true, true, true, true))
-BlockObject.map.set(14, new Block(14, false, true, true, false, false)
-    .setSides(true, true, true, true))
+BlockObject.map.set(11, new Block(11, true, true, true, false, false) // up
+    .setSides(false, false, true, false))
+BlockObject.map.set(12, new Block(12, true, true, true, false, false) // down
+    .setSides(false, false, false, true))
+BlockObject.map.set(13, new Block(13, true, true, true, false, false) // left
+    .setSides(true, false, false, false))
+BlockObject.map.set(14, new Block(14, true, true, true, false, false) // right
+    .setSides(false, true, false, false))
 
 BlockObject.map.set(10, new Block(10, false, true, false, false, false))
 // new Block("_", undefined, true, false, false, true)

@@ -2,15 +2,16 @@ import {
     Sprite, Character, makeSpriteFromString, makeCharacterFromString, SpriteType,
 } from "./sprite";
 import { levelnameStyle, backStyle } from "../buttons";
-import { Block, createSpecialBlock } from "./block";
+import { createSpecialBlock } from "./block";
 import { checkLevel } from "../checkLevel";
-import { Entity, LevelData } from "../levelstructure";
+import { LevelData } from "../levelstructure";
 import { entityData } from "../jsonmodule";
 import Settings from "../../settingsgame";
 import gameSceneType from "../gamestructure";
 import { BlockObject, BlockObjectType } from "../data/block_data";
 import { s_getCacheSave, s_getLocalStorage } from "../misc/dataidb";
 import calculateOutline from "../calculateoutline";
+import { create2DNumberArray } from "../misc/other";
 let level: LevelData
 
 export class LevelManager {
@@ -29,7 +30,11 @@ export class LevelManager {
     scene: Phaser.Scene
     extraData: Record<string, unknown> | undefined
 
-    tilelayer!: Phaser.Tilemaps.TilemapLayer
+    tilelayers!: {
+        static: Phaser.Tilemaps.TilemapLayer
+        killable: Phaser.Tilemaps.TilemapLayer
+        outline: Phaser.Tilemaps.TilemapLayer
+    }
     specialblocks!: Phaser.GameObjects.Group
     // collisons!:
     camera!: Phaser.Cameras.Scene2D.Camera
@@ -61,7 +66,7 @@ export class LevelManager {
         this.hardlimitlevel = this.levels.levels.length;
         this.finishedLevelpack = false;
 
-        this.blocks = blocks; // i dont like this
+        this.blocks = blocks;
         this.scene = scene;
 
         this.characters = this.scene.add.group();
@@ -117,7 +122,7 @@ export class LevelManager {
         //this.scene.physics.collideTiles(this.sprites, undefined, undefined, () => {
         //})
 
-        this.scene.physics.add.collider(this.specialblocks, this.tilelayer);
+        this.scene.physics.add.collider(this.specialblocks, this.tilelayers.static);
 
         // Init Sprite callbacks
         this.initSprites();
@@ -133,6 +138,7 @@ export class LevelManager {
         );
 
         const backButton = this.scene.add.text(800, 475, "MENU", backStyle)
+            .setBackgroundColor("#aaaaaa")
             .setInteractive()
             .setAlpha(0.6)
             .setScrollFactor(0)
@@ -226,7 +232,8 @@ export class LevelManager {
 
             switch (sprite.type) {
                 case "Character":
-                    newChar = makeCharacterFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                    newChar = makeCharacterFromString(this.scene, sprite, spriteProperties);
+                    newChar.addTilemap(this.tilelayers.static, this.tilelayers.killable)
                     newChar.type = "Character";
                     this.characters.add(newChar);
                     break;
@@ -240,7 +247,8 @@ export class LevelManager {
                         );
                         this.specialblocks.add(specialblock);
                     } else {
-                        const newSprite = makeSpriteFromString(this.scene, sprite, spriteProperties, this.tilelayer);
+                        const newSprite = makeSpriteFromString(this.scene, sprite, spriteProperties);
+                        newSprite.addTilemap(this.tilelayers.static, this.tilelayers.killable)
                         this.sprites.add(newSprite);
                     }
                     break;
@@ -255,86 +263,80 @@ export class LevelManager {
     generateTerrain(levelnum: number): void {
         const currentLevel = level.levels[levelnum];
         const levelData = currentLevel.data;
-        const levelDataprep: number[][] = [];
+
+        const staticLevelData = create2DNumberArray(levelData[0].length, levelData.length)
+        const killableLevelData = create2DNumberArray(levelData[0].length, levelData.length)
+        for (let i = 0; i < levelData[0].length; i++) {
+            for (let j = 0; j < levelData.length; j++) {
+                if (levelData[j][i] !== -2) {
+                    const block = this.blocks.map.get(levelData[j][i])!
+                    if (block.canKill) {
+                        killableLevelData[j][i] = block.tile;
+                    } else {
+                        staticLevelData[j][i] = block.tile;
+                    }
+                }
+            }
+        }
+
 
         console.log(this.blocks)
-
-        /*
-        // Clone array, dont reference it
-        const levelDataMapBuffer = [...levelData];
-        levelDataMapBuffer.forEach((n: number, i) => levelDataMapBuffer[i] -= 1);
-
-        for (let i = 0; i < currentLevel.height; i++) {
-            levelDataprep[i] = levelDataMapBuffer.slice(currentLevel.width * i, currentLevel.width * (i + 1))
-        } */
-
         console.log(levelData)
 
         // Make tilemap
-        const tilemap = this.scene.make.tilemap({
-            data: levelData,
+        const staticTilemap = this.scene.make.tilemap({
+            data: staticLevelData,
+            tileWidth: this.blocksize,
+            tileHeight: this.blocksize,
+        });
+        const killableTilemap = this.scene.make.tilemap({
+            data: killableLevelData,
             tileWidth: this.blocksize,
             tileHeight: this.blocksize,
         });
 
-        const tileset = tilemap.addTilesetImage("core_tileset", "core_tileset");
+        const tileset = staticTilemap.addTilesetImage("core_tileset", "core_tileset");
+        const outlineTileset = staticTilemap.addTilesetImage("outline_tileset", "outline_tileset");
         // console.log(calculateOutline(levelData))
         const outlineTilemap = this.scene.make.tilemap({
             data: calculateOutline(levelData),
             tileWidth: this.blocksize,
             tileHeight: this.blocksize,
         });
-        const outlineTileset = tilemap.addTilesetImage("outline_tileset", "outline_tileset");
         //tilemap.forEachTile((tile) => {
         //    const prop = BlockObject.map.get(tile.index);
         //})
 
-        this.tilelayer = tilemap.createLayer(0, tileset);
-        outlineTilemap.createLayer(0, outlineTileset)
+        this.tilelayers = {
+            static: staticTilemap.createLayer(0, tileset),
+            killable: killableTilemap.createLayer(0, tileset),
+            outline: outlineTilemap.createLayer(0, outlineTileset)
+        }
 
-        this.tilelayer.setCollision(this.blocks.collisionIndexes);
+        this.tilelayers.static.setCollision(this.blocks.collisionIndexes);
+        this.tilelayers.killable.setCollision(this.blocks.collisionIndexes);
 
-        // i'll put this somewhere else one day
-        this.tilelayer.setTileIndexCallback(this.blocks.killIndexes, (sp: Sprite | Character, se: Phaser.Tilemaps.Tile) => {
-            // console.log(sp, se)
-            if (sp.type === "Sprite") {
-                // hardcoding xd
-                let velX = 0;
-                let velY = 0;
-                switch (se.index) {
-                    case 11:
-                        velY = 50;
-                        break;
+        this.tilelayers.killable.tilemap.forEachTile((tile) => {
+            const block = BlockObject.map.get(tile.index)
+            if (block === undefined) return;
 
-                    case 12:
-                        velY = -50;
-                        break;
-
-                    case 13:
-                        velX = 50;
-                        break;
-
-                    case 14:
-                        velX = -50;
-                        break;
-
-                    default:
-                        break;
+            tile.setCollisionCallback((sp: Sprite | Character) => {
+                // the new spike collision system
+                // looks a bit hacky but gets the job done
+                if (sp.type === "Character") {
+                    if (block.side.left && sp.body.velocity.x < 0) sp.die()
+                    if (block.side.right && sp.body.velocity.x > 0) sp.die()
+                    if (block.side.up && sp.body.velocity.y < 0) sp.die()
+                    if (block.side.down && sp.body.velocity.y > 0) sp.die()
                 }
+            }, this)
 
-                sp.body.stop();
-                sp.body.setVelocity(velX, velY);
-                return;
-            }
-
-            const chr = sp as Character
-            chr.die();
-        }, this);
+        })
 
         // console.log(currentLevelData);
         // console.log(tilemapData);
 
-        this.scene.cameras.main.setBounds(0, 0, tilemap.widthInPixels, tilemap.heightInPixels);
+        this.scene.cameras.main.setBounds(0, 0, staticTilemap.widthInPixels, staticTilemap.heightInPixels);
         // this.scene.cameras.main.setRoundPixels(false);
         // const tilesetParse = currentLevel.data.map((row) => {row.})
     }

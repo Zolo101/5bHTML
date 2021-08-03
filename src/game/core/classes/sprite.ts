@@ -19,7 +19,6 @@ export class Sprite extends Phaser.GameObjects.Container {
         y: number,
         key: string,
         frame: number,
-        tilemap: Phaser.Tilemaps.TilemapLayer,
         sprite: SpriteType,
         options: Pick<Partial<Sprite>, "type" | "mass" | "friction" | "grabbable" | "grabbed" | "active">
     ) {
@@ -45,7 +44,6 @@ export class Sprite extends Phaser.GameObjects.Container {
 
         this.scene.physics.world.enable(this);
         this.scene.add.existing(this);
-        this.scene.physics.add.collider(this, tilemap);
 
         // WARNING THIS BLANKS THE GAME
         // this.setDisplaySize(sprite.size.x, sprite.size.y);
@@ -53,6 +51,10 @@ export class Sprite extends Phaser.GameObjects.Container {
         this.body.setDragX(this.friction * 700);
         this.body.setMass(this.mass);
         this.body.setCollideWorldBounds(true);
+    }
+
+    addTilemap(...tilemap: Phaser.Tilemaps.TilemapLayer[]): void {
+        this.scene.physics.add.collider(this, tilemap);
     }
 }
 
@@ -67,10 +69,10 @@ export class Character extends Sprite {
     grabbing: Sprite | Character | null; // Whats the character grabbing?
     grabbable = true; // Is the character grabbable?
 
-    constructor(scene: Phaser.Scene, x: number, y: number, frame: number, tilemap: Phaser.Tilemaps.TilemapLayer, sprite: SpriteType,
+    constructor(scene: Phaser.Scene, x: number, y: number, frame: number, sprite: SpriteType,
         options: Pick<Partial<Sprite>, "type" | "mass" | "friction" | "grabbable" | "grabbed" | "active">,
     ) {
-        super(scene, x, y, "book_general", frame, tilemap, sprite, options)
+        super(scene, x, y, "book_general", frame, sprite, options)
         // this.setVisible(false)
         this.visual.setTexture("book_general")
             .setOrigin(0, 0)
@@ -85,7 +87,6 @@ export class Character extends Sprite {
 
         this.add([this.Lleg, this.Rleg])
 
-        this.scene.physics.add.collider(this, tilemap);
         this.setupAnimations()
 
         this.visual.anims.play("idle")
@@ -222,10 +223,9 @@ export function makeCharacterFromString(
     scene: Phaser.Scene,
     entity: Entity,
     sprite: SpriteType, // property
-    tilelayer: Phaser.Tilemaps.TilemapLayer,
 ): Character {
     const newChar = new Character(
-        scene, entity.x, entity.y, 3, tilelayer, sprite,
+        scene, entity.x, entity.y, 3, sprite,
         { mass: sprite.mass, friction: sprite.friction, type: "Character" }
     );
     return newChar
@@ -235,11 +235,10 @@ export function makeSpriteFromString(
     scene: Phaser.Scene,
     entity: Entity,
     sprite: SpriteType, // property
-    tilelayer: Phaser.Tilemaps.TilemapLayer,
 ): Sprite {
     const newSprite = new Sprite(
         scene, entity.x, entity.y, sprite.name, 3,
-        tilelayer, sprite, { mass: sprite.mass },
+        sprite, { mass: sprite.mass },
     );
     return newSprite
 }
