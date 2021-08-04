@@ -114,22 +114,6 @@ class gameScene extends Phaser.Scene {
                 }
             }
 
-            if (leftKey.isDown) {
-                cc.direction = false;
-                cc.body.setVelocityX(-270 * cc.speed);
-
-                if (isStanding && spaceKey.isUp) {
-                    cc.visual.anims.play("walkL", true)
-                    cc.Lleg.anims.play("walk", true)
-                    cc.Rleg.anims.play("walk", true)
-                }
-                cc.visual.setFlipX(false)
-                if (cc.grabbing) {
-                    cc.visual.anims.play("grabbingL", true)
-                    cc.visual.setFlipX(false)
-                }
-            }
-
             if (rightKey.isDown) {
                 cc.direction = true;
                 cc.body.setVelocityX(270 * cc.speed);
@@ -145,6 +129,22 @@ class gameScene extends Phaser.Scene {
                 }
                 if (cc.grabbing) {
                     cc.visual.anims.play("grabbingR", true)
+                    cc.visual.setFlipX(false)
+                }
+            }
+
+            if (leftKey.isDown) {
+                cc.direction = false;
+                cc.body.setVelocityX(-270 * cc.speed);
+
+                if (isStanding && spaceKey.isUp) {
+                    cc.visual.anims.play("walkL", true)
+                    cc.Lleg.anims.play("walk", true)
+                    cc.Rleg.anims.play("walk", true)
+                }
+                cc.visual.setFlipX(false)
+                if (cc.grabbing) {
+                    cc.visual.anims.play("grabbingL", true)
                     cc.visual.setFlipX(false)
                 }
             }
