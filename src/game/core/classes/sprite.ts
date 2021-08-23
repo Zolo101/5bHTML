@@ -96,25 +96,37 @@ export class Character extends Sprite {
     }
 
     attemptGrab(sp: Sprite): boolean {
-        // Stop if sprite is dead
+        // Stop if sprite is dead, or if sprite is already grabbing
         if (!this.active) return false;
 
-        const characterBounds = this.getBounds();
-        const cbWidth = characterBounds.width * 2.25
+        const characterBounds = this.getBounds()
+        const cbWidth = characterBounds.width * 1.5
         const cbHeight = characterBounds.height
         const spriteCoord = sp.body.center;
-        const weirdOffset = 58; // Fix the werid offset
 
-        characterBounds.setPosition(this.body.center.x - weirdOffset, this.body.center.y - 15);
         characterBounds.setSize(cbWidth, cbHeight);
+
+        if (this.direction) { // right
+            characterBounds.setPosition(this.x + cbWidth - (this.body.width * 2), this.y)
+        } else { // left
+            // warning: the 10 is a hardcode for a werid hitbox glitch, zelo pls fix
+            characterBounds.setPosition(this.x - cbWidth + this.body.width + 10, this.y)
+        }
 
         if (Settings.IS_DEBUG) {
             this.scene.add.rectangle(
-                characterBounds.x + weirdOffset,
-                characterBounds.y,
+                characterBounds.centerX,
+                characterBounds.centerY,
                 cbWidth,
                 cbHeight
             ).setStrokeStyle(2, 0xa2ff00, 0.2)
+
+            this.scene.add.rectangle(
+                spriteCoord.x,
+                spriteCoord.y,
+                5,
+                5
+            ).setStrokeStyle(2, 0xffffff, 1)
         }
 
         const spriteInBounds = characterBounds.contains(spriteCoord.x, spriteCoord.y);
@@ -123,7 +135,10 @@ export class Character extends Sprite {
             // console.log(sp.name);
             this.grabbing = sp; // a reference
             sp.grabbed = true;
+            // this.grabbing.body.moves = false;
             this.jumpPower = 1 / Math.sqrt(sp.mass / 4);
+            // sp.setPosition(25, -10)
+            // this.add(sp)
             // console.log(sp.mass)
             // sp.body.enable = false;
         }
@@ -151,6 +166,9 @@ export class Character extends Sprite {
         gsprite.body.enable = true;
         this.speed = 1;
         this.jumpPower = 1;
+        // this.remove(this.grabbing)
+        // this.grabbing.body.moves = true;
+
         this.grabbing = null;
     }
 

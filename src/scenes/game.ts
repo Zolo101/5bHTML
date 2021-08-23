@@ -165,9 +165,10 @@ class gameScene extends Phaser.Scene {
         // If UP key is pressed, grab overlapped sprite
         if (Phaser.Input.Keyboard.JustDown(upKey)) {
             if (cc.grabbing === null) {
-                // very inefficient
-                for (const entity of this.levelmanager.sprites.children.entries) {
-                    cc.attemptGrab(entity as Sprite)
+                let i = 0;
+                while (i >= 0 && i < this.levelmanager.sprites.children.entries.length && cc.grabbing === null) {
+                    cc.attemptGrab(this.levelmanager.sprites.children.entries[i] as Sprite)
+                    i += 1;
                 }
             } else {
                 cc.releaseGrab(true);

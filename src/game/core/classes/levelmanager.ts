@@ -320,7 +320,7 @@ export class LevelManager {
             const block = BlockObject.map.get(tile.index)
             if (block === undefined) return;
 
-            tile.setCollisionCallback((sp: Sprite | Character) => {
+            tile.setCollisionCallback((sp: Character) => { // should be sp: Sprite | Character but causes errors
                 // the new spike collision system
                 // looks a bit hacky but gets the job done
                 if (sp.type === "Character") {

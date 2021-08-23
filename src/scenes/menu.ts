@@ -11,7 +11,7 @@ class menuScene extends Phaser.Scene {
     create(): void {
         // this.scene.start("editorScene", {level: {name: undefined}}); // go straight into gameplay
         // this.scene.start("exploreScene", {level: {name: undefined}}); // go straight into gameplay
-        // this.scene.start("gameScene", {levelfile: levels, levelnumber: 5})
+        // this.scene.start("gameScene", {levelfile: levels, levelnumber: 6})
         // Background
         this.add.rectangle(0, 0, 960, 540, 0x6a7773).setOrigin(0, 0);
         this.add.image(480, 270, randomBackground())
@@ -27,7 +27,8 @@ class menuScene extends Phaser.Scene {
             .setOrigin(0.5)
 
         // this.add.image(260, 400, "5b_logo").setScale(0.4);
-        this.add.image(205, 173, "5b_people").setScale(0.1);
+        this.add.image(205, 173, "5b_people")
+            .setScale(0.1)
 
         // const settingsButton = new MenuButton(10, 500, "Settings", "Change things!", this, () => this.scene.start("settingsScene"), true)
         const newnewButton = new MenuButton(10, 10, "New to 5bHTML?", "Tells you all about this project.", this, () => this.scene.start("newScene"), true)
