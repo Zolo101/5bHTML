@@ -51,6 +51,9 @@ export class Sprite extends Phaser.GameObjects.Container {
         this.body.setDragX(this.friction * 700);
         this.body.setMass(this.mass);
         this.body.setCollideWorldBounds(true);
+
+        // for some reason this doesnt work here?
+        // this.body.pushable = false;
     }
 
     addTilemap(...tilemap: Phaser.Tilemaps.TilemapLayer[]): void {
@@ -258,6 +261,7 @@ export function makeSpriteFromString(
         scene, entity.x, entity.y, sprite.name, 3,
         sprite, { mass: sprite.mass },
     );
+    newSprite.body.pushable = false;
     return newSprite
 }
 

@@ -206,7 +206,7 @@ export class LevelManager {
         // Character with Sprite collision
         this.scene.physics.add.collider(this.characters, this.sprites, undefined, (sp1) => {
             // console.log(sp1.body.velocity.y)
-            return (sp1.body.velocity.y > 84)
+            return (sp1.body.velocity.y > 42)
         });
 
         // Collide with self
