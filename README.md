@@ -22,13 +22,13 @@ To build 5bHTML, clone / download this repo.
 
 `git clone https://github.com/Zolo101/5bHTML.git`
 
-**(OPTIONAL)** If you want the dev version:
-
-`npm checkout dev`
-
 Goto the location of 5bHTML:
 
 `cd 5bHTML`
+
+**(OPTIONAL)** If you want the stable version:
+
+`git checkout master`
 
 Then, install the needed dependencies:
 
