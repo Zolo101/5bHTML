@@ -2,7 +2,7 @@ import { LevelData } from "../levelstructure";
 
 export default {
     name: "5b levels",
-    author: "Orginial by Cary Huang",
+    author: "Original by Cary Huang",
     description: "The OG levelpack.",
 
     version: 5,
