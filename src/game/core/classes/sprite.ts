@@ -95,6 +95,8 @@ export class Character extends Sprite {
         this.visual.anims.play("idle")
         this.bringToTop(this.visual)
 
+        this.setDepth(1)
+
         this.grabbing = null;
     }
 
