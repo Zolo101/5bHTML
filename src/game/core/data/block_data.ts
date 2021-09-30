@@ -14,10 +14,20 @@ export const BlockObject: BlockObjectType = {
     specialIndexes: [],
 }
 
+export enum BlockProps {
+    DontCollide,
+    Invisible,
+    Kills,
+    Special,
+    Animated,
+    Outline
+}
+
 // in order of appearance
-BlockObject.map.set(6, new Block(6, true, true, false, false, false))
-BlockObject.map.set(-1, new Block(undefined, false, false, false, false, false))
-BlockObject.map.set(2, new Block(2, false, true, false, true, false) // Finish block
+new Block(6, [BlockProps.Outline])
+new Block(22, [BlockProps.Outline])
+new Block(-1, [BlockProps.DontCollide, BlockProps.Invisible])
+new Block(2, [BlockProps.DontCollide, BlockProps.Special]) // Finish block
     .setSize(60, 120)
     .setOffset(30, 0)
     .setTextureName("finish")
@@ -43,43 +53,43 @@ BlockObject.map.set(2, new Block(2, false, true, false, true, false) // Finish b
             }
         }
     })
-)
 
-BlockObject.map.set(7, new Block(7, false, true, false, false, false)) // Wintoken
+new Block(7, [BlockProps.DontCollide]) // Wintoken
 // new Block("5", false, true, false, true, false)
 // .setSize(150, 180)
 // new Block(">", true, true, false, false, true)
-BlockObject.map.set(15, new Block(15, false, true, false, false, false))
+new Block(15, [BlockProps.DontCollide])
+new Block(23, [BlockProps.DontCollide])
 
 // grey spikes
-BlockObject.map.set(8, new Block(8, false, true, true, false, false)) // center
-BlockObject.map.set(11, new Block(11, true, true, true, false, false) // up
-    .setSides(false, false, true, false))
-BlockObject.map.set(12, new Block(12, true, true, true, false, false) // down
-    .setSides(false, false, false, true))
-BlockObject.map.set(13, new Block(13, true, true, true, false, false) // left
-    .setSides(true, false, false, false))
-BlockObject.map.set(14, new Block(14, true, true, true, false, false) // right
-    .setSides(false, true, false, false))
+new Block(8, [BlockProps.Kills]) // center
+new Block(11, [BlockProps.Kills]) // up
+    .setSides(false, false, true, false)
+new Block(12, [BlockProps.Kills]) // down
+    .setSides(false, false, false, true)
+new Block(13, [BlockProps.Kills]) // left
+    .setSides(true, false, false, false)
+new Block(14, [BlockProps.Kills]) // right
+    .setSides(false, true, false, false)
 
-BlockObject.map.set(10, new Block(10, false, true, false, false, false))
+new Block(10, [BlockProps.DontCollide])
 // new Block("_", undefined, true, false, false, true)
 
 // one-sided platforms
-BlockObject.map.set(19, new Block(19, false, true, false, false, false) // right
-    .setSides(false, true, false, false))
-BlockObject.map.set(16, new Block(16, false, true, false, false, false) // up
-    .setSides(false, false, true, false))
+new Block(19, [BlockProps.DontCollide]) // right
+    .setSides(false, true, false, false)
+new Block(16, [BlockProps.DontCollide]) // up
+    .setSides(false, false, true, false)
 
-BlockObject.map.set(21, new Block(21, true, true, false, false, false))
-BlockObject.map.set(20, new Block(20, true, true, false, false, false))
+new Block(21, [])
+new Block(20, [])
 
 BlockObject.map.forEach((block, i) => {
-    if (block.canCollide) {
+    if (!block.has(BlockProps.DontCollide)) {
         BlockObject.collisionIndexes.push(i);
-    } else if (block.canKill) {
+    } else if (block.has(BlockProps.Kills)) {
         BlockObject.killIndexes.push(i);
-    } else if (block.special) {
+    } else if (block.has(BlockProps.Special)) {
         BlockObject.specialIndexes.push(i);
     }
 })

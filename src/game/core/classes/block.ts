@@ -1,4 +1,4 @@
-import { BlockObject } from "../data/block_data";
+import { BlockObject, BlockProps } from "../data/block_data";
 import gameSceneType from "../gamestructure";
 import { Entity } from "../levelstructure";
 import LevelManager from "./levelmanager";
@@ -12,21 +12,25 @@ export class Block {
     size!: { x: number; y: number; };
     offset = { x: 0, y: 0 };
     onCollide!: LevelPhysicsCallback
-    side!: { left: boolean; right: boolean; up: boolean; down: boolean; };
-    name = "placeholder_name"
+    side: { left: boolean; right: boolean; up: boolean; down: boolean; };
+    name = "placeholder_name";
+    tile: number
+    properties: BlockProps[];
 
     constructor(
-        public tile = 4, // unknown/unset texture
-        public canCollide = true,
-        public visible = true,
-        public canKill = false,
-        public special = false,
-        public animate = false,
+        tile = 4, // unknown/unset texture
+        properties: BlockProps[],
         public texturename = "special_missing", // for specialblocks
     ) {
+        this.properties = properties;
+        this.tile = tile;
         // Add to blockMap
         BlockObject.map.set(this.tile, this);
         this.side = {left: true, right: true, up: true, down: true}
+    }
+
+    has(blockprop: BlockProps): boolean {
+        return this.properties.includes(blockprop)
     }
 
     setSize(x: number, y: number): this {
@@ -49,21 +53,6 @@ export class Block {
         return this
     }
 
-    setVisible(visible: boolean): this {
-        this.visible = visible;
-        return this
-    }
-
-    setCollision(cancollide: boolean): this {
-        this.canCollide = cancollide;
-        return this
-    }
-
-    setSpecial(special: boolean): this {
-        this.special = special;
-        return this
-    }
-
     setTile(tile: number): this {
         this.tile = tile;
         BlockObject.map.delete(tile);
@@ -75,18 +64,11 @@ export class Block {
         this.texturename = texturename;
         return this
     }
-
-    setAnimate(animate: boolean): this {
-        this.animate = animate;
-        return this
-    }
 }
 
 export type SimpleBlock = {
     name: string
-    canCollide: boolean
-    visible: boolean
-    canKill: boolean
+    props: BlockProps[]
     tile: number
     side: {
         left: boolean
@@ -97,7 +79,7 @@ export type SimpleBlock = {
 }
 
 export type SpecialBlock = SimpleBlock & {
-    special: boolean
+    special: true
     animate: boolean
     texturename: string
     size: {

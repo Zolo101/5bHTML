@@ -1,6 +1,4 @@
-import {
-    Sprite, Character, makeSpriteFromString, makeCharacterFromString, SpriteType,
-} from "./sprite";
+import { Sprite, Character, makeSpriteFromString, makeCharacterFromString, SpriteType } from "./sprite";
 import { levelnameStyle, backStyle } from "../buttons";
 import { createSpecialBlock } from "./block";
 import { checkLevel } from "../checkLevel";
@@ -8,7 +6,7 @@ import { LevelData } from "../levelstructure";
 import { entityData } from "../jsonmodule";
 import Settings from "../../settingsgame";
 import gameSceneType from "../gamestructure";
-import { BlockObject, BlockObjectType } from "../data/block_data";
+import { BlockObject, BlockObjectType, BlockProps } from "../data/block_data";
 import { s_getCacheSave, s_getLocalStorage } from "../misc/dataidb";
 import calculateOutline from "../calculateoutline";
 import { create2DNumberArray } from "../misc/other";
@@ -270,7 +268,7 @@ export class LevelManager {
             for (let j = 0; j < levelData.length; j++) {
                 if (levelData[j][i] !== -2) {
                     const block = this.blocks.map.get(levelData[j][i])!
-                    if (block.canKill) {
+                    if (block.has(BlockProps.Kills)) {
                         killableLevelData[j][i] = block.tile;
                     } else {
                         staticLevelData[j][i] = block.tile;
