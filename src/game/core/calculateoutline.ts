@@ -1,4 +1,5 @@
 import { create2DArray } from "./misc/other";
+import { BlockObject, BlockProps } from "./data/block_data";
 
 const outlineTileNum = 6;
 const shadowTileNum = 15;
@@ -66,7 +67,7 @@ function calculateOutline(data: number[][]): number[][] {
             // const downRightNum  = (data[i + 1] !== undefined && data[i + 1] !== undefined) ? data[i + 1][j + 1] : outlineTileNum;
             // const downLeftNum   = (data[i + 1] !== undefined && data[i - 1] !== undefined) ? data[i + 1][j - 1] : outlineTileNum;
 
-            if (centerNum === outlineTileNum) {
+            if (BlockObject.map.get(centerNum)?.has(BlockProps.Outline)) {
             // console.log(centerNum, upNum)
                 if (centerNum === upNum) {
                     neighbourData[i][j].directions.up = true;
@@ -137,7 +138,7 @@ function calculateOutline(data: number[][]): number[][] {
         for (let j = 0; j < outlineData[i].length; j++) {
             let texID = "";
             let shadowTexID = "";
-            if (data[i][j] === outlineTileNum) {
+            if (BlockObject.map.get(data[i][j])?.has(BlockProps.Outline)) {
                 if (!neighbourData[i][j].checkDirection("right", right)) texID += "0"
                 if (!neighbourData[i][j].checkDirection("down", down)) texID += "1"
                 if (!neighbourData[i][j].checkDirection("left", left)) texID += "2"
@@ -214,7 +215,7 @@ function calculateOutline(data: number[][]): number[][] {
                     default:
                         break;
                 }
-            } else if (data[i][j] === shadowTileNum) {
+            } else if (BlockObject.map.get(data[i][j])?.has(BlockProps.DontCollide)) {
                 const centerNum = data[i    ][j    ];
                 const upNum     = (data[i - 1] !== undefined) ? data[i - 1][j    ] : shadowTileNum;
                 const rightNum  = data[i    ][j + 1] ?? shadowTileNum;

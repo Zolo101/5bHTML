@@ -3,11 +3,11 @@ import { levels } from "../game/core/jsonmodule";
 
 const buttonlist: Phaser.GameObjects.Rectangle[] = [];
 
-enum buttonType {
-    locked = 0x585858,
-    next = 0xfc7d00,
-    completed = 0xede229,
-    perfected = 0x0ecc29,
+enum ButtonType {
+    Locked = 0x585858,
+    Next = 0xfc7d00,
+    Completed = 0xede229,
+    Perfected = 0x0ecc29,
 }
 
 class levelselectScene extends Phaser.Scene {
@@ -25,7 +25,7 @@ class levelselectScene extends Phaser.Scene {
 
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 7; j++) {
-                this.createButton(1 + i, j, `${(8 * j) + i + 1}`);
+                this.createButton(1 + i, j, (8 * j) + i + 1);
             }
             this.add.text(50 + i * 110, 22, textNums[i], textStyle)
                 .setColor("#000")
@@ -44,7 +44,7 @@ class levelselectScene extends Phaser.Scene {
 
     }
 
-    createButton(i: number, j: number, num: string): void {
+    createButton(i: number, j: number, num: number): void {
         // black rectangle
         this.add.rectangle(i * 110 - 20, j * 54 + 47.5, 105, 50, 0x000000)
 
@@ -52,17 +52,17 @@ class levelselectScene extends Phaser.Scene {
         const levelButton = this.add.rectangle(i * 110 - 20, j * 54 + 47.5, 100, 45).setInteractive();
 
         // set code for buttons that have levels
-        if (Number(num) <= levels.levels.length) {
-            levelButton.setFillStyle(buttonType.completed)
+        if (num <= levels.levels.length && levels.levels[num - 1]?.name !== "nil") {
+            levelButton.setFillStyle(ButtonType.Completed)
             levelButton.on("pointerdown", () => this.scene.start("gameScene", {
                 levelfile: levels,
                 levelnumber: num,
             }));
         } else {
-            levelButton.setFillStyle(buttonType.locked);
+            levelButton.setFillStyle(ButtonType.Locked);
         }
 
-        if (num === "1") levelButton.setFillStyle(buttonType.next);
+        if (num === levels.levels.length) levelButton.setFillStyle(ButtonType.Next);
         buttonlist.push(levelButton);
     }
 }

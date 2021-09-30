@@ -84,6 +84,8 @@ new Block(16, [BlockProps.DontCollide]) // up
 new Block(21, [])
 new Block(20, [])
 
+new Block(9, [BlockProps.DontCollide])
+
 BlockObject.map.forEach((block, i) => {
     if (!block.has(BlockProps.DontCollide)) {
         BlockObject.collisionIndexes.push(i);
