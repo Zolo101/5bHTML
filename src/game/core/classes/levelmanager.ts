@@ -188,6 +188,7 @@ export class LevelManager {
 
         // Set Camera
         this.scene.cameras.main.startFollow(this.currentcharacter);
+        this.scene.cameras.main.roundPixels = true;
 
         this.scene.tweens.addCounter({
             from: shakeAmount,
@@ -268,6 +269,7 @@ export class LevelManager {
             for (let j = 0; j < levelData.length; j++) {
                 if (levelData[j][i] !== -2) {
                     const block = this.blocks.map.get(levelData[j][i])!
+                    // console.log(levelData[j][i])
                     if (block.has(BlockProps.Kills)) {
                         killableLevelData[j][i] = block.tile;
                     } else {
