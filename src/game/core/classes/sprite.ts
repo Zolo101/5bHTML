@@ -108,14 +108,15 @@ export class Character extends Sprite {
         const cbWidth = characterBounds.width * 1.5
         const cbHeight = characterBounds.height
         const spriteCoord = sp.body.center;
+        spriteCoord.y -= sp.height / 2;
 
         characterBounds.setSize(cbWidth, cbHeight);
 
         if (this.direction) { // right
-            characterBounds.setPosition(this.x + cbWidth - (this.body.width * 2), this.y)
+            characterBounds.setPosition(this.x + cbWidth - (this.body.width * 2), this.y - 5)
         } else { // left
             // warning: the 10 is a hardcode for a werid hitbox glitch, zelo pls fix
-            characterBounds.setPosition(this.x - cbWidth + this.body.width + 10, this.y)
+            characterBounds.setPosition(this.x - cbWidth + this.body.width + 10, this.y - 5)
         }
 
         if (Settings.IS_DEBUG) {
@@ -129,8 +130,8 @@ export class Character extends Sprite {
             this.scene.add.rectangle(
                 spriteCoord.x,
                 spriteCoord.y,
-                5,
-                5
+                sp.width,
+                1
             ).setStrokeStyle(2, 0xffffff, 1)
         }
 
