@@ -1,5 +1,5 @@
 import { textStyle, levelnameStyle, titleStyle, createBackButton } from "../core/buttons";
-import { APIData, APIResponse, c_addSaves, c_clear, c_clearEverything, c_getLocalStorage, c_push, c_saves } from "../core/misc/dataidb";
+import { APIData, APIResponse, c_saves, onlineLevelpackCache } from "../core/misc/dataidb";
 import { truncate } from "../core/misc/other";
 import Alert from "../editor/ui/alert";
 import NumInc from "../editor/ui/numinc";
@@ -136,7 +136,7 @@ class exploreScene extends Phaser.Scene {
         ).setInteractive();
 
         refreshbutton.on("pointerdown", () => {
-            c_clearEverything();
+            onlineLevelpackCache.clearEverything();
             this.refreshPage();
         });
 
@@ -150,7 +150,7 @@ class exploreScene extends Phaser.Scene {
         })
 
         // gets all the levels from the localstorage
-        c_getLocalStorage();
+        onlineLevelpackCache.getLocalStorage();
 
         // has it been 30 MINUTES since the last refresh?
         if (Date.now() > c_saves.time + (1000 * 60 * 30) && c_saves.data.has(this.page)) {
@@ -185,9 +185,9 @@ class exploreScene extends Phaser.Scene {
             this.levels.set(this.page, pageResponse.data);
 
             console.log(c_saves)
-            c_clear(this.page);
-            c_addSaves(this.page, pageResponse.data);
-            c_push();
+            onlineLevelpackCache.clear(this.page);
+            onlineLevelpackCache.addSaves(this.page, pageResponse.data);
+            onlineLevelpackCache.push();
         } catch (error) {
             await new Alert("Unable to access 5beam", `Failed to download levelpacks from the 5beam database.\n\nError Info:\n${error}`).render(this)
             console.error(error)

@@ -1,6 +1,6 @@
 import { BaseButton, createBackButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
-import s_saves, { s_addSave, s_getCacheAll, s_getLocalStorage, s_push } from "../core/misc/dataidb";
+import s_saves, { localSaves } from "../core/misc/dataidb";
 import { downloadFile, uploadFile } from "../core/misc/other";
 import validateLevelpack from "../core/misc/validate";
 import Alert from "./ui/alert";
@@ -52,9 +52,9 @@ class saveScene extends Phaser.Scene {
             if (valid) {
                 const levelpacksNames = importFilesJSON.map((levelpack) => levelpack.name).join("\n")
                 for (const levelpack of importFilesJSON) {
-                    s_addSave(levelpack, false)
+                    localSaves.add(levelpack, false)
                 }
-                s_push()
+                localSaves.push()
                 this.renderPage(saves)
 
                 new Alert("Imported levelpacks", `Successfully imported levelpacks:\n${levelpacksNames}`).render(this)
@@ -71,9 +71,9 @@ class saveScene extends Phaser.Scene {
         this.screen.updateMapPos();
 
         // gets all the levels from the localstorage
-        s_getLocalStorage();
+        localSaves.getLocalStorage();
         console.log(s_saves)
-        const saves = [...s_getCacheAll()];
+        const saves = [...localSaves.getCacheAll()];
 
         new NumInc(370, 475, 0, Math.ceil(saves.length / 6) - 1, this, (value) => {
             this.page = value;

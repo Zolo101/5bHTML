@@ -44,78 +44,84 @@ export const c_saves: C_APIOBJ = {
 }
 
 //
-// LOCAL SAVE
+// LOCAL LEVELPACKS
 //
-// local levels
-export function s_addSave(lvl: LevelData, push = true): LevelData {
-    lvl.struct_version = VERSION_NUMBER;
-    s_saves.set(lvl.name, lvl)
-    if (push) s_push()
-    return lvl;
-}
-
-export function s_removeSave(name: string, push = true): void {
-    s_saves.delete(name)
-    if (push) s_push()
-}
-
-// NOT FROM LOCALSTORAGE
-export function s_getCacheSave(name: string): LevelData | undefined {
-    return s_saves.get(name)
-}
-
-// NOT FROM LOCALSTORAGE
-export function s_getCacheAll(): IterableIterator<LevelData> {
-    return s_saves.values()
-}
-
-// Get from localstorage
-export function s_getLocalStorage(): void {
-    const locstore = localStorage.getItem(SAVE_NAME);
-
-    // Skip if empty
-    if (locstore === null) return;
-
-    const locsaves: LevelData[] = JSON.parse(locstore)
-    for (const save of locsaves) {
-        s_addSave(save, false)
+export class localSaves {
+    static add(lvl: LevelData, push = true) {
+        lvl.struct_version = VERSION_NUMBER;
+        s_saves.set(lvl.name, lvl)
+        if (push) this.push()
+        return lvl;
     }
-}
 
-// Pushes to localstorage
-export function s_push(): void {
-    console.log("PUSHED TO LOCALSTORAGE", s_saves.values())
-    localStorage.setItem(SAVE_NAME, JSON.stringify([...s_saves.values()]));
+    static remove(name: string, push = true) {
+        s_saves.delete(name)
+        if (push) this.push()
+    }
+
+    // NOT FROM LOCALSTORAGE
+    static getCacheSave(name: string) {
+        return s_saves.get(name)
+    }
+
+    // NOT FROM LOCALSTORAGE
+    static getCacheAll() {
+        return s_saves.values()
+    }
+
+    // FROM LOCALSTORAGE
+    static getLocalStorage() {
+        const locstore = localStorage.getItem(SAVE_NAME);
+
+        // Skip if empty
+        if (locstore === null) return;
+
+        const locsaves: LevelData[] = JSON.parse(locstore)
+        for (const save of locsaves) {
+            this.add(save, false)
+        }
+    }
+
+    // Pushes to localstorage
+    static push() {
+        console.log("PUSHED TO LOCALSTORAGE", s_saves.values())
+        localStorage.setItem(SAVE_NAME, JSON.stringify([...s_saves.values()]));
+    }
 }
 
 //
 // ONLINE LEVELPACK CACHE
 //
-export function c_addSaves(page: number, lvls: APIData[]): void {
-    c_saves.data.set(page, lvls);
-}
+export class onlineLevelpackCache {
+    static addSaves(page: number, lvls: APIData[]) {
+        c_saves.data.set(page, lvls);
+    }
 
-// Get from localstorage
-export function c_getLocalStorage(): void {
-    const locstore = localStorage.getItem(CACHE_NAME);
+    // Get from localstorage
+    static getLocalStorage() {
+        const locstore = localStorage.getItem(CACHE_NAME);
 
-    // Skip if empty
-    if (locstore === null) return;
+        // Skip if empty
+        if (locstore === null) return;
 
-    const parsedloc = JSON.parse(locstore);
+        const parsedloc = JSON.parse(locstore);
 
-    c_saves.data = new Map(parsedloc.data) as Map<number, APIData[]>;
-    c_saves.time = parsedloc.time
-}
-// Pushes to localstorage
-export function c_push(): void {
-    localStorage.setItem(CACHE_NAME, JSON.stringify({ data: Array.from(c_saves.data.entries()), time: Date.now()}));
-}
-export function c_clearEverything(): void {
-    c_saves.data.clear();
-}
-export function c_clear(page: number): void {
-    c_saves.data.delete(page);
+        c_saves.data = new Map(parsedloc.data) as Map<number, APIData[]>;
+        c_saves.time = parsedloc.time
+    }
+
+    // Pushes to localstorage
+    static push() {
+        localStorage.setItem(CACHE_NAME, JSON.stringify({ data: Array.from(c_saves.data.entries()), time: Date.now()}));
+    }
+
+    static clearEverything() {
+        c_saves.data.clear();
+    }
+
+    static clear(page: number) {
+        c_saves.data.delete(page);
+    }
 }
 
 export default s_saves

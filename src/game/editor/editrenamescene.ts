@@ -1,6 +1,6 @@
 import { BaseButton, createBackButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
-import s_saves, { s_push } from "../core/misc/dataidb";
+import s_saves, { localSaves } from "../core/misc/dataidb";
 
 class editrenameScene extends Phaser.Scene {
     save!: LevelData
@@ -36,7 +36,7 @@ class editrenameScene extends Phaser.Scene {
         })
 
         createBackButton(this, "saveScene", () => {
-            s_push();
+            localSaves.push();
             s_saves.delete(nameBuffer);
         })
     }

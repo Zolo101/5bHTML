@@ -7,9 +7,9 @@ import { entityData } from "../jsonmodule";
 import Settings from "../../settingsgame";
 import gameSceneType from "../gamestructure";
 import { BlockObject, BlockObjectType, BlockProps } from "../data/block_data";
-import { s_getCacheSave, s_getLocalStorage } from "../misc/dataidb";
 import calculateOutline from "../calculateoutline";
 import { create2DNumberArray } from "../misc/other";
+import { localSaves } from "../misc/dataidb";
 let level: LevelData
 
 export class LevelManager {
@@ -145,10 +145,10 @@ export class LevelManager {
         backButton.on("pointerdown", () => {
             if (this.backScene === "editorScene") {
                 // console.log("levelmanager<<", this.levels)
-                s_getLocalStorage();
+                localSaves.getLocalStorage();
                 // console.log("levelmanager2", s_getCacheSave(this.levels.name))
                 this.scene.scene.start(this.backScene, {
-                    level: s_getCacheSave(this.levels.name),
+                    level: localSaves.getCacheSave(this.levels.name),
                     currentLevelNumber: this.extraData!.currentLevelNumber
                 });
             } else {

@@ -1,7 +1,7 @@
 import { BaseButton, buttonStyle, miniButtonStyle, textStyle, titleStyle } from "../core/buttons";
 import { entityData } from "../core/jsonmodule";
 import { Character, Entity, Level, LevelData, Sprite } from "../core/levelstructure";
-import { s_getLocalStorage, s_addSave, s_push, VERSION_NUMBER, s_getCacheSave } from "../core/misc/dataidb";
+import { localSaves, VERSION_NUMBER } from "../core/misc/dataidb";
 import Key from "../core/misc/key";
 import { chunkArray, create2DNumberArray } from "../core/misc/other";
 import { brushTool, cursorTool, eraserTool, fillTool, pencilTool, Point, selectTool, zoomTool } from "./tools";
@@ -302,7 +302,7 @@ class editorScene extends Phaser.Scene {
         }
 
         // Get local saves
-        s_getLocalStorage();
+        localSaves.getLocalStorage();
         if (!this.new) this.gameobjects.screen.setData(this.currentLevel.data)
 
         // this.setupBlocks();
@@ -411,8 +411,8 @@ class editorScene extends Phaser.Scene {
         if (this.level.name === "Untitled Levelpack") {
             this.level.name = prompt("Choose a name for your save:") || this.level.name
         }
-        s_addSave(this.level)
-        s_push()
+        localSaves.add(this.level)
+        localSaves.push()
 
         // Tell user that the level has been saved
         this.tweens.add({

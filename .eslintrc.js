@@ -38,5 +38,7 @@ module.exports = {
         "no-plusplus": ["error", { allowForLoopAfterthoughts: true }],
         "lines-between-class-members": 0,
         "no-param-reassign": ["error", { props: false }],
+
+        "@typescript-eslint/explicit-module-boundary-types": 0
     },
 };

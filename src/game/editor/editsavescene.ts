@@ -1,6 +1,6 @@
 import { BaseButton, createBackButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
-import { s_addSave, s_push, s_removeSave, s_saves } from "../core/misc/dataidb";
+import { localSaves, s_saves } from "../core/misc/dataidb";
 import validateLevelpack from "../core/misc/validate";
 import { EXPLORE_SEVRER_URL } from "../settingsgame";
 import Alert from "./ui/alert";
@@ -35,8 +35,8 @@ class editsaveScene extends Phaser.Scene {
                 // Serialisation be like
                 const newSave = JSON.parse(JSON.stringify(this.save)) as LevelData;
                 newSave.name = newName;
-                s_addSave(newSave);
-                s_push();
+                localSaves.add(newSave);
+                localSaves.push();
             }
         })
         new BaseButton(80, 340, "Upload", this, async () => {
@@ -55,8 +55,8 @@ class editsaveScene extends Phaser.Scene {
         new BaseButton(80, 420, "Delete", this, () => {
             new Alert("Delete save", "Are you sure? This WILL irreversibly delete your save.", "YESNO")
                 .render(this).then(() => {
-                    s_removeSave(this.save.name);
-                    s_push();
+                    localSaves.remove(this.save.name);
+                    localSaves.push();
                     this.scene.start("saveScene");
                 })
         })

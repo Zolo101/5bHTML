@@ -1,6 +1,6 @@
 import { BaseButton, createBackButton, textStyle, titleStyle } from "../core/buttons";
 import { LevelData } from "../core/levelstructure";
-import { s_saves, s_addSave, s_push } from "../core/misc/dataidb";
+import { localSaves, s_saves } from "../core/misc/dataidb";
 import Alert from "../editor/ui/alert";
 import { Screen } from "../editor/ui/screen";
 
@@ -31,8 +31,8 @@ class explorelevelScene extends Phaser.Scene {
                 // Serialisation be like
                 const newSave = JSON.parse(JSON.stringify(this.save)) as LevelData;
                 newSave.name = newName;
-                s_addSave(newSave);
-                s_push();
+                localSaves.add(newSave);
+                localSaves.push();
             }
         })
         this.add.text(420, 360, `By: ${this.save.author}`, titleStyle)
