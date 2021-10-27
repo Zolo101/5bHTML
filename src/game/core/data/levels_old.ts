@@ -1,5 +1,3 @@
-import { LevelData } from "../levelstructure";
-
 export default {
     name: "5b levels",
     author: "Original by Cary Huang",

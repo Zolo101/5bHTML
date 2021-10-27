@@ -32,8 +32,7 @@ brushTool.getCoords = (pos) => {
 export const fillTool = new ToolWidget("Fill", new Key("5", true), "fill")
 fillTool.getCoords = (pos, screen) => {
     const screenPos = { x: Math.abs(Math.floor(pos.x)), y: Math.abs(Math.floor(pos.y)) };
-    const results = fill(screen, screen.layer.getTileAt(screenPos.x, screenPos.y, false).index, Math.floor(pos.x), Math.floor(pos.y));
-    return results
+    return fill(screen, screen.layer.getTileAt(screenPos.x, screenPos.y, false).index, Math.floor(pos.x), Math.floor(pos.y));
 }
 
 export const eraserTool = new ToolWidget("Eraser", new Key("6", true), "eraser")

@@ -20,7 +20,7 @@ export class ToolWidgetBar {
     select(name: string): void {
         const tool = this.tools.get(name);
         if (tool === undefined) {
-            throw console.error("5bHTML-Edit Error: Tried to get an unknown ToolWidget name");
+            throw "5bHTML-Edit Error: Tried to get an unknown ToolWidget name";
         }
         this.selected = tool;
         this.onChange(tool);

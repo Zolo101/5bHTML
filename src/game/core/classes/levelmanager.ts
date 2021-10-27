@@ -1,4 +1,4 @@
-import { Sprite, Character, makeSpriteFromString, makeCharacterFromString, SpriteType } from "./sprite";
+import { Character, makeSpriteFromString, makeCharacterFromString } from "./sprite";
 import { levelnameStyle, backStyle } from "../buttons";
 import { createSpecialBlock } from "./block";
 import { checkLevel } from "../checkLevel";

@@ -19,23 +19,19 @@ v4 Alpha -- June 2021 :heavy_check_mark:
 
 v5 Alpha -- July 2021 :heavy_check_mark:
 
-v6 Alpha -- July 2021 :heavy_plus_sign:
-
-v7 Alpha -- Early August 2021 :x:
-
-*Dates shown are **NOT** final.*
-
 <!-- Beta -- December 2020 -->
 <!-- Beta -- Mid 2021 -->
-Beta -- 2021
-- [:x:] Able to complete the game
+<1-- Beta -- 2021 -->
+Beta (b1)
+- [:heavy_plus_sign:] Every level complete
 - [:heavy_plus_sign:] Support multiple characters
 - [:heavy_check_mark:] Animations
 - [:x:] HPRC
-- [:x:] Dialogue
+- [:heavy_plus_sign:] Dialogue
 
 <!-- Release -- 2021 -->
-Release -- Late 2021
+<!-- Release -- Late 2021 -->
+Release
 - [:x:] Music
 - [:heavy_check_mark:] Level Editor
 - [:heavy_check_mark:] Custom Level Browsing ("Explore" mode / 5beam)

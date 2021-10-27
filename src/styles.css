@@ -1,21 +1,15 @@
-* {
-	font-family: Helvetica, Arial, sans-serif;
-	text-align: center;
-	color: #666;
-	margin: 0;
-	padding: 0;
-}
-
-html {
-	height: 100%;
-}
-
 body {
 	height: 100%;
 	/* width: 960px; */
 	min-height: 600px;
 	position: relative;
 	overflow: hidden;
+
+	font-family: Helvetica, Arial, sans-serif;
+	text-align: center;
+	color: #666;
+	margin: 0;
+	padding: 0;
 }
 
 p {

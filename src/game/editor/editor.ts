@@ -1,10 +1,10 @@
-import { BaseButton, buttonStyle, miniButtonStyle, textStyle, titleStyle } from "../core/buttons";
+import { BaseButton, miniButtonStyle, textStyle, titleStyle } from "../core/buttons";
 import { entityData } from "../core/jsonmodule";
-import { Character, Entity, Level, LevelData, Sprite } from "../core/levelstructure";
+import { Character, Entity, Level, LevelData } from "../core/levelstructure";
 import { localSaves, VERSION_NUMBER } from "../core/misc/dataidb";
 import Key from "../core/misc/key";
 import { chunkArray, create2DNumberArray } from "../core/misc/other";
-import { brushTool, cursorTool, eraserTool, fillTool, pencilTool, Point, selectTool, zoomTool } from "./tools";
+import { brushTool, cursorTool, eraserTool, fillTool, pencilTool, Point } from "./tools";
 import Alert from "./ui/alert";
 import Bar from "./ui/bar";
 import { MenuBar, subMenuBar, subMenuBarItem } from "./ui/menubar";
