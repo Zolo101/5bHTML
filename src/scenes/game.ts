@@ -77,6 +77,7 @@ class gameScene extends Phaser.Scene {
     update(): void {
         const alive = this.levelmanager.currentcharacter.active;
         const cc = this.levelmanager.currentcharacter;
+
         if (alive) {
             const isStanding = cc.body.blocked.down || cc.body.touching.down;
             const isIdle = isStanding && (!spaceKey.isDown && !leftKey.isDown && !rightKey.isDown)
@@ -160,8 +161,7 @@ class gameScene extends Phaser.Scene {
             ch.grabbable = false;
         });
 
-        // TEMP, this shouldn't be in game.ts!
-
+        // TODO: get this out of game.ts!
         // If UP key is pressed, grab overlapped sprite
         if (Phaser.Input.Keyboard.JustDown(upKey)) {
             if (cc.grabbing === null) {
@@ -202,7 +202,12 @@ class gameScene extends Phaser.Scene {
         // cc.visual.setPosition(cc.x, cc.y)
         // cc.Lleg.setPosition(cc.getBottomCenter().x - 8, cc.getBottomCenter().y - 10)
         // cc.Rleg.setPosition(cc.getBottomCenter().x + 10, cc.getBottomCenter().y - 10)
+
+        this.levelmanager.background.x = this.levelmanager.scene.cameras.main.scrollX / 1.07;
+        this.levelmanager.background.y = this.levelmanager.scene.cameras.main.scrollY / 1.2;
+        // console.log(this.levelmanager.scene.cameras.main.scrollX, this.levelmanager.scene.cameras.main.scrollY)
     }
+
 }
 
 export default gameScene;

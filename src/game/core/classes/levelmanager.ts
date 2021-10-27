@@ -100,9 +100,9 @@ export class LevelManager {
 
         // Set background
         this.setBackground(
-            this.levels.levels[this.levelnumber].background,
-            this.blocksize * levelWidth,
-            this.blocksize * levelHeight,
+            this.levels.levels[this.levelnumber].background, // ratio 16:9
+            this.blocksize * (32 + (levelWidth / 32)), // 16
+            this.blocksize * (18 + (levelHeight / 18)), // 9
         );
 
         // Set World bounds
@@ -186,9 +186,8 @@ export class LevelManager {
         this.generateSprites(this.levelnumber);
         this.currentcharacter = this.characters.getChildren()[0] as Character;
 
-        // Set Camera
-        this.scene.cameras.main.startFollow(this.currentcharacter);
-        this.scene.cameras.main.roundPixels = true;
+        // Follow current character with interpolation
+        this.scene.cameras.main.startFollow(this.currentcharacter, true, 0.08, 0.06);
 
         this.scene.tweens.addCounter({
             from: shakeAmount,
@@ -314,6 +313,7 @@ export class LevelManager {
         }
 
         this.tilelayers.static.setCollision(this.blocks.collisionIndexes);
+
         this.tilelayers.killable.setCollision(this.blocks.collisionIndexes);
 
         this.tilelayers.killable.tilemap.forEachTile((tile) => {

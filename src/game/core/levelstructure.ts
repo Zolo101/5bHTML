@@ -1,10 +1,39 @@
-export type Entity = {
+export type BaseEntity = {
     name: string
-    type: "Character" | "Entity"
+    type: string
     x: number
     y: number
-    controllable?: boolean
+    controllable: boolean
 }
+
+export type Character = BaseEntity & {
+    type: "Character"
+}
+
+export type Sprite = BaseEntity & {
+    type: "Entity"
+}
+
+export type FixedSprite = BaseEntity & {
+    type: "Entity"
+    paths: Path[]
+    alternate: boolean
+}
+
+export enum Direction {
+    Left,
+    Right,
+    Up,
+    Down
+}
+
+export type Path = {
+    direction: Direction,
+    amount: number,
+    duration: number
+}
+
+export type Entity = Character | Sprite
 
 export type Dialogue = {
     name: string

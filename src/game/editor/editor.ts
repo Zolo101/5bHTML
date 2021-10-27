@@ -1,6 +1,6 @@
 import { BaseButton, buttonStyle, miniButtonStyle, textStyle, titleStyle } from "../core/buttons";
 import { entityData } from "../core/jsonmodule";
-import { Entity, Level, LevelData } from "../core/levelstructure";
+import { Character, Entity, Level, LevelData, Sprite } from "../core/levelstructure";
 import { s_getLocalStorage, s_addSave, s_push, VERSION_NUMBER, s_getCacheSave } from "../core/misc/dataidb";
 import Key from "../core/misc/key";
 import { chunkArray, create2DNumberArray } from "../core/misc/other";
@@ -121,6 +121,7 @@ class editorScene extends Phaser.Scene {
                             type: "Character",
                             x: 105,
                             y: 105,
+                            controllable: true
                         }
                     ],
                     background: 0
@@ -476,6 +477,7 @@ class editorScene extends Phaser.Scene {
                     type: "Character",
                     x: 105,
                     y: 0,
+                    controllable: true
                 }
             ],
             background: 0
@@ -612,7 +614,7 @@ Made by Zelo101. Last Updated: 21/07/2021`).render(this))
             level: levelsSelect
         }
 
-        const createEntity = (name: string, type: Entity["type"]) => {
+        const createEntity = (name: string, type: Character["type"]) => {
             this.screenEntities.push({
                 ID: this.screenEntities[this.screenEntities.length - 1].ID + 1,
                 visible: true,
@@ -645,7 +647,8 @@ Made by Zelo101. Last Updated: 21/07/2021`).render(this))
                 .setDisplaySize(64, 64)
                 .setOrigin(0, 0)
                 .setInteractive()
-                .on("pointerdown", () => createEntity(name, "Entity"))
+                // TODO: Fix this (type shouldnt be Character?)
+                .on("pointerdown", () => createEntity(name, "Character"))
         })
 
         const nameContainer = this.add.container(660, 134);
