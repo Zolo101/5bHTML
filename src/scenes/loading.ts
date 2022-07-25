@@ -88,6 +88,7 @@ class loadingScene extends Phaser.Scene {
     }
 
     create(): void {
+        alert("This remake of 5b is outdated!\nUse coppersalt's 'HTML5b' instead. Link is down below.")
         this.scene.start("menuScene"); // finished
     }
 
